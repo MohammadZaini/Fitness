@@ -16,7 +16,7 @@ const AuthScreen = props => {
 
             <TouchableOpacity onPress={() => setIsSigned(prevState => setIsSigned(!prevState))} >
 
-                <Text style={{ color: colors.primary }} >{`Switch to ${isSigned ? "Sign up" : "Sign in"}`}</Text>
+                <Text style={{ color: colors.primary }} >{isSigned ? "Doesn't have an account yet? Sign up" : "Aleady have an account? Sign in"}</Text>
             </TouchableOpacity>
 
         </View>

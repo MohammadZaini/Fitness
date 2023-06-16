@@ -4,7 +4,6 @@ import ChatListScreen from "../../features/chat/screens/chat-list.screen";
 import SettingsScreen from "../../features/settings/screens/settings.screen";
 import ExersicesScreen from "../../features/exercises/screens/exercises.screen";
 import { FontAwesome5 } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from "../theme/colors";
 
