@@ -4,17 +4,19 @@ import { colors } from "../infratructure/theme/colors";
 
 export const SubmitButton = props => {
 
-    const enabledColor = props.isEnabled ? colors.primary : colors.disabledButton
+    const enabledBgColor = props.color || colors.primary
+    const disabledBgColor = colors.disabledButton;
+    const bgColor = props.disabled ? disabledBgColor : enabledBgColor
 
     return (
 
         <TouchableOpacity
-            style={{ ...styles.button, backgroundColor: enabledColor }}>
+            onPress={props.disabled ? () => { } : props.onPress}
+            style={{ ...styles.button, ...{ backgroundColor: bgColor } }}>
 
             <Text style={{ marginVertical: 8 }
             } > {props.title}</ Text>
         </TouchableOpacity>
-
     )
 }
 

@@ -1,10 +1,15 @@
 export const reducer = (state, action) => {
     const { inputId, validationResult, inputValue } = action;
 
+    const updatedValues = {
+        ...state.inputValues,
+        [inputId]: inputValue
+    };
+
     const updatedValidites = {
         ...state.inputValidities,
         [inputId]: validationResult
-    }
+    };
 
     let updatedFormIsValid = true;
 
@@ -12,11 +17,11 @@ export const reducer = (state, action) => {
         if (updatedValidites[key] !== undefined) {
             updatedFormIsValid = false;
             break;
-        }
-    }
-
+        };
+    };
 
     return {
+        inputValues: updatedValues,
         inputValidities: updatedValidites,
         formIsValid: updatedFormIsValid
     };
