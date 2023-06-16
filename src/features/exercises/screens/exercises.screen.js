@@ -1,9 +1,9 @@
 import React from "react";
-import { Text } from "react-native";
+import { Button, Text } from "react-native";
 
-const ExersicesScreen = () => {
+const ExersicesScreen = props => {
     return (
-        <Text>Exersices Screen</Text>
+        <Button title="Go to Auth screen" onPress={() => props.navigation.navigate("Auth")} />
     );
 };
 
