@@ -1,31 +1,37 @@
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getFirebaseApp } from "../firebase-helper";
 import { child, getDatabase, ref, set } from "firebase/database"
+import { authenticate } from "../../../store/auth-slice";
 
-export const SignUp = async (firstName, lastName, email, password) => {
-    const app = getFirebaseApp();
-    const auth = getAuth(app);
+export const SignUp = (firstName, lastName, email, password) => {
 
-    await createUserWithEmailAndPassword(auth, email, password)
-        .then(async (userCredential) => {
-            // Signed in 
-            const user = userCredential.user;
-            const { uid } = user;
+    return async dispatch => {
+        const app = getFirebaseApp();
+        const auth = getAuth(app);
 
-            await createUser(firstName, lastName, email, uid);
-            // ...
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
+        await createUserWithEmailAndPassword(auth, email, password)
+            .then(async (userCredential) => {
+                // Signed in 
+                const user = userCredential.user;
+                const { uid, stsTokenManager } = user;
+                const { accessToken } = stsTokenManager;
 
-            let message = "Something went wrong";
+                const userData = await createUser(firstName, lastName, email, uid);
+                dispatch(authenticate({ token: accessToken, userData }))
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
 
-            if (errorCode === "auth/email-already-in-use") {
-                message = "Email is already in use";
-            }
+                let message = "Something went wrong";
 
-        });
+                if (errorCode === "auth/email-already-in-use") {
+                    message = "Email is already in use";
+                }
+
+                throw new Error(message);
+            });
+    };
 };
 
 const createUser = async (firstName, lastName, email, userId) => {

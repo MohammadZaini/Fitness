@@ -17,7 +17,7 @@ export const Input = props => {
             <TextInput
                 {...props}
                 value={value}
-                style={{ height: 40, width: 350, borderRadius: 40, padding: 9, letterSpacing: 0.3, borderWidth: 1, borderColor: colors.primary }}
+                style={{ height: 40, width: 350, borderRadius: 40, padding: 9, letterSpacing: 0.3, borderWidth: 1, borderColor: props.color }}
                 onChangeText={onChangeText}
             />
 

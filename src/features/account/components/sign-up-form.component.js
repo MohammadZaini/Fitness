@@ -1,12 +1,13 @@
-import React, { useCallback, useReducer, useState } from "react";
+import React, { useCallback, useEffect, useReducer, useState } from "react";
 import { Input } from "./input.components";
 import { InputValidation } from "../../../utils/actions/form-actions";
 import { reducer } from "../../../utils/reducers/form-reducer";
 import { SubmitButton } from "../../../components/submit-button";
 import { SignUp } from "../../../utils/actions/auth-actions";
-import { Text } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { colors } from "../../../infratructure/theme/colors";
+import { Alert } from "react-native";
+import { useDispatch } from "react-redux";
 
 const initialState = {
 
@@ -24,6 +25,13 @@ const initialState = {
         password: false
     },
 
+    inputIsValidColor: {
+        firstName: "grey",
+        lastName: "grey",
+        email: "grey",
+        password: "grey"
+    },
+
     formIsValid: false
 };
 
@@ -32,24 +40,34 @@ export const SignUpForm = props => {
     const [isLoading, setIsloading] = useState(false);
     const [error, setError] = useState("");
 
+    const dispatch = useDispatch();
+
     const onChangedHandler = useCallback((inputId, inputValue) => {
         const result = InputValidation(inputId, inputValue);
         dispatchFormState({ inputId, validationResult: result, inputValue })
     }, [dispatchFormState]);
 
+    useEffect(() => {
+        if (error) {
+            Alert.alert("An error occured", error)
+        };
+    }, [error])
+
     const authHandler = async () => {
 
         try {
             setIsloading(true)
-            await SignUp(
+            const action = SignUp(
                 formState.inputValues.firstName,
                 formState.inputValues.lastName,
                 formState.inputValues.email,
                 formState.inputValues.password
-            )
+            );
+
+            dispatch(action);
 
         } catch (error) {
-            setError(error)
+            setError(error.message)
             console.log(error.message);
         } finally {
             setIsloading(false)
@@ -63,33 +81,45 @@ export const SignUpForm = props => {
                 id="firstName"
                 label="First name"
                 onInputChanged={onChangedHandler}
+                autoCapitalize='none'
+                autoCorrect={false}
                 errorText={formState.inputValidities["firstName"]}
+                color={formState.inputIsValidColor["firstName"]}
             />
 
             <Input
                 id="lastName"
                 label="Last name"
                 onInputChanged={onChangedHandler}
+                autoCapitalize='none'
+                autoCorrect={false}
                 errorText={formState.inputValidities["lastName"]}
+                color={formState.inputIsValidColor["lastName"]}
+
             />
 
             <Input
                 id="email"
                 label="Email"
                 onInputChanged={onChangedHandler}
+                autoCapitalize='none'
+                autoCorrect={false}
                 errorText={formState.inputValidities["email"]}
                 keyboardType="email-address"
+                color={formState.inputIsValidColor["email"]}
+
             />
 
             <Input
                 id="password"
                 label="Password"
                 onInputChanged={onChangedHandler}
+                autoCapitalize='none'
+                autoCorrect={false}
                 errorText={formState.inputValidities["password"]}
                 secureTextEntry
+                color={formState.inputIsValidColor["password"]}
             />
-
-
 
             {
                 isLoading ?
@@ -100,12 +130,6 @@ export const SignUpForm = props => {
                         onPress={authHandler}
                     />
             }
-
-
-            {
-                error &&
-                <Text>{error}</Text>
-            }
         </>
-    )
-}
+    );
+};
