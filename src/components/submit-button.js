@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { colors } from "../infratructure/theme/colors";
+import { fonts } from "../infratructure/theme/fonts";
 
 export const SubmitButton = props => {
 
@@ -14,7 +15,7 @@ export const SubmitButton = props => {
             onPress={props.disabled ? () => { } : props.onPress}
             style={{ ...styles.button, ...{ backgroundColor: bgColor } }}>
 
-            <Text style={{ marginVertical: 8 }
+            <Text style={{ marginVertical: 8, fontFamily: fonts.body }
             } > {props.title}</ Text>
         </TouchableOpacity>
     )
@@ -27,6 +28,6 @@ const styles = StyleSheet.create({
         borderRadius: 40,
         marginVertical: 20,
         alignContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     }
 });

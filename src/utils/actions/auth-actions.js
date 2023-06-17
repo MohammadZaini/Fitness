@@ -2,6 +2,7 @@ import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { getFirebaseApp } from "../firebase-helper";
 import { child, getDatabase, ref, set } from "firebase/database"
 import { authenticate } from "../../../store/auth-slice";
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 export const SignUp = (firstName, lastName, email, password) => {
 
@@ -14,10 +15,14 @@ export const SignUp = (firstName, lastName, email, password) => {
                 // Signed in 
                 const user = userCredential.user;
                 const { uid, stsTokenManager } = user;
-                const { accessToken } = stsTokenManager;
+                const { accessToken, expirationTime } = stsTokenManager;
+
+                const expiryDate = new Date(expirationTime);
 
                 const userData = await createUser(firstName, lastName, email, uid);
-                dispatch(authenticate({ token: accessToken, userData }))
+                dispatch(authenticate({ token: accessToken, userData }));
+
+                saveDatatoAsyncStorage(accessToken, uid, expiryDate)
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -51,6 +56,15 @@ const createUser = async (firstName, lastName, email, userId) => {
     const childRef = child(dbRef, `users/${userId}`)
 
     await set(childRef, userData);
+
     return userData;
+};
+
+const saveDatatoAsyncStorage = (token, userId, expiryDate) => {
+    AsyncStorage.setItem("userData", JSON.stringify({
+        token,
+        userId,
+        expiryDate: expiryDate.toISOString()
+    }));
 };
 

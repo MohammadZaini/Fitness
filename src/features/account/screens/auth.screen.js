@@ -4,6 +4,7 @@ import { SignUpForm } from "../components/sign-up-form.component";
 import { SignInForm } from "../components/sign-in-form.component";
 import { colors } from "../../../infratructure/theme/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { fonts } from "../../../infratructure/theme/fonts";
 
 const AuthScreen = () => {
     const [isSigned, setIsSigned] = useState(false);
@@ -15,9 +16,9 @@ const AuthScreen = () => {
                 isSigned ? <SignInForm /> : <SignUpForm />
             }
 
-            <TouchableOpacity onPress={() => setIsSigned(prevState => setIsSigned(!prevState))} >
+            <TouchableOpacity onPress={() => setIsSigned(prevState => !prevState)} >
 
-                <Text style={{ color: colors.primary }} >{isSigned ? "Doesn't have an account yet? Sign up" : "Aleady have an account? Sign in"}</Text>
+                <Text style={{ color: colors.primary, fontFamily: fonts.body }} >{isSigned ? "Doesn't have an account yet? Sign up" : "Aleady have an account? Sign in"}</Text>
             </TouchableOpacity>
 
         </SafeAreaView>

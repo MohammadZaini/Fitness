@@ -6,9 +6,21 @@ import { SubmitButton } from "../../../components/submit-button";
 
 const initialState = {
 
+    inputValues: {
+        email: "",
+        password: ""
+    },
+
     inputValidities: {
         email: false,
         password: false
+    },
+
+    inputIsValidColor: {
+        firstName: "grey",
+        lastName: "grey",
+        email: "grey",
+        password: "grey"
     },
 
     formIsValid: false
@@ -29,6 +41,9 @@ export const SignInForm = props => {
                 onInputChanged={onChangedHandler}
                 errorText={formState.inputValidities["email"]}
                 keyboardType="email-address"
+                autoCapitalize='none'
+                autoCorrect={false}
+                color={formState.inputIsValidColor["email"]}
             />
 
             <Input
@@ -37,6 +52,7 @@ export const SignInForm = props => {
                 onInputChanged={onChangedHandler}
                 errorText={formState.inputValidities["password"]}
                 secureTextEntry
+                color={formState.inputIsValidColor["password"]}
             />
 
             <SubmitButton
@@ -45,4 +61,4 @@ export const SignInForm = props => {
             />
         </>
     )
-}
+};

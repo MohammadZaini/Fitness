@@ -56,7 +56,7 @@ export const SignUpForm = props => {
     const authHandler = async () => {
 
         try {
-            setIsloading(true)
+            setIsloading(true);
             const action = SignUp(
                 formState.inputValues.firstName,
                 formState.inputValues.lastName,
@@ -64,12 +64,11 @@ export const SignUpForm = props => {
                 formState.inputValues.password
             );
 
-            dispatch(action);
-
+            await dispatch(action);
+            setIsloading(false);
         } catch (error) {
             setError(error.message)
             console.log(error.message);
-        } finally {
             setIsloading(false)
         }
 
@@ -80,6 +79,7 @@ export const SignUpForm = props => {
             <Input
                 id="firstName"
                 label="First name"
+                labelColor={formState.inputIsValidColor["firstName"]}
                 onInputChanged={onChangedHandler}
                 autoCapitalize='none'
                 autoCorrect={false}
@@ -90,6 +90,7 @@ export const SignUpForm = props => {
             <Input
                 id="lastName"
                 label="Last name"
+                labelColor={formState.inputIsValidColor["lastName"]}
                 onInputChanged={onChangedHandler}
                 autoCapitalize='none'
                 autoCorrect={false}
@@ -101,6 +102,7 @@ export const SignUpForm = props => {
             <Input
                 id="email"
                 label="Email"
+                labelColor={formState.inputIsValidColor["email"]}
                 onInputChanged={onChangedHandler}
                 autoCapitalize='none'
                 autoCorrect={false}
@@ -113,6 +115,7 @@ export const SignUpForm = props => {
             <Input
                 id="password"
                 label="Password"
+                labelColor={formState.inputIsValidColor["password"]}
                 onInputChanged={onChangedHandler}
                 autoCapitalize='none'
                 autoCorrect={false}

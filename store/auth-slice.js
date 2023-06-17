@@ -4,7 +4,8 @@ const authSlice = createSlice({
     name: "auth",
     initialState: {
         token: null,
-        userData: null
+        userData: null,
+        didTryAutoLogin: null,
     },
     reducers: {
         authenticate: (state, action) => {
