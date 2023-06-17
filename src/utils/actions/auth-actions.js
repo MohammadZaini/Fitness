@@ -1,6 +1,6 @@
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { getFirebaseApp } from "../firebase-helper";
-import { child, getDatabase, ref, set } from "firebase/database"
+import { child, getDatabase, ref, set, update } from "firebase/database"
 import { authenticate, logout } from "../../../store/auth-slice";
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { getUserData } from "./user-actions";
@@ -26,8 +26,8 @@ export const SignUp = (firstName, lastName, email, password) => {
                 const milliSecondsUntilExpiry = expiryDate - timeNow;
 
                 timer = setTimeout(() => {
-                    dispatch(userLogout())
-                }, milliSecondsUntilExpiry)
+                    dispatch(userLogout());
+                }, milliSecondsUntilExpiry);
 
                 const userData = await createUser(firstName, lastName, email, uid);
                 dispatch(authenticate({ token: accessToken, userData }));
@@ -68,8 +68,8 @@ export const SignIn = (email, password) => {
                 const milliSecondsUntilExpiry = expiryDate - timeNow;
 
                 timer = setTimeout(() => {
-                    dispatch(userLogout())
-                }, milliSecondsUntilExpiry)
+                    dispatch(userLogout());
+                }, milliSecondsUntilExpiry);
 
                 const userData = await getUserData(uid)
                 dispatch(authenticate({ token: accessToken, userData }));
@@ -93,13 +93,25 @@ export const SignIn = (email, password) => {
     };
 };
 
-const userLogout = () => {
+export const userLogout = () => {
     return async dispatch => {
         AsyncStorage.clear();
         clearTimeout(timer)
         dispatch(logout());
     }
 
+}
+
+export const updatedSignedInUserData = async (userId, newData) => {
+    const firstLast = `${newData.firstName} ${newData.lastName}`.toLowerCase();
+
+    newData.firstLast = firstLast;
+
+    const app = getFirebaseApp();
+    const dbRef = ref(getDatabase(app));
+    const childRef = child(dbRef, `users/${userId}`);
+
+    await update(childRef, newData);
 }
 
 const createUser = async (firstName, lastName, email, userId) => {

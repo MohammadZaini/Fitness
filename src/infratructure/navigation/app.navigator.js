@@ -16,7 +16,6 @@ const TabNavigator = () => {
                 name="Exersices"
                 component={ExersicesScreen}
                 options={{
-                    headerShown: false,
                     tabBarIcon: () => <FontAwesome5 name="dumbbell" size={24} color={colors.primary} />,
                     tabBarActiveTintColor: colors.primary
                 }} />
@@ -25,7 +24,6 @@ const TabNavigator = () => {
                 name="ChatList"
                 component={ChatListScreen}
                 options={{
-                    headerShown: false,
                     tabBarIcon: () => <Ionicons name="md-chatbubbles-outline" size={24} color={colors.primary} />,
                     tabBarLabel: "Chats",
                     tabBarActiveTintColor: colors.primary
@@ -35,7 +33,6 @@ const TabNavigator = () => {
                 name="Settings"
                 component={SettingsScreen}
                 options={{
-                    headerShown: false,
                     tabBarIcon: () => <Ionicons name="settings-outline" size={24} color={colors.primary} />,
                     tabBarActiveTintColor: colors.primary
                 }} />

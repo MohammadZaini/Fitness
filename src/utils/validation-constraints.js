@@ -5,7 +5,7 @@ export const validateString = (id, value) => {
         presence: { allowEmpty: false }
     }
 
-    if (id !== "") {
+    if (value !== "") {
         constraints.format = {
             pattern: "[a-z]+",
             flags: "i",
@@ -23,7 +23,7 @@ export const validateEmail = (id, value) => {
         presence: { allowEmpty: false }
     }
 
-    if (id !== "") {
+    if (value !== "") {
         constraints.email = true
     };
 
@@ -32,12 +32,34 @@ export const validateEmail = (id, value) => {
     return validationResult && validationResult[id];
 };
 
-export const validateLength = (id, value) => {
+export const validateLength = (id, value, minLength, maxLength, allowEmpty) => {
+    const constraints = {
+        presence: { allowEmpty }
+    };
+
+    if (!allowEmpty || value !== "") {
+        constraints.length = {}
+
+        if (maxLength != null) {
+            constraints.length.maximum = maxLength;
+        };
+
+        if (minLength != null) {
+            constraints.length.minmum = minLength;
+        }
+    };
+
+    const validationResult = (validate({ [id]: value }, { [id]: constraints }));
+
+    return validationResult && validationResult[id];
+};
+
+export const validatePassword = (id, value) => {
     const constraints = {
         presence: { allowEmpty: false }
     }
 
-    if (id !== "") {
+    if (value !== "") {
         constraints.length = {
             minimum: 6,
             message: "should at least 6 characters"

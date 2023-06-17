@@ -8,6 +8,9 @@ import { ActivityIndicator } from "react-native-paper";
 import { colors } from "../../../infratructure/theme/colors";
 import { Alert } from "react-native";
 import { useDispatch } from "react-redux";
+import { Ionicons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 
 const initialState = {
 
@@ -80,6 +83,9 @@ export const SignUpForm = props => {
                 id="firstName"
                 label="First name"
                 labelColor={formState.inputIsValidColor["firstName"]}
+                iconPack={Ionicons}
+                icon={"ios-person"}
+                iconColor={colors.primary}
                 onInputChanged={onChangedHandler}
                 autoCapitalize='none'
                 autoCorrect={false}
@@ -91,6 +97,9 @@ export const SignUpForm = props => {
                 id="lastName"
                 label="Last name"
                 labelColor={formState.inputIsValidColor["lastName"]}
+                iconPack={Ionicons}
+                icon={"ios-person"}
+                iconColor={colors.primary}
                 onInputChanged={onChangedHandler}
                 autoCapitalize='none'
                 autoCorrect={false}
@@ -103,6 +112,9 @@ export const SignUpForm = props => {
                 id="email"
                 label="Email"
                 labelColor={formState.inputIsValidColor["email"]}
+                iconPack={MaterialIcons}
+                icon={"email"}
+                iconColor={colors.primary}
                 onInputChanged={onChangedHandler}
                 autoCapitalize='none'
                 autoCorrect={false}
@@ -116,6 +128,9 @@ export const SignUpForm = props => {
                 id="password"
                 label="Password"
                 labelColor={formState.inputIsValidColor["password"]}
+                iconPack={Entypo}
+                icon={"lock"}
+                iconColor={colors.primary}
                 onInputChanged={onChangedHandler}
                 autoCapitalize='none'
                 autoCorrect={false}

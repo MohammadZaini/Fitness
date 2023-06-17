@@ -8,14 +8,17 @@ import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { ActivityIndicator } from "react-native-paper";
 import { colors } from "../../../infratructure/theme/colors";
+import { MaterialIcons } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons'
+import { Alert } from "react-native";
 
-const isTest = true
+const isTestMode = true
 
 const initialState = {
 
     inputValues: {
-        email: isTest ? "zaini@outlook.com" : "",
-        password: isTest ? "zaini123" : ""
+        email: isTestMode ? "zaini@outlook.com" : "",
+        password: isTestMode ? "zaini123" : ""
     },
 
     inputValidities: {
@@ -28,7 +31,7 @@ const initialState = {
         password: "grey"
     },
 
-    formIsValid: isTest
+    formIsValid: isTestMode
 };
 export const SignInForm = props => {
     const [formState, dispatchFormState] = useReducer(reducer, initialState);
@@ -40,7 +43,7 @@ export const SignInForm = props => {
         if (error) {
             Alert.alert("An error occured", error)
         };
-    }, [error])
+    }, [error]);
 
     const onChangedHandler = useCallback((inputId, inputValue) => {
         const result = InputValidation(inputId, inputValue);
@@ -71,11 +74,15 @@ export const SignInForm = props => {
             <Input
                 id="email"
                 label="Email"
+                labelColor={formState.inputIsValidColor["email"]}
+                iconPack={MaterialIcons}
+                icon={"email"}
+                iconColor={colors.primary}
                 onInputChanged={onChangedHandler}
-                errorText={formState.inputValidities["email"]}
-                keyboardType="email-address"
                 autoCapitalize='none'
                 autoCorrect={false}
+                errorText={formState.inputValidities["email"]}
+                keyboardType="email-address"
                 color={formState.inputIsValidColor["email"]}
                 initialValue={formState.inputValues.email}
             />
@@ -83,7 +90,13 @@ export const SignInForm = props => {
             <Input
                 id="password"
                 label="Password"
+                labelColor={formState.inputIsValidColor["password"]}
+                iconPack={Entypo}
+                icon={"lock"}
+                iconColor={colors.primary}
                 onInputChanged={onChangedHandler}
+                autoCapitalize='none'
+                autoCorrect={false}
                 errorText={formState.inputValidities["password"]}
                 secureTextEntry
                 color={formState.inputIsValidColor["password"]}
@@ -92,7 +105,7 @@ export const SignInForm = props => {
 
             {
                 isLoading ?
-                    <ActivityIndicator size="small" color={colors.primary} style={{ marginTop: 20 }} /> :
+                    <ActivityIndicator size="small" color={colors.primary} style={{ marginTop: 20, marginBottom: 5 }} /> :
                     <SubmitButton
                         title="Sign In"
                         disabled={!formState.formIsValid}

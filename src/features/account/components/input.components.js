@@ -12,17 +12,24 @@ export const Input = props => {
         props.onInputChanged(props.id, text)
     };
 
-    labelTextColor = props.labelColor === "grey" && "white" || props.labelColor
+    labelTextColor = props.labelColor === "grey" && "black" || props.labelColor
 
     return (
         <View  >
             <Text style={{ marginLeft: 10, marginVertical: 5, fontFamily: fonts.body, color: labelTextColor }} >{props.label}</Text>
-            <TextInput
-                {...props}
-                value={value}
-                style={{ height: 40, width: 350, borderRadius: 40, padding: 9, letterSpacing: 0.3, borderWidth: 1, borderColor: props.color }}
-                onChangeText={onChangeText}
-            />
+            <View style={{ flexDirection: 'row', borderWidth: 1, borderRadius: 40, borderColor: props.color, justifyContent: 'center', alignItems: 'center', padding: 3, }} >
+
+                {
+                    props.iconPack &&
+                    <props.iconPack name={props.icon} size={15} color={props.iconColor} style={{ marginRight: 5 }} />
+                }
+                <TextInput
+                    {...props}
+                    value={value}
+                    style={{ height: 35, width: 300, letterSpacing: 0.3 }}
+                    onChangeText={onChangeText}
+                />
+            </View>
 
             {
                 props.errorText &&

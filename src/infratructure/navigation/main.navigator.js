@@ -9,7 +9,7 @@ const Stack = createStackNavigator();
 const StackNavigator = () => {
 
     return (
-        <Stack.Navigator  >
+        <Stack.Navigator screenOptions={{ headerShown: false }}  >
             <Stack.Screen name="Home" component={TabNavigator} options={{ headerTitle: '', headerShadowVisible: false }} />
             <Stack.Screen name="NewChat" component={NewChatScreen} />
             <Stack.Screen name="Chat" component={ChatScreen} />
