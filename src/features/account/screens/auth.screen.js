@@ -13,7 +13,7 @@ const AuthScreen = () => {
             <Image source={require("../../../../assets/images/dumbbell-gym.png")} style={{ height: 150, width: 200, marginVertical: 20 }} />
 
             {
-                isSigned ? <SignInForm /> : <SignUpForm />
+                isSigned ? <SignUpForm /> : <SignInForm />
             }
 
             <TouchableOpacity onPress={() => setIsSigned(prevState => !prevState)} >

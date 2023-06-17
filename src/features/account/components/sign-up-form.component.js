@@ -53,7 +53,7 @@ export const SignUpForm = props => {
         };
     }, [error])
 
-    const authHandler = async () => {
+    const authHandler = useCallback(async () => {
 
         try {
             setIsloading(true);
@@ -72,7 +72,7 @@ export const SignUpForm = props => {
             setIsloading(false)
         }
 
-    }
+    }, [dispatch, formState])
 
     return (
         <>
