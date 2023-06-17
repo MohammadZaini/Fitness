@@ -1,9 +1,11 @@
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { getFirebaseApp } from "../firebase-helper";
 import { child, getDatabase, ref, set } from "firebase/database"
-import { authenticate } from "../../../store/auth-slice";
+import { authenticate, logout } from "../../../store/auth-slice";
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { getUserData } from "./user-actions";
+
+let timer;
 
 export const SignUp = (firstName, lastName, email, password) => {
 
@@ -19,6 +21,13 @@ export const SignUp = (firstName, lastName, email, password) => {
                 const { accessToken, expirationTime } = stsTokenManager;
 
                 const expiryDate = new Date(expirationTime);
+                const timeNow = new Date();
+
+                const milliSecondsUntilExpiry = expiryDate - timeNow;
+
+                timer = setTimeout(() => {
+                    dispatch(userLogout())
+                }, milliSecondsUntilExpiry)
 
                 const userData = await createUser(firstName, lastName, email, uid);
                 dispatch(authenticate({ token: accessToken, userData }));
@@ -54,6 +63,13 @@ export const SignIn = (email, password) => {
                 const { accessToken, expirationTime } = stsTokenManager;
 
                 const expiryDate = new Date(expirationTime);
+                const timeNow = new Date();
+
+                const milliSecondsUntilExpiry = expiryDate - timeNow;
+
+                timer = setTimeout(() => {
+                    dispatch(userLogout())
+                }, milliSecondsUntilExpiry)
 
                 const userData = await getUserData(uid)
                 dispatch(authenticate({ token: accessToken, userData }));
@@ -66,14 +82,25 @@ export const SignIn = (email, password) => {
 
                 let message = "Something went wrong";
 
-                if (errorCode === "auth/email-already-in-use") {
-                    message = "Email is already in use";
-                }
+                if (errorCode === "auth/user-not-found") {
+                    message = "Invalid email";
+                } else if (errorCode === "auth/wrong-password") {
+                    message = "Inavlid password";
+                };
 
                 throw new Error(message);
             });
     };
 };
+
+const userLogout = () => {
+    return async dispatch => {
+        AsyncStorage.clear();
+        clearTimeout(timer)
+        dispatch(logout());
+    }
+
+}
 
 const createUser = async (firstName, lastName, email, userId) => {
     const firstLast = `${firstName} ${lastName}`.toLowerCase();

@@ -63,7 +63,7 @@ export const SignUpForm = props => {
                 formState.inputValues.email,
                 formState.inputValues.password
             );
-
+            setError(null);
             await dispatch(action);
             setIsloading(false);
         } catch (error) {

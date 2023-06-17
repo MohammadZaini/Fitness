@@ -5,21 +5,26 @@ const authSlice = createSlice({
     initialState: {
         token: null,
         userData: null,
-        didTryAutoLogin: null,
+        didTryAutoLogin: false,
     },
     reducers: {
         authenticate: (state, action) => {
             const { payload } = action
             state.token = payload.token;
             state.userData = payload.userData;
-            console.log(payload);
+            state.didTryAutoLogin = true;
         },
         setDidTryAutoLogin: (state, action) => {
             state.didTryAutoLogin = true;
+        },
+        logout: (state, action) => {
+            state.token = null;
+            state.userData = null;
+            state.didTryAutoLogin = false;
         }
     }
 });
-
+export const logout = authSlice.actions.logout;
 export const setDidTryAutoLogin = authSlice.actions.setDidTryAutoLogin;
 export const authenticate = authSlice.actions.authenticate;
 export default authSlice.reducer;

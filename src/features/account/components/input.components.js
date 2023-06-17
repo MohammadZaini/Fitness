@@ -5,7 +5,7 @@ import { colors } from "../../../infratructure/theme/colors";
 import { fonts } from "../../../infratructure/theme/fonts";
 
 export const Input = props => {
-    const [value, setValue] = useState("");
+    const [value, setValue] = useState(props.initialValue);
 
     const onChangeText = text => {
         setValue(text);

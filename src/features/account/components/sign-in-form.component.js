@@ -1,4 +1,4 @@
-import React, { useCallback, useReducer } from "react";
+import React, { useCallback, useEffect, useReducer } from "react";
 import { Input } from "./input.components";
 import { reducer } from "../../../utils/reducers/form-reducer";
 import { InputValidation } from "../../../utils/actions/form-actions";
@@ -9,11 +9,13 @@ import { useState } from "react";
 import { ActivityIndicator } from "react-native-paper";
 import { colors } from "../../../infratructure/theme/colors";
 
+const isTest = true
+
 const initialState = {
 
     inputValues: {
-        email: "",
-        password: ""
+        email: isTest ? "zaini@outlook.com" : "",
+        password: isTest ? "zaini123" : ""
     },
 
     inputValidities: {
@@ -26,12 +28,19 @@ const initialState = {
         password: "grey"
     },
 
-    formIsValid: false
+    formIsValid: isTest
 };
 export const SignInForm = props => {
     const [formState, dispatchFormState] = useReducer(reducer, initialState);
     const [isLoading, setIsloading] = useState(false);
+    const [error, setError] = useState("");
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        if (error) {
+            Alert.alert("An error occured", error)
+        };
+    }, [error])
 
     const onChangedHandler = useCallback((inputId, inputValue) => {
         const result = InputValidation(inputId, inputValue);
@@ -46,7 +55,7 @@ export const SignInForm = props => {
                 formState.inputValues.email,
                 formState.inputValues.password
             );
-
+            setError(null);
             await dispatch(action);
             setIsloading(false);
         } catch (error) {
@@ -68,6 +77,7 @@ export const SignInForm = props => {
                 autoCapitalize='none'
                 autoCorrect={false}
                 color={formState.inputIsValidColor["email"]}
+                initialValue={formState.inputValues.email}
             />
 
             <Input
@@ -77,6 +87,7 @@ export const SignInForm = props => {
                 errorText={formState.inputValidities["password"]}
                 secureTextEntry
                 color={formState.inputIsValidColor["password"]}
+                initialValue={formState.inputValues.password}
             />
 
             {
@@ -84,7 +95,7 @@ export const SignInForm = props => {
                     <ActivityIndicator size="small" color={colors.primary} style={{ marginTop: 20 }} /> :
                     <SubmitButton
                         title="Sign In"
-                        isEnabled={formState.formIsValid}
+                        disabled={!formState.formIsValid}
                         onPress={authHandler}
                     />
             }
