@@ -1,5 +1,5 @@
 import React, { useCallback, useReducer, useState } from "react";
-import { Text } from "react-native";
+import { ScrollView, Text } from "react-native";
 import { InputValidation } from "../../../utils/actions/form-actions";
 import { reducer } from "../../../utils/reducers/form-reducer";
 import { Input } from "../../account/components/input.components";
@@ -96,9 +96,13 @@ const SettingsScreen = () => {
     };
 
     return (
-        <View style={{ justifyContent: 'center', alignItems: 'center' }} >
+        <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }} >
 
-            <ProfileImage size={80} />
+            <ProfileImage
+                size={80}
+                userId={userData.userId}
+                uri={userData.profilePicture}
+            />
 
             <Input
                 id="firstName"
@@ -183,7 +187,7 @@ const SettingsScreen = () => {
                 color={colors.error}
                 onPress={() => dispatch(userLogout())}
             />
-        </View>
+        </ScrollView>
     );
 };
 

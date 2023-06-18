@@ -103,9 +103,10 @@ export const userLogout = () => {
 }
 
 export const updatedSignedInUserData = async (userId, newData) => {
-    const firstLast = `${newData.firstName} ${newData.lastName}`.toLowerCase();
-
-    newData.firstLast = firstLast;
+    if (newData.firstLast && newData.lastName) {
+        const firstLast = `${newData.firstName} ${newData.lastName}`.toLowerCase();
+        newData.firstLast = firstLast;
+    };
 
     const app = getFirebaseApp();
     const dbRef = ref(getDatabase(app));
