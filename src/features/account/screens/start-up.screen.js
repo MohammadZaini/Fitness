@@ -19,7 +19,7 @@ const StartUpScreen = () => {
                 console.log("failed");
                 dispatch(setDidTryAutoLogin());
                 return;
-            }
+            };
 
             const parsedData = JSON.parse(storedAuthInfo);
             const { token, userId, expiryDate: expirationTime } = parsedData;
@@ -28,7 +28,7 @@ const StartUpScreen = () => {
             if (expiryDate <= new Date() || !token || !userId) {
                 dispatch(setDidTryAutoLogin());
                 return;
-            }
+            };
 
             const userData = await getUserData(userId);
             dispatch(authenticate(token, userData))
@@ -41,7 +41,7 @@ const StartUpScreen = () => {
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} >
             <ActivityIndicator size="large" color={colors.primary} />
         </View>
-    )
+    );
 };
 
 export default StartUpScreen;

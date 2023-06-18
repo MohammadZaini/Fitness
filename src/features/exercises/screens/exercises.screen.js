@@ -1,9 +1,12 @@
 import React from "react";
-import { Button, Text } from "react-native";
+import { View } from "react-native";
+import { Button, ImageBackground, Text } from "react-native";
 
 const ExersicesScreen = props => {
     return (
-        <Text>Exersices</Text>
+        <View>
+            <ImageBackground source={require("../../../../assets/images/chat-background.jpg")} style={{ height: "100%", width: "100%" }} />
+        </View>
     );
 };
 

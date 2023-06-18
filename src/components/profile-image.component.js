@@ -7,13 +7,19 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { styled } from "styled-components";
 import { launchImagePicker, uploadImageAsync } from "../utils/image-picker-helper";
 import { updatedSignedInUserData } from "../utils/actions/auth-actions";
+import { updateLoggedInUserData } from "../../store/auth-slice";
+import { useDispatch } from "react-redux";
+import { ActivityIndicator } from "react-native-paper";
 
 export const ProfileImage = props => {
+    const dispatch = useDispatch()
+
     const source = props.uri ? { uri: props.uri } : userImage;
 
     const userId = props.userId;
 
     const [image, setImage] = useState(source);
+    const [isLoading, setIsloading] = useState(false);
 
     const pickImage = async () => {
 
@@ -22,13 +28,19 @@ export const ProfileImage = props => {
 
             if (!tempUri) return;
 
+            setIsloading(true);
             const uploadUrl = await uploadImageAsync(tempUri);
+            setIsloading(false);
 
             if (!uploadUrl) {
                 throw new Error("Could not upload image")
             }
 
-            await updatedSignedInUserData(userId, { profilePicture: uploadUrl });
+            const newData = { profilePicture: uploadUrl }
+
+            await updatedSignedInUserData(userId, newData);
+            dispatch(updateLoggedInUserData({ newData }));
+
 
             setImage({ uri: uploadUrl });
         } catch (error) {
@@ -38,9 +50,17 @@ export const ProfileImage = props => {
 
     return (
         <TouchableOpacity onPress={pickImage} >
-            <Image source={image} style={{ ...styles.image, ...{ height: props.size, width: props.size } }} />
+
+            {
+                isLoading ?
+                    <View height={props.size} width={props.size} style={{ alignItems: 'center', justifyContent: 'center' }} >
+                        <ActivityIndicator size="small" color={colors.primary} />
+                    </View> :
+                    <Image source={image} style={{ ...styles.image, ...{ height: props.size, width: props.size } }} />
+            }
+
             <ShowIconContainer  >
-                <MaterialIcons name="edit" size={24} color={"black"} style={styles.icon} />
+                <MaterialIcons name="edit" size={20} color={"black"} style={styles.icon} />
             </ShowIconContainer>
         </TouchableOpacity>
     );
@@ -63,5 +83,5 @@ const ShowIconContainer = styled.View`
     right: 0;
     background-color: ${colors.lightGrey};
     border-radius: 20px;
-    padding: 8px;
+    padding: 7px;
 `;

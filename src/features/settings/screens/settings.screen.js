@@ -70,7 +70,7 @@ const SettingsScreen = () => {
         try {
             setIsloading(true)
             await updatedSignedInUserData(userData.userId, updatedValues);
-            dispatch(updateLoggedInUserData({ newData: updatedValues }))
+            dispatch(updateLoggedInUserData({ newData: updatedValues }));
 
             setShowSuccessMessage("Saved!");
 
@@ -83,8 +83,8 @@ const SettingsScreen = () => {
         } catch (error) {
             console.log(error);
             setIsloading(false)
-        }
-    }
+        };
+    };
 
     const hasChanges = () => {
         const currentValues = formState.inputValues;

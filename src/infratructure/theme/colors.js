@@ -5,4 +5,6 @@ export const colors = {
     disabledButton: "#D3D3D3",
     textColor: "#1c1e21",
     lightGrey: "#bdc3c7",
-};
+    veryLightBlue: "#C5E3EC",
+    extraLightGrey: "#ededed",
+}; 

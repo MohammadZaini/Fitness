@@ -11,13 +11,14 @@ const Tab = createBottomTabNavigator();
 
 const TabNavigator = () => {
     return (
-        <Tab.Navigator>
+        <Tab.Navigator screenOptions={{ headerShown: false }}>
             <Tab.Screen
                 name="Exersices"
                 component={ExersicesScreen}
                 options={{
                     tabBarIcon: () => <FontAwesome5 name="dumbbell" size={24} color={colors.primary} />,
-                    tabBarActiveTintColor: colors.primary
+                    tabBarActiveTintColor: colors.primary,
+                    tabBarInactiveTintColor: colors.veryLightBlue,
                 }} />
 
             <Tab.Screen
@@ -26,7 +27,9 @@ const TabNavigator = () => {
                 options={{
                     tabBarIcon: () => <Ionicons name="md-chatbubbles-outline" size={24} color={colors.primary} />,
                     tabBarLabel: "Chats",
-                    tabBarActiveTintColor: colors.primary
+                    tabBarActiveTintColor: colors.primary,
+                    tabBarInactiveTintColor: colors.veryLightBlue,
+                    headerShown: true
                 }} />
 
             <Tab.Screen
@@ -34,7 +37,8 @@ const TabNavigator = () => {
                 component={SettingsScreen}
                 options={{
                     tabBarIcon: () => <Ionicons name="settings-outline" size={24} color={colors.primary} />,
-                    tabBarActiveTintColor: colors.primary
+                    tabBarActiveTintColor: colors.primary,
+                    tabBarInactiveTintColor: colors.veryLightBlue
                 }} />
         </Tab.Navigator>
     );
