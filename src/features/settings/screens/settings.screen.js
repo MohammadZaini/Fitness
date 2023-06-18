@@ -15,6 +15,7 @@ import { ActivityIndicator } from "react-native-paper";
 import { updateLoggedInUserData } from "../../../../store/auth-slice";
 import { SuccessMessageContainer } from "../components/settings.styles";
 import { ProfileImage } from "../../../components/profile-image.component";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 
 
@@ -96,99 +97,101 @@ const SettingsScreen = () => {
     };
 
     return (
-        <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }} >
+        <SafeAreaView>
+            <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }} >
 
-            <ProfileImage
-                size={80}
-                userId={userData.userId}
-                uri={userData.profilePicture}
-                showEditButton={true}
-            />
+                <ProfileImage
+                    size={80}
+                    userId={userData.userId}
+                    uri={userData.profilePicture}
+                    showEditButton={true}
+                />
 
-            <Input
-                id="firstName"
-                label="First name"
-                labelColor={formState.inputIsValidColor["firstName"]}
-                iconPack={Ionicons}
-                icon={"ios-person"}
-                iconColor={colors.primary}
-                onInputChanged={onChangedHandler}
-                autoCapitalize='none'
-                autoCorrect={false}
-                errorText={formState.inputValidities["firstName"]}
-                color={formState.inputIsValidColor["firstName"]}
-                initialValue={userData.firstName}
-            />
+                <Input
+                    id="firstName"
+                    label="First name"
+                    labelColor={formState.inputIsValidColor["firstName"]}
+                    iconPack={Ionicons}
+                    icon={"ios-person"}
+                    iconColor={colors.primary}
+                    onInputChanged={onChangedHandler}
+                    autoCapitalize='none'
+                    autoCorrect={false}
+                    errorText={formState.inputValidities["firstName"]}
+                    color={formState.inputIsValidColor["firstName"]}
+                    initialValue={userData.firstName}
+                />
 
-            <Input
-                id="lastName"
-                label="Last name"
-                labelColor={formState.inputIsValidColor["lastName"]}
-                iconPack={Ionicons}
-                icon={"ios-person"}
-                iconColor={colors.primary}
-                onInputChanged={onChangedHandler}
-                autoCapitalize='none'
-                autoCorrect={false}
-                errorText={formState.inputValidities["lastName"]}
-                color={formState.inputIsValidColor["lastName"]}
-                initialValue={userData.lastName}
-            />
+                <Input
+                    id="lastName"
+                    label="Last name"
+                    labelColor={formState.inputIsValidColor["lastName"]}
+                    iconPack={Ionicons}
+                    icon={"ios-person"}
+                    iconColor={colors.primary}
+                    onInputChanged={onChangedHandler}
+                    autoCapitalize='none'
+                    autoCorrect={false}
+                    errorText={formState.inputValidities["lastName"]}
+                    color={formState.inputIsValidColor["lastName"]}
+                    initialValue={userData.lastName}
+                />
 
-            <Input
-                id="email"
-                label="Email"
-                labelColor={formState.inputIsValidColor["email"]}
-                iconPack={MaterialIcons}
-                icon={"email"}
-                iconColor={colors.primary}
-                onInputChanged={onChangedHandler}
-                autoCapitalize='none'
-                autoCorrect={false}
-                errorText={formState.inputValidities["email"]}
-                keyboardType="email-address"
-                color={formState.inputIsValidColor["email"]}
-                initialValue={userData.email}
-            />
+                <Input
+                    id="email"
+                    label="Email"
+                    labelColor={formState.inputIsValidColor["email"]}
+                    iconPack={MaterialIcons}
+                    icon={"email"}
+                    iconColor={colors.primary}
+                    onInputChanged={onChangedHandler}
+                    autoCapitalize='none'
+                    autoCorrect={false}
+                    errorText={formState.inputValidities["email"]}
+                    keyboardType="email-address"
+                    color={formState.inputIsValidColor["email"]}
+                    initialValue={userData.email}
+                />
 
-            <Input
-                id="about"
-                label="About"
-                labelColor={formState.inputIsValidColor["about"]}
-                iconPack={Entypo}
-                icon={"lock"}
-                iconColor={colors.primary}
-                onInputChanged={onChangedHandler}
-                autoCapitalize='none'
-                autoCorrect={false}
-                errorText={formState.inputValidities["about"]}
-                color={formState.inputIsValidColor["about"]}
-                initialValue={userData.about}
-            />
+                <Input
+                    id="about"
+                    label="About"
+                    labelColor={formState.inputIsValidColor["about"]}
+                    iconPack={Entypo}
+                    icon={"lock"}
+                    iconColor={colors.primary}
+                    onInputChanged={onChangedHandler}
+                    autoCapitalize='none'
+                    autoCorrect={false}
+                    errorText={formState.inputValidities["about"]}
+                    color={formState.inputIsValidColor["about"]}
+                    initialValue={userData.about}
+                />
 
-            {
-                showSuccessMessage &&
-                <SuccessMessageContainer >
-                    <Text>{showSuccessMessage}</Text>
-                </SuccessMessageContainer >
-            }
+                {
+                    showSuccessMessage &&
+                    <SuccessMessageContainer >
+                        <Text>{showSuccessMessage}</Text>
+                    </SuccessMessageContainer >
+                }
 
-            {
-                isLoading ?
-                    <ActivityIndicator size="small" color={colors.primary} style={{ marginTop: 20 }} /> :
-                    hasChanges() && <SubmitButton
-                        title="Save"
-                        disabled={!formState.formIsValid}
-                        onPress={saveHandler}
-                    />
-            }
+                {
+                    isLoading ?
+                        <ActivityIndicator size="small" color={colors.primary} style={{ marginTop: 20 }} /> :
+                        hasChanges() && <SubmitButton
+                            title="Save"
+                            disabled={!formState.formIsValid}
+                            onPress={saveHandler}
+                        />
+                }
 
-            <SubmitButton
-                title="Log out"
-                color={colors.error}
-                onPress={() => dispatch(userLogout())}
-            />
-        </ScrollView>
+                <SubmitButton
+                    title="Log out"
+                    color={colors.error}
+                    onPress={() => dispatch(userLogout())}
+                />
+            </ScrollView>
+        </SafeAreaView>
     );
 };
 

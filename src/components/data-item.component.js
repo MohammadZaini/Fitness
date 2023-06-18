@@ -78,6 +78,6 @@ export const SubTitle = styled.Text.attrs(props => ({
 }))`
     font-size: 16px;
     letter-spacing: 0.3px;
-    color: ${colors.grey};
+    color: ${colors.lightGrey};
     font-family: ${fonts.body};
 `;

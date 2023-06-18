@@ -10,12 +10,15 @@ import { searchUsers } from "../../../utils/actions/user-actions";
 import { ActivityIndicator } from "react-native-paper";
 import { FlatList } from "react-native";
 import { DataItem } from "../../../components/data-item.component";
+import { useSelector } from "react-redux";
 
 const NewChatScreen = props => {
     const [isLoading, setIsloading] = useState(false);
     const [users, setUsers] = useState(); // An object 
     const [noResultsFound, setNoResultsFound] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
+
+    const userData = useSelector(state => state.auth.userData)
 
     useEffect(() => {
         props.navigation.setOptions({
@@ -42,8 +45,8 @@ const NewChatScreen = props => {
             setIsloading(true);
 
             const usersResult = await searchUsers(searchTerm);
-
-            setUsers(usersResult)
+            delete usersResult[userData.userId];
+            setUsers(usersResult);
 
             if (Object.keys(usersResult).length === 0) {
                 setNoResultsFound(true);
@@ -57,6 +60,10 @@ const NewChatScreen = props => {
         return () => clearTimeout(delaySearch);
 
     }, [searchTerm]);
+
+    const userPressed = (userId) => {
+        props.navigation.navigate("ChatList", { selcetedUserId: userId })
+    }
 
     return (
         <PageContainer >
@@ -86,6 +93,7 @@ const NewChatScreen = props => {
                                 uri={userData.profilePicture}
                                 title={userData.firstName}
                                 subTitle={userData.about}
+                                onPress={() => userPressed(userId)}
                             />
 
                         )

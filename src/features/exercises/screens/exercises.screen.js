@@ -5,7 +5,6 @@ import { Button, ImageBackground, Text } from "react-native";
 const ExersicesScreen = props => {
     return (
         <View>
-            <ImageBackground source={require("../../../../assets/images/chat-background.jpg")} style={{ height: "100%", width: "100%" }} />
         </View>
     );
 };
