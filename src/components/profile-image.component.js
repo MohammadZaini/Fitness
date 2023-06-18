@@ -18,6 +18,8 @@ export const ProfileImage = props => {
 
     const userId = props.userId;
 
+    const showEditButton = props.showEditButton && props.showEditButton === true
+
     const [image, setImage] = useState(source);
     const [isLoading, setIsloading] = useState(false);
 
@@ -48,8 +50,9 @@ export const ProfileImage = props => {
         };
     };
 
+    const Container = showEditButton ? TouchableOpacity : View;
     return (
-        <TouchableOpacity onPress={pickImage} >
+        <Container onPress={pickImage} >
 
             {
                 isLoading ?
@@ -59,10 +62,13 @@ export const ProfileImage = props => {
                     <Image source={image} style={{ ...styles.image, ...{ height: props.size, width: props.size } }} />
             }
 
-            <ShowIconContainer  >
-                <MaterialIcons name="edit" size={20} color={"black"} style={styles.icon} />
-            </ShowIconContainer>
-        </TouchableOpacity>
+            {
+                showEditButton && !isLoading &&
+                <ShowIconContainer  >
+                    <MaterialIcons name="edit" size={20} color={"black"} style={styles.icon} />
+                </ShowIconContainer>
+            }
+        </Container>
     );
 };
 

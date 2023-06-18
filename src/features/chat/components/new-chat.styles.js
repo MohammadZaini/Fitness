@@ -33,3 +33,9 @@ export const DefaultText = styled.Text`
     color: ${colors.textColor};
     letter-spacing: 0.3px;
 `;
+
+export const LoadingContainer = styled.View`
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+`;
