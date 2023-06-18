@@ -14,6 +14,8 @@ import { updatedSignedInUserData, userLogout } from "../../../utils/actions/auth
 import { ActivityIndicator } from "react-native-paper";
 import { updateLoggedInUserData } from "../../../../store/auth-slice";
 import { SuccessMessageContainer } from "../components/settings.styles";
+import { ProfileImage } from "../../../components/profile-image.component";
+
 
 
 const SettingsScreen = () => {
@@ -95,6 +97,9 @@ const SettingsScreen = () => {
 
     return (
         <View style={{ justifyContent: 'center', alignItems: 'center' }} >
+
+            <ProfileImage size={80} />
+
             <Input
                 id="firstName"
                 label="First name"
