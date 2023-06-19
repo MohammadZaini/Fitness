@@ -1,5 +1,4 @@
 import React from "react";
-import { View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { colors } from "../../../infratructure/theme/colors";
 import { useEffect } from "react";
@@ -7,6 +6,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch } from "react-redux";
 import { authenticate, setDidTryAutoLogin } from "../../../../store/auth-slice";
 import { getUserData } from "../../../utils/actions/user-actions";
+import { styled } from "styled-components";
 
 const StartUpScreen = () => {
     const dispatch = useDispatch();
@@ -31,17 +31,24 @@ const StartUpScreen = () => {
             };
 
             const userData = await getUserData(userId);
-            dispatch(authenticate(token, userData))
+            dispatch(authenticate(token, userData));
+            console.log("start up screen");
         };
 
         tryAutoLogin();
     }, []);
 
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} >
+        <LoadingContainer >
             <ActivityIndicator size="large" color={colors.primary} />
-        </View>
+        </LoadingContainer>
     );
 };
 
 export default StartUpScreen;
+
+const LoadingContainer = styled.View`
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+`;

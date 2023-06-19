@@ -71,10 +71,10 @@ export const SignIn = (email, password) => {
                     dispatch(userLogout());
                 }, milliSecondsUntilExpiry);
 
-                const userData = await getUserData(uid)
+                const userData = await getUserData(uid);
                 dispatch(authenticate({ token: accessToken, userData }));
 
-                saveDatatoAsyncStorage(accessToken, uid, expiryDate)
+                saveDatatoAsyncStorage(accessToken, uid, expiryDate);
             })
             .catch((error) => {
                 const errorCode = error.code;
