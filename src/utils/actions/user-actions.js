@@ -18,9 +18,8 @@ export const getUserData = async (userId) => {
 };
 
 export const searchUsers = async (queryText) => {
-
+    const searchTerm = queryText.toLowerCase();
     try {
-        const searchTerm = queryText.toLowerCase();
 
         const app = getFirebaseApp();
         const dbRef = ref(getDatabase(app));
@@ -33,6 +32,8 @@ export const searchUsers = async (queryText) => {
         if (snapshot.exists()) {
             return snapshot.val();
         };
+
+        return {};
 
     } catch (error) {
         console.log(error);

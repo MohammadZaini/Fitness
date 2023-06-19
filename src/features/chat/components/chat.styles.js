@@ -28,7 +28,7 @@ export const BottomView = styled.View`
     padding: 8px;
 `;
 
-export const SendIcon = styled(Feather).attrs({
+export const SendMessageIcon = styled(Feather).attrs({
     name: "send",
     size: 20,
     color: "white"
@@ -36,8 +36,8 @@ export const SendIcon = styled(Feather).attrs({
     border-width: 1px;
     border-radius: 50px; 
     padding: 7px;
-    background-color: ${colors.blue}; 
-    border-color: ${colors.blue};
+    background-color: ${colors.primary}; 
+    border-color: ${colors.primary};
 `;
 
 export const SendImageIcon = styled(Feather).attrs({

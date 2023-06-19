@@ -14,7 +14,7 @@ import { setStoredUsers } from "../../../../store/user-slice";
 
 const NewChatScreen = props => {
     const [isLoading, setIsloading] = useState(false);
-    const [users, setUsers] = useState(); // An object 
+    const [users, setUsers] = useState(); // An object of users data
     const [noResultsFound, setNoResultsFound] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -50,8 +50,6 @@ const NewChatScreen = props => {
             delete usersResult[userData.userId];
             setUsers(usersResult);
 
-
-
             if (Object.keys(usersResult).length === 0) {
                 setNoResultsFound(true);
             } else {
@@ -69,7 +67,7 @@ const NewChatScreen = props => {
 
     const userPressed = (userId) => {
         props.navigation.navigate("ChatList", { selcetedUserId: userId })
-    }
+    };
 
     return (
         <PageContainer >
@@ -101,10 +99,7 @@ const NewChatScreen = props => {
                                 subTitle={userData.about}
                                 onPress={() => userPressed(userId)}
                             />
-
                         )
-
-
                     }}
 
                 />

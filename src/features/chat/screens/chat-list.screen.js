@@ -26,9 +26,12 @@ const ChatListScreen = props => {
     useEffect(() => {
         if (!selcetedUser) return;
 
-        const chatUsers = [selcetedUser, userData.userId]
+        const chatUsers = [selcetedUser, userData.userId];
+        const navigationProps = {
+            newChatData: { users: chatUsers }
+        };
 
-        props.navigation.navigate("Chat", { users: chatUsers })
+        props.navigation.navigate("Chat", navigationProps)
     }, [props.route?.params]);
 
     return (
