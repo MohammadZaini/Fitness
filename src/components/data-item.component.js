@@ -1,6 +1,6 @@
 import React from "react";
 import { ProfileImage } from "./profile-image.component";
-import { Text } from "react-native";
+import { Text, View } from "react-native";
 import { TouchableWithoutFeedback } from "react-native";
 import { styled } from "styled-components";
 import { colors } from "../infratructure/theme/colors";
@@ -13,16 +13,20 @@ export const DataItem = props => {
             <Container>
 
                 <ProfileImage
-                    size={50}
+                    size={40}
                     uri={props.uri} />
 
                 <TextContainer>
 
-                    <Text
-                        style={{ ...styles.title }}
-                        numberOfLines={1}
-                    >{props.title}
-                    </Text>
+                    <View style={{ flexDirection: 'row' }} >
+                        <Text
+                            style={{ ...styles.title }}
+                            numberOfLines={1}
+                        >{props.title}
+                        </Text>
+
+                        <View style={{ backgroundColor: colors.primary, width: 20, borderRadius: 50, alignItems: 'center' }} ><Text>3</Text></View>
+                    </View>
 
                     {
                         props.subTitle &&
@@ -54,7 +58,9 @@ const styles = StyleSheet.create({
         fontFamily: fonts.body,
         fontWeight: "bold",
         fontSize: 16,
-        letterSpacing: 0.3
+        letterSpacing: 0.3,
+        flex: 1
+
     }
 })
 
@@ -76,7 +82,7 @@ export const TextContainer = styled.View`
 export const SubTitle = styled.Text.attrs(props => ({
     numberOfLines: props.numberOfLines,
 }))`
-    font-size: 16px;
+    font-size: 14px;
     letter-spacing: 0.3px;
     color: ${colors.lightGrey};
     font-family: ${fonts.body};

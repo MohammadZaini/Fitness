@@ -6,17 +6,22 @@ import { useSelector } from "react-redux";
 import { Text } from "react-native";
 import { PageContainer } from "../../../components/page-container";
 import { Bubble } from "../components/bubble";
-import { createChat } from "../../../utils/actions/chat-actions";
+import { createChat, sendTextMessage } from "../../../utils/actions/chat-actions";
 
 const ChatScreen = props => {
-    const userData = useSelector(state => state.auth.userData);
-    const storedUsers = useSelector(state => state.users.storedUsers);
-
     const [chatUsers, setChatUsers] = useState([]);
     const [messageText, setMessageText] = useState("");
+    const [errorBannerText, setErrorBannerText] = useState("");
     const [chatId, setChatId] = useState(props.route?.params?.chatId) // to check wether it's a new chat or not
 
-    const chatData = props.route?.params?.newChatData;
+    const userData = useSelector(state => state.auth.userData);
+    const storedUsers = useSelector(state => state.users.storedUsers);
+    const storedChats = useSelector(state => state.chats.chatsData);
+    const chatMessages = useSelector(state => state.messages.messagesData);
+
+
+    const chatData = (chatId && storedChats[chatId]) || props.route?.params?.newChatData;
+    console.log(JSON.stringify(chatMessages[chatId], 0, 2));
 
     const getChatTilteFromName = () => {
         const otherUserId = chatUsers.find(uid => uid !== userData.userId);
@@ -40,10 +45,16 @@ const ChatScreen = props => {
                 // create new chat
                 id = await createChat(userData.userId, props.route.params.newChatData);
                 setChatId(id)
-
             }
+
+            await sendTextMessage(chatId, userData.userId, messageText)
+
         } catch (error) {
             console.log(error);
+            setErrorBannerText("Message failed to send");
+            setTimeout(() => {
+                setErrorBannerText("");
+            }, 5000)
         }
         setMessageText("");
     }, [messageText, chatId]);
@@ -57,6 +68,11 @@ const ChatScreen = props => {
                         !chatId &&
 
                         <Bubble text="This a new chat. Say hi!" type="system" />
+                    }
+
+                    {
+                        errorBannerText &&
+                        <Bubble type="error" text={errorBannerText} />
                     }
                 </PageContainer>
             </ChatsBackground>
