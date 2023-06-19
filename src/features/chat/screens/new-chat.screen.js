@@ -5,12 +5,12 @@ import { FontAwesome } from '@expo/vector-icons';
 import { colors } from "../../../infratructure/theme/colors";
 import { PageContainer } from "../../../components/page-container";
 import { DefaultText, LoadingContainer, SearchBarContainer, SearchInput, UsersContainer } from "../components/new-chat.styles";
-import { Text, View } from "react-native";
 import { searchUsers } from "../../../utils/actions/user-actions";
 import { ActivityIndicator } from "react-native-paper";
 import { FlatList } from "react-native";
 import { DataItem } from "../../../components/data-item.component";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setStoredUsers } from "../../../../store/user-slice";
 
 const NewChatScreen = props => {
     const [isLoading, setIsloading] = useState(false);
@@ -19,6 +19,8 @@ const NewChatScreen = props => {
     const [searchTerm, setSearchTerm] = useState("");
 
     const userData = useSelector(state => state.auth.userData)
+
+    const dispatch = useDispatch();
 
     useEffect(() => {
         props.navigation.setOptions({
@@ -48,10 +50,14 @@ const NewChatScreen = props => {
             delete usersResult[userData.userId];
             setUsers(usersResult);
 
+
+
             if (Object.keys(usersResult).length === 0) {
                 setNoResultsFound(true);
             } else {
                 setNoResultsFound(false);
+
+                dispatch(setStoredUsers({ newUsers: usersResult }))
             };
 
             setIsloading(false)
