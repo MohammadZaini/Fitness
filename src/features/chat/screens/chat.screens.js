@@ -7,6 +7,7 @@ import { Text } from "react-native";
 import { PageContainer } from "../../../components/page-container";
 import { Bubble } from "../components/bubble";
 import { createChat, sendTextMessage } from "../../../utils/actions/chat-actions";
+import { FlatList } from "react-native";
 
 const ChatScreen = props => {
     const [chatUsers, setChatUsers] = useState([]);
@@ -17,11 +18,30 @@ const ChatScreen = props => {
     const userData = useSelector(state => state.auth.userData);
     const storedUsers = useSelector(state => state.users.storedUsers);
     const storedChats = useSelector(state => state.chats.chatsData);
-    const chatMessages = useSelector(state => state.messages.messagesData);
+    const chatMessages = useSelector(state => {
+        if (!chatId) return [];
+
+        const chatMessagesData = state.messages.messagesData[chatId];
+
+        if (!chatMessagesData) return [];
+
+        const messageList = [];
+
+        for (const key in chatMessagesData) {
+            const message = chatMessagesData[key];
+
+            messageList.push({
+                key,
+                ...message
+            })
+        }
+
+        return messageList;
+    });
 
 
     const chatData = (chatId && storedChats[chatId]) || props.route?.params?.newChatData;
-    console.log(JSON.stringify(chatMessages[chatId], 0, 2));
+    // console.log(JSON.stringify(chatMessages[chatId], 0, 2));
 
     const getChatTilteFromName = () => {
         const otherUserId = chatUsers.find(uid => uid !== userData.userId);
@@ -62,7 +82,7 @@ const ChatScreen = props => {
     return (
         <SafeAreaView edges={['bottom']} style={{ flex: 1 }}  >
             <ChatsBackground>
-                <PageContainer style={{ alignItems: 'center' }} >
+                <PageContainer  >
 
                     {
                         !chatId &&
@@ -73,6 +93,24 @@ const ChatScreen = props => {
                     {
                         errorBannerText &&
                         <Bubble type="error" text={errorBannerText} />
+                    }
+
+                    {
+                        chatId &&
+                        <FlatList
+                            data={chatMessages}
+                            renderItem={(itemData) => {
+                                const messages = itemData.item;
+
+                                const isOwnMessage = messages.sentBy === userData.userId;
+
+                                const messageType = isOwnMessage ? "myMessage" : "theirMessage";
+                                return <Bubble
+                                    text={messages.text}
+                                    type={messageType}
+                                />
+                            }}
+                        />
                     }
                 </PageContainer>
             </ChatsBackground>

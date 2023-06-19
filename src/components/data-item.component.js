@@ -25,7 +25,14 @@ export const DataItem = props => {
                         >{props.title}
                         </Text>
 
-                        <View style={{ backgroundColor: colors.primary, width: 20, borderRadius: 50, alignItems: 'center' }} ><Text>3</Text></View>
+                        {
+                            props.unOpenedMessages &&
+                            <View style={{ backgroundColor: colors.primary, width: 20, borderRadius: 50, alignItems: 'center' }} >
+                                <Text>3</Text>
+                            </View>
+                        }
+
+
                     </View>
 
                     {

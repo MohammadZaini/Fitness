@@ -68,6 +68,7 @@ const ChatListScreen = props => {
                         title={title}
                         subTitle={subTitle}
                         onPress={() => props.navigation.navigate("Chat", { chatId })}
+                        unOpenedMessages="2"
                     />
                 }}
             />
