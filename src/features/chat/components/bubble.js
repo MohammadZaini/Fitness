@@ -4,7 +4,7 @@ import { colors } from "../../../infratructure/theme/colors";
 import { fonts } from "../../../infratructure/theme/fonts";
 import { Text } from "react-native";
 import { StyleSheet } from "react-native";
-import { FontAwesome5 } from '@expo/vector-icons';
+import { Octicons } from '@expo/vector-icons';
 import { TouchableWithoutFeedback } from "react-native";
 import { Menu, MenuTrigger, MenuOptions, MenuOption } from "react-native-popup-menu";
 import uuid from "react-native-uuid"
@@ -13,9 +13,12 @@ import { MenuItem } from "./menu-item.component";
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { starMessage } from "../../../utils/actions/chat-actions";
+import { useSelector } from "react-redux";
 
 export const Bubble = props => {
     const { text, type, date, userId, chatId, messageId } = props;
+
+    const starredMessages = useSelector(state => state.messages.starredMessages[chatId])
 
     function formatDateAmPm(dateString) {
         const date = new Date(dateString);
@@ -31,6 +34,8 @@ export const Bubble = props => {
     let Container = View;
     const menuRef = useRef(null);
     const id = useRef(uuid.v4())
+
+    let isUserMessage = false;
 
     const dateString = formatDateAmPm(date)
     const bubbleStyle = { ...styles.container };
@@ -52,6 +57,7 @@ export const Bubble = props => {
             wrapperStyle.justifyContent = 'flex-end';
             bubbleStyle.borderBottomRightRadius = 1;
             Container = TouchableWithoutFeedback;
+            isUserMessage = true;
             break;
 
         case "theirMessage":
@@ -59,6 +65,7 @@ export const Bubble = props => {
             wrapperStyle.justifyContent = 'flex-start';
             bubbleStyle.borderBottomLeftRadius = 1;
             Container = TouchableWithoutFeedback;
+            isUserMessage = true;
             break;
 
         default:
@@ -73,6 +80,8 @@ export const Bubble = props => {
         };
     };
 
+    const isStarred = isUserMessage && starredMessages[messageId] !== undefined
+
     return (
         <View style={wrapperStyle}  >
             <Container onLongPress={() => menuRef.current.props.ctx.menuActions.openMenu(id.current)} >
@@ -83,7 +92,13 @@ export const Bubble = props => {
                     {/* <FontAwesome5 name="check-double" size={10} color={colors.primary} /> */}
                     {
                         date &&
-                        <Text style={styles.time}>{dateString}</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                            {
+                                isStarred &&
+                                <Octicons name="star-fill" size={14} color={"yellow"} style={{ marginRight: 10, }} />
+                            }
+                            <Text style={styles.time}>{dateString}</Text>
+                        </View>
                     }
 
                     <Menu name={id.current} ref={ref => menuRef.current = ref} >
@@ -91,9 +106,9 @@ export const Bubble = props => {
 
                         <MenuOptions optionsContainerStyle={{ borderRadius: 20, backgroundColor: colors.lightBlue }}>
 
-                            <MenuItem text="Copy to clipboard" onSelect={() => copyToClipBoard(text)} iconPack={Ionicons} icon="ios-copy-outline" color={colors.primary} />
-                            <MenuItem text="Star message" onSelect={() => starMessage(userId, chatId, messageId)} icon="star" color={colors.primary} />
-                            <MenuItem text="Reply to message" onSelect={() => copyToClipBoard(text)} iconPack={MaterialIcons} icon="reply" color={colors.primary} />
+                            <MenuItem text="Copy to clipboard" onSelect={() => copyToClipBoard(text)} iconPack={Ionicons} icon="ios-copy-outline" />
+                            <MenuItem text={`${isStarred ? "Unstar" : "Star"} message`} onSelect={() => starMessage(userId, chatId, messageId)} iconPack={Octicons} icon={`${isStarred ? "star-fill" : "star"}`} />
+                            <MenuItem text="Reply to message" onSelect={() => copyToClipBoard(text)} iconPack={MaterialIcons} icon="reply" />
 
                         </MenuOptions>
 

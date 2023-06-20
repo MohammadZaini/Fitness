@@ -12,7 +12,7 @@ import { ActivityIndicator } from "react-native-paper";
 import { colors } from "../theme/colors";
 import { styled } from "styled-components";
 import { setStoredUsers } from "../../../store/user-slice";
-import { setChatMessages } from "../../../store/messages-slice";
+import { setChatMessages, setStarredMessage } from "../../../store/messages-slice";
 
 const Stack = createStackNavigator();
 
@@ -96,6 +96,14 @@ const StackNavigator = () => {
                 }
             };
         });
+
+        const userStarredMessages = child(dbRef, `starredMessages/${userData.userId}`);
+        refs.push(userStarredMessages);
+
+        onValue(userStarredMessages, querySnapshot => {
+            const starredMessages = querySnapshot.val() ?? {};
+            dispatch(setStarredMessage({ starredMessages }))
+        })
 
         return () => {
             console.log("Unsubscribing to firebase listener");
