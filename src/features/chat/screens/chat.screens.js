@@ -1,9 +1,8 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BottomView, ChatInput, ChatsBackground, SendIcon, SendImageIcon, SendMessageIcon, TakePictureIcon } from "../components/chat.styles";
 import { useSelector } from "react-redux";
-import { Text } from "react-native";
 import { PageContainer } from "../../../components/page-container";
 import { Bubble } from "../components/bubble";
 import { createChat, sendTextMessage } from "../../../utils/actions/chat-actions";
@@ -39,9 +38,10 @@ const ChatScreen = props => {
         return messageList;
     });
 
+    const flatRef = useRef();
+
 
     const chatData = (chatId && storedChats[chatId]) || props.route?.params?.newChatData;
-    // console.log(JSON.stringify(chatMessages[chatId], 0, 2));
 
     const getChatTilteFromName = () => {
         const otherUserId = chatUsers.find(uid => uid !== userData.userId);
@@ -98,7 +98,11 @@ const ChatScreen = props => {
                     {
                         chatId &&
                         <FlatList
+                            ref={ref => flatRef.current = ref}
+                            onContentSizeChange={() => chatMessages.length > 0 && flatRef.current.scrollToEnd({ animated: true })}
+                            showsVerticalScrollIndicator={false}
                             data={chatMessages}
+                            // keyExtractor={(id, index) => id.key + index.toString()}
                             renderItem={(itemData) => {
                                 const messages = itemData.item;
 
@@ -108,6 +112,10 @@ const ChatScreen = props => {
                                 return <Bubble
                                     text={messages.text}
                                     type={messageType}
+                                    date={messages.sentAt}
+                                    userId={userData.userId}
+                                    chatId={chatId}
+                                    messageId={messages.key}
                                 />
                             }}
                         />

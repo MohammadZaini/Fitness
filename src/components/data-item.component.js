@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ProfileImage } from "./profile-image.component";
 import { Text, View } from "react-native";
 import { TouchableWithoutFeedback } from "react-native";
@@ -8,6 +8,7 @@ import { StyleSheet } from "react-native";
 import { fonts } from "../infratructure/theme/fonts";
 
 export const DataItem = props => {
+    // const [navigating, setIsNavigating] = useState(false);
     return (
         <TouchableWithoutFeedback onPress={props.onPress} >
             <Container>
@@ -26,7 +27,7 @@ export const DataItem = props => {
                         </Text>
 
                         {
-                            props.unOpenedMessages &&
+                            !props.unOpenedMessages &&
                             <View style={{ backgroundColor: colors.primary, width: 20, borderRadius: 50, alignItems: 'center' }} >
                                 <Text>3</Text>
                             </View>

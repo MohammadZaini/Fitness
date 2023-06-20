@@ -8,7 +8,6 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
 import { colors } from "../../../infratructure/theme/colors";
 import { useDispatch, useSelector } from "react-redux";
-import { View } from "react-native";
 import { SubmitButton } from "../../../components/submit-button";
 import { updatedSignedInUserData, userLogout } from "../../../utils/actions/auth-actions";
 import { ActivityIndicator } from "react-native-paper";
@@ -16,8 +15,6 @@ import { updateLoggedInUserData } from "../../../../store/auth-slice";
 import { SuccessMessageContainer } from "../components/settings.styles";
 import { ProfileImage } from "../../../components/profile-image.component";
 import { SafeAreaView } from "react-native-safe-area-context";
-
-
 
 const SettingsScreen = () => {
 
@@ -187,7 +184,7 @@ const SettingsScreen = () => {
 
                 <SubmitButton
                     title="Log out"
-                    color={colors.error}
+                    color={colors.red}
                     onPress={() => dispatch(userLogout())}
                 />
             </ScrollView>

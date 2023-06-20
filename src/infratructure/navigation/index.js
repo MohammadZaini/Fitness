@@ -12,18 +12,9 @@ const Navigation = () => {
     return (
         <NavigationContainer>
 
-            {
-                isAuth && < StackNavigator />
-            }
-
-            {
-                !isAuth && didTryAutoLogin && <AuthScreen />
-            }
-
-            {
-                !isAuth && !didTryAutoLogin && <StartUpScreen />
-
-            }
+            {isAuth && <StackNavigator />}
+            {!isAuth && didTryAutoLogin && <AuthScreen />}
+            {!isAuth && !didTryAutoLogin && <StartUpScreen />}
 
         </NavigationContainer>
     )

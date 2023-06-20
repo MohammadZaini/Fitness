@@ -33,6 +33,7 @@ const StartUpScreen = () => {
             const userData = await getUserData(userId);
             dispatch(authenticate(token, userData));
             console.log("start up screen");
+            console.log("userData: " + JSON.stringify(userData, 0, 2));
         };
 
         tryAutoLogin();

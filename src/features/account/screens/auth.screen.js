@@ -18,7 +18,7 @@ const AuthScreen = () => {
 
             <TouchableOpacity onPress={() => setIsSigned(prevState => !prevState)} >
 
-                <Text style={{ color: colors.primary, fontFamily: fonts.body }} >{isSigned ? "Doesn't have an account yet? Sign up" : "Aleady have an account? Sign in"}</Text>
+                <Text style={{ color: colors.primary, fontFamily: fonts.body }} >{isSigned ? "Aleady have an account? Sign in" : "Doesn't have an account yet? Sign up"}</Text>
             </TouchableOpacity>
 
         </SafeAreaView>

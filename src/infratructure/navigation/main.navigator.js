@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { getFirebaseApp } from "../../utils/firebase-helper";
 import { child, get, getDatabase, off, onValue, ref } from "firebase/database";
 import { setChatsData } from "../../../store/chat-slice";
-import { View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { colors } from "../theme/colors";
 import { styled } from "styled-components";
@@ -37,7 +36,7 @@ const StackNavigator = () => {
         const chatsData = {};
         let chatsFoundCount = 0;
 
-        /* When the app loads we retrieve the chat ids (the user is part of ).
+        /* When the app loads we retrieve the chat ids (that the user is part of ).
         Then we loop over them one by one and retreive the actual data for those chats.
         And once we got the chat data for all of the chats that the user's part of, we 
         dispatch that and save the chat data to our state.  
@@ -120,7 +119,7 @@ const StackNavigator = () => {
             </Stack.Group>
 
             <Stack.Group>
-                <Stack.Screen name="Chat" component={ChatScreen} />
+                <Stack.Screen name="Chat" component={ChatScreen} options={{ headerShadowVisible: false }} />
             </Stack.Group>
 
             <Stack.Group screenOptions={{ presentation: 'modal', title: "New chat", headerShadowVisible: false }} >
