@@ -66,7 +66,7 @@ const NewChatScreen = props => {
     }, [searchTerm]);
 
     const userPressed = (userId) => {
-        props.navigation.navigate("Chats", { selcetedUserId: userId })
+        props.navigation.navigate("Chats", { selectedUserId: userId })
     };
 
     return (

@@ -29,7 +29,8 @@ const TabNavigator = () => {
                     tabBarLabel: "Chats",
                     tabBarActiveTintColor: colors.primary,
                     tabBarInactiveTintColor: colors.veryLightBlue,
-                    headerShown: true
+                    headerShown: true,
+                    headerShadowVisible: false
                 }} />
 
             <Tab.Screen

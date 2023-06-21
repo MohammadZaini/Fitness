@@ -8,16 +8,16 @@ import { PageContainer } from "../../../components/page-container";
 
 const ChatListScreen = props => {
 
-    const selcetedUser = props.route?.params?.selcetedUserId;
+    const selectedUser = props.route?.params?.selectedUserId;
     const userData = useSelector(state => state.auth.userData);
-    const userChats = useSelector(state => {
-        const chatsData = state.chats.chatsData;
+    const userChats = useSelector(state => state.chats.chatsData)
 
-        // chat data
-        return Object.values(chatsData).sort((a, b) => {
+    const sortedUserChat = () => {
+        return Object.values(userChats).sort((a, b) => {
             return new Date(b.updatedAt) - new Date(a.updatedAt)
         })
-    });
+    }
+
     const storedUsers = useSelector(state => state.users.storedUsers);
 
     useEffect(() => {
@@ -35,9 +35,9 @@ const ChatListScreen = props => {
     }, []);
 
     useEffect(() => {
-        if (!selcetedUser) return;
+        if (!selectedUser) return;
 
-        const chatUsers = [selcetedUser, userData.userId];
+        const chatUsers = [selectedUser, userData.userId];
         const navigationProps = {
             newChatData: { users: chatUsers }
         };
@@ -48,7 +48,7 @@ const ChatListScreen = props => {
     return (
         <PageContainer>
             <FlatList
-                data={userChats}
+                data={sortedUserChat()}
                 keyExtractor={id => id.key}
                 renderItem={(itemData) => {
                     const chatData = itemData.item;

@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { TouchableOpacity } from "react-native";
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BottomView, ChatInput, ChatsBackground, SendIcon, SendImageIcon, SendMessageIcon, TakePictureIcon } from "../components/chat.styles";
 import { useSelector } from "react-redux";
@@ -7,36 +7,42 @@ import { PageContainer } from "../../../components/page-container";
 import { Bubble } from "../components/bubble";
 import { createChat, sendTextMessage } from "../../../utils/actions/chat-actions";
 import { FlatList } from "react-native";
+import { ReplyTo } from "../components/reply-to.component";
 
 const ChatScreen = props => {
     const [chatUsers, setChatUsers] = useState([]);
     const [messageText, setMessageText] = useState("");
     const [errorBannerText, setErrorBannerText] = useState("");
     const [chatId, setChatId] = useState(props.route?.params?.chatId) // to check wether it's a new chat or not
+    const [replyingTo, setReplyingTo] = useState("");
 
     const userData = useSelector(state => state.auth.userData);
     const storedUsers = useSelector(state => state.users.storedUsers);
     const storedChats = useSelector(state => state.chats.chatsData);
-    const chatMessages = useSelector(state => {
+
+    const chatMessages = useSelector(state => state.messages.messagesData);
+
+    const chatMessagesList = useCallback(() => {
         if (!chatId) return [];
 
-        const chatMessagesData = state.messages.messagesData[chatId];
+        const chatMessagesData = chatMessages[chatId];
 
         if (!chatMessagesData) return [];
 
         const messageList = [];
 
         for (const key in chatMessagesData) {
-            const message = chatMessagesData[key];
+            const message = chatMessagesData[key]
 
             messageList.push({
                 key,
-                ...message
+                ...message,
             })
         }
 
         return messageList;
-    });
+    }, [chatId])
+
 
     const flatRef = useRef();
 
@@ -67,7 +73,7 @@ const ChatScreen = props => {
                 setChatId(id)
             }
 
-            await sendTextMessage(chatId, userData.userId, messageText)
+            await sendTextMessage(chatId, userData.userId, messageText, replyingTo && replyingTo.key)
 
         } catch (error) {
             console.log(error);
@@ -77,6 +83,7 @@ const ChatScreen = props => {
             }, 5000)
         }
         setMessageText("");
+        setReplyingTo(null);
     }, [messageText, chatId]);
 
     return (
@@ -101,26 +108,36 @@ const ChatScreen = props => {
                             ref={ref => flatRef.current = ref}
                             onContentSizeChange={() => chatMessages.length > 0 && flatRef.current.scrollToEnd({ animated: true })}
                             showsVerticalScrollIndicator={false}
-                            data={chatMessages}
+                            data={chatMessagesList()}
                             // keyExtractor={(id, index) => id.key + index.toString()}
                             renderItem={(itemData) => {
-                                const messages = itemData.item;
-
-                                const isOwnMessage = messages.sentBy === userData.userId;
-
+                                const message = itemData.item;
+                                const isOwnMessage = message.sentBy === userData.userId;
+                                // console.log(JSON.stringify(chatMessages, 0, 2));
                                 const messageType = isOwnMessage ? "myMessage" : "theirMessage";
                                 return <Bubble
-                                    text={messages.text}
+                                    text={message.text}
                                     type={messageType}
-                                    date={messages.sentAt}
+                                    date={message.sentAt}
                                     userId={userData.userId}
                                     chatId={chatId}
-                                    messageId={messages.key}
+                                    messageId={message.key}
+                                    setReply={() => setReplyingTo(message)}
+                                    replyingTo={message.replyTo && chatMessagesList().find(i => i.key === message.replyTo)}
                                 />
                             }}
                         />
                     }
                 </PageContainer>
+
+                {
+                    replyingTo &&
+                    <ReplyTo
+                        text={replyingTo.text}
+                        user={storedUsers[replyingTo.sentBy]}
+                        onCancel={() => setReplyingTo(null)}
+                    />
+                }
             </ChatsBackground>
 
             <BottomView >

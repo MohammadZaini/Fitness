@@ -16,9 +16,10 @@ import { starMessage } from "../../../utils/actions/chat-actions";
 import { useSelector } from "react-redux";
 
 export const Bubble = props => {
-    const { text, type, date, userId, chatId, messageId } = props;
+    const { text, type, date, userId, chatId, messageId, setReply, replyingTo } = props;
 
-    const starredMessages = useSelector(state => state.messages.starredMessages[chatId])
+    const starredMessages = useSelector(state => state.messages.starredMessages[chatId] ?? {});
+    const storedUsers = useSelector(state => state.users.storedUsers);
 
     function formatDateAmPm(dateString) {
         const date = new Date(dateString);
@@ -72,7 +73,7 @@ export const Bubble = props => {
             break;
     }
 
-    const copyToClipBoard = async text => {
+    const copyToClipboard = async text => {
         try {
             await Clipboard.setStringAsync(text)
         } catch (error) {
@@ -80,12 +81,22 @@ export const Bubble = props => {
         };
     };
 
-    const isStarred = isUserMessage && starredMessages[messageId] !== undefined
-
+    const isStarred = isUserMessage && starredMessages[messageId] !== undefined;
+    const replyingToUser = replyingTo && storedUsers[replyingTo.sentBy];
+    console.log(replyingToUser);
     return (
         <View style={wrapperStyle}  >
             <Container onLongPress={() => menuRef.current.props.ctx.menuActions.openMenu(id.current)} >
                 <View style={bubbleStyle} >
+
+                    {
+                        replyingToUser &&
+                        <Bubble
+                            type="reply"
+                            text={replyingTo.text}
+                        />
+
+                    }
                     <Text style={textStyle}>
                         {text}
                     </Text>
@@ -95,7 +106,7 @@ export const Bubble = props => {
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
                             {
                                 isStarred &&
-                                <Octicons name="star-fill" size={14} color={"yellow"} style={{ marginRight: 10, }} />
+                                <Octicons name="star-fill" size={14} color={colors.yellow} style={{ marginRight: 10, }} />
                             }
                             <Text style={styles.time}>{dateString}</Text>
                         </View>
@@ -106,9 +117,9 @@ export const Bubble = props => {
 
                         <MenuOptions optionsContainerStyle={{ borderRadius: 20, backgroundColor: colors.lightBlue }}>
 
-                            <MenuItem text="Copy to clipboard" onSelect={() => copyToClipBoard(text)} iconPack={Ionicons} icon="ios-copy-outline" />
-                            <MenuItem text={`${isStarred ? "Unstar" : "Star"} message`} onSelect={() => starMessage(userId, chatId, messageId)} iconPack={Octicons} icon={`${isStarred ? "star-fill" : "star"}`} />
-                            <MenuItem text="Reply to message" onSelect={() => copyToClipBoard(text)} iconPack={MaterialIcons} icon="reply" />
+                            <MenuItem text="Copy to clipboard" onSelect={() => copyToClipboard(text)} iconPack={Ionicons} icon="ios-copy-outline" />
+                            <MenuItem text={`${isStarred ? "Unstar" : "Star"} message`} onSelect={() => starMessage(userId, chatId, messageId)} iconPack={Octicons} icon={`${isStarred ? "star-fill" : "star"}`} color={isStarred ? colors.yellow : "black"} />
+                            <MenuItem text="Reply to message" onSelect={setReply} iconPack={MaterialIcons} icon="reply" />
 
                         </MenuOptions>
 
@@ -138,7 +149,7 @@ const styles = StyleSheet.create({
     },
     time: {
         fontSize: 12,
-        color: colors.lightGrey
+        color: "white"
     }
 })
 

@@ -62,7 +62,7 @@ const SettingsScreen = () => {
         dispatchFormState({ inputId, validationResult: result, inputValue })
     }, [dispatchFormState]);
 
-    const saveHandler = async () => {
+    const saveHandler = useCallback(async () => {
         const updatedValues = formState.inputValues
 
         try {
@@ -82,7 +82,7 @@ const SettingsScreen = () => {
             console.log(error);
             setIsloading(false)
         };
-    };
+    }, [formState]);
 
     const hasChanges = () => {
         const currentValues = formState.inputValues;
