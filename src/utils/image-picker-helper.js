@@ -19,6 +19,25 @@ export const launchImagePicker = async () => {
     };
 };
 
+export const openCamera = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+        console.log("Permission is needed to take a photo");
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1
+    });
+
+    if (!result.canceled) {
+        return result.assets[0].uri;
+    };
+};
+
 export const uploadImageAsync = async (uri, isChatPhoto = false) => {
     const app = getFirebaseApp();
 

@@ -10,9 +10,10 @@ import { FlatList } from "react-native";
 import { ReplyTo } from "../components/reply-to.component";
 import AwesomeAlert from "react-native-awesome-alerts";
 import { colors } from "../../../infratructure/theme/colors";
-import { launchImagePicker, uploadImageAsync } from "../../../utils/image-picker-helper";
+import { launchImagePicker, openCamera, uploadImageAsync } from "../../../utils/image-picker-helper";
 import { StyleSheet } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
+import { fonts } from "../../../infratructure/theme/fonts";
 
 const ChatScreen = props => {
     const [chatUsers, setChatUsers] = useState([]);
@@ -92,16 +93,17 @@ const ChatScreen = props => {
     }, [chatUsers]);
 
     const sendMessage = useCallback(async () => {
-
         try {
             let id = chatId
             if (!id) {
                 // create new chat
+                console.log("Creating chat");
                 id = await createChat(userData.userId, props.route.params.newChatData);
                 setChatId(id)
             }
+            console.log("Created");
 
-            await sendTextMessage(chatId, userData.userId, messageText, replyingTo && replyingTo.key)
+            await sendTextMessage(id, userData.userId, messageText, replyingTo && replyingTo.key);
 
         } catch (error) {
             console.log(error);
@@ -126,14 +128,33 @@ const ChatScreen = props => {
         }
     }, [tempImageUri]);
 
+    const takePhoto = useCallback(async () => {
+        try {
+            const tempUri = await openCamera();
+            if (!tempUri) return;
+
+            setTempImageUri(tempUri)
+
+        } catch (error) {
+            console.log(error);
+        }
+    }, [tempImageUri]);
+
     const uploadphoto = useCallback(async () => {
         setIsLoading(true);
+
+        let id = chatId
+        if (!id) {
+            // create new chat
+            id = await createChat(userData.userId, props.route.params.newChatData);
+            setChatId(id)
+        }
 
         try {
             const uploadUrl = await uploadImageAsync(tempImageUri, true);
             setIsLoading(false);
 
-            await sendPhoto(chatId, userData.userId, uploadUrl, replyingTo && replyingTo.key)
+            await sendPhoto(id, userData.userId, uploadUrl, replyingTo && replyingTo.key)
             setTimeout(() => setTempImageUri(""), 500);
 
 
@@ -143,7 +164,7 @@ const ChatScreen = props => {
             setIsLoading(false);
 
         }
-    }, [isLoading, tempImageUri])
+    }, [isLoading, tempImageUri, chatId]);
 
     return (
         <SafeAreaView edges={['bottom']} style={{ flex: 1 }}  >
@@ -165,7 +186,7 @@ const ChatScreen = props => {
                         chatId &&
                         <FlatList
                             ref={ref => flatRef.current = ref}
-                            onContentSizeChange={() => chatMessages.length > 0 && flatRef.current.scrollToEnd({ animated: true })}
+                            onContentSizeChange={() => chatMessages.length > 0 && flatRef.current.scrollToEnd({ animated: false })}
                             showsVerticalScrollIndicator={false}
                             data={chatMessages}
                             // keyExtractor={(id, index) => id.key + index.toString()}
@@ -214,7 +235,7 @@ const ChatScreen = props => {
                         </TouchableOpacity> :
 
                         <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center' }}>
-                            <TakePictureIcon />
+                            <TakePictureIcon onPress={takePhoto} />
                         </TouchableOpacity>
                 }
 
@@ -230,7 +251,9 @@ const ChatScreen = props => {
                     cancelButtonColor={colors.red}
                     cancelText="Cancel"
                     confirmText="Send photo"
-                    // titleStyle={}
+                    confirmButtonTextStyle={styles.text}
+                    cancelButtonTextStyle={styles.text}
+                    titleStyle={styles.text}
                     onCancelPressed={() => setTempImageUri("")}
                     onConfirmPressed={uploadphoto}
                     onDismiss={() => setTempImageUri("")}
@@ -260,6 +283,9 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: colors.lightBlue,
         borderRadius: 20
+    },
+    text: {
+        fontFamily: fonts.body
     }
 });
 
