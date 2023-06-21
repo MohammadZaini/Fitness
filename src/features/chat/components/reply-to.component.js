@@ -10,8 +10,8 @@ export const ReplyTo = props => {
     const userData = useSelector(state => state.auth.userData);
     const { text, user, onCancel } = props;
 
-    const isMe = user.userId === userData.userId
-    const name = isMe ? 'You' : `${user.firstName} ${user.lastName}`
+    const isOwnReply = user.userId === userData.userId
+    const name = isOwnReply ? 'You' : `${user.firstName} ${user.lastName}`
 
     return <ReplyContainer >
         <View style={{ flex: 1 }} >
@@ -24,7 +24,7 @@ export const ReplyTo = props => {
             <FontAwesome name="close" size={24} color="black" />
         </TouchableOpacity>
     </ReplyContainer>
-}
+};
 
 const ReplyContainer = styled.View`
 background-color: ${colors.lightBlue};
@@ -39,9 +39,9 @@ const Name = styled.Text`
     font-family: ${fonts.body};
     font-weight: bold;
     letter-spacing: 0.3px;
-`
+`;
 
 const ReplyedToText = styled.Text`
     font-family: ${fonts.body};
     letter-spacing: 0.3px;
-`
+`;

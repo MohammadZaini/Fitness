@@ -1,13 +1,18 @@
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Text, TouchableOpacity } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BottomView, ChatInput, ChatsBackground, SendIcon, SendImageIcon, SendMessageIcon, TakePictureIcon } from "../components/chat.styles";
 import { useSelector } from "react-redux";
 import { PageContainer } from "../../../components/page-container";
 import { Bubble } from "../components/bubble";
-import { createChat, sendTextMessage } from "../../../utils/actions/chat-actions";
+import { createChat, sendPhoto, sendTextMessage } from "../../../utils/actions/chat-actions";
 import { FlatList } from "react-native";
 import { ReplyTo } from "../components/reply-to.component";
+import AwesomeAlert from "react-native-awesome-alerts";
+import { colors } from "../../../infratructure/theme/colors";
+import { launchImagePicker, uploadImageAsync } from "../../../utils/image-picker-helper";
+import { StyleSheet } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
 
 const ChatScreen = props => {
     const [chatUsers, setChatUsers] = useState([]);
@@ -15,17 +20,18 @@ const ChatScreen = props => {
     const [errorBannerText, setErrorBannerText] = useState("");
     const [chatId, setChatId] = useState(props.route?.params?.chatId) // to check wether it's a new chat or not
     const [replyingTo, setReplyingTo] = useState("");
+    const [tempImageUri, setTempImageUri] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const userData = useSelector(state => state.auth.userData);
     const storedUsers = useSelector(state => state.users.storedUsers);
     const storedChats = useSelector(state => state.chats.chatsData);
 
-    const chatMessages = useSelector(state => state.messages.messagesData);
-
-    const chatMessagesList = useCallback(() => {
+    const chatMessages = useSelector(state => {
+        // state.messages.messagesData
         if (!chatId) return [];
 
-        const chatMessagesData = chatMessages[chatId];
+        const chatMessagesData = state.messages.messagesData[chatId];
 
         if (!chatMessagesData) return [];
 
@@ -41,7 +47,29 @@ const ChatScreen = props => {
         }
 
         return messageList;
-    }, [chatId])
+    })
+
+
+    // const chatMessagesList = useCallback(() => {
+    //     if (!chatId) return [];
+
+    //     const chatMessagesData = chatMessages[chatId];
+
+    //     if (!chatMessagesData) return [];
+
+    //     const messageList = [];
+
+    //     for (const key in chatMessagesData) {
+    //         const message = chatMessagesData[key]
+
+    //         messageList.push({
+    //             key,
+    //             ...message,
+    //         })
+    //     }
+
+    //     return messageList;
+    // }, [chatId])
 
 
     const flatRef = useRef();
@@ -86,6 +114,37 @@ const ChatScreen = props => {
         setReplyingTo(null);
     }, [messageText, chatId]);
 
+    const pickPhoto = useCallback(async () => {
+        try {
+            const tempUri = await launchImagePicker();
+            if (!tempUri) return;
+
+            setTempImageUri(tempUri)
+
+        } catch (error) {
+            console.log(error);
+        }
+    }, [tempImageUri]);
+
+    const uploadphoto = useCallback(async () => {
+        setIsLoading(true);
+
+        try {
+            const uploadUrl = await uploadImageAsync(tempImageUri, true);
+            setIsLoading(false);
+
+            await sendPhoto(chatId, userData.userId, uploadUrl, replyingTo && replyingTo.key)
+            setTimeout(() => setTempImageUri(""), 500);
+
+
+            setTempImageUri("");
+        } catch (error) {
+            console.log(error);
+            setIsLoading(false);
+
+        }
+    }, [isLoading, tempImageUri])
+
     return (
         <SafeAreaView edges={['bottom']} style={{ flex: 1 }}  >
             <ChatsBackground>
@@ -108,7 +167,7 @@ const ChatScreen = props => {
                             ref={ref => flatRef.current = ref}
                             onContentSizeChange={() => chatMessages.length > 0 && flatRef.current.scrollToEnd({ animated: true })}
                             showsVerticalScrollIndicator={false}
-                            data={chatMessagesList()}
+                            data={chatMessages}
                             // keyExtractor={(id, index) => id.key + index.toString()}
                             renderItem={(itemData) => {
                                 const message = itemData.item;
@@ -123,7 +182,8 @@ const ChatScreen = props => {
                                     chatId={chatId}
                                     messageId={message.key}
                                     setReply={() => setReplyingTo(message)}
-                                    replyingTo={message.replyTo && chatMessagesList().find(i => i.key === message.replyTo)}
+                                    replyingTo={message.replyTo && chatMessages.find(i => i.key === message.replyTo)}
+                                    imageUrl={message.imageUrl}
                                 />
                             }}
                         />
@@ -142,7 +202,7 @@ const ChatScreen = props => {
 
             <BottomView >
                 <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center' }} >
-                    <SendImageIcon />
+                    <SendImageIcon onPress={pickPhoto} />
                 </TouchableOpacity>
 
                 <ChatInput value={messageText} onChangeText={setMessageText} />
@@ -158,10 +218,50 @@ const ChatScreen = props => {
                         </TouchableOpacity>
                 }
 
+                <AwesomeAlert
+                    contentContainerStyle={styles.container}
+                    show={tempImageUri !== ""}
+                    title="Send photo"
+                    closeOnTouchOutside={true}
+                    closeOnHardwareBackPress={true}
+                    showCancelButton={true}
+                    showConfirmButton={true}
+                    confirmButtonColor={colors.primary}
+                    cancelButtonColor={colors.red}
+                    cancelText="Cancel"
+                    confirmText="Send photo"
+                    // titleStyle={}
+                    onCancelPressed={() => setTempImageUri("")}
+                    onConfirmPressed={uploadphoto}
+                    onDismiss={() => setTempImageUri("")}
+                    customView={(
+                        <View>
+
+                            {
+                                isLoading &&
+                                <View>
+                                    <ActivityIndicator size="small" color={colors.primary} />
+                                </View>
+                            }
+                            {
+                                !isLoading && tempImageUri !== "" &&
+                                <Image source={{ uri: tempImageUri }} style={{ width: 200, height: 200 }} />
+                            }
+                        </View>
+                    )}
+                />
+
             </BottomView>
         </SafeAreaView>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        backgroundColor: colors.lightBlue,
+        borderRadius: 20
+    }
+});
 
 export default ChatScreen;
 

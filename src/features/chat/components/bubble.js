@@ -14,12 +14,16 @@ import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { starMessage } from "../../../utils/actions/chat-actions";
 import { useSelector } from "react-redux";
+import { Image } from "react-native";
 
 export const Bubble = props => {
-    const { text, type, date, userId, chatId, messageId, setReply, replyingTo } = props;
+    const { text, type, date, userId, chatId, messageId, setReply, replyingTo, name, imageUrl } = props;
 
     const starredMessages = useSelector(state => state.messages.starredMessages[chatId] ?? {});
     const storedUsers = useSelector(state => state.users.storedUsers);
+
+    const userData = useSelector(state => state.auth.userData);
+
 
     function formatDateAmPm(dateString) {
         const date = new Date(dateString);
@@ -38,7 +42,7 @@ export const Bubble = props => {
 
     let isUserMessage = false;
 
-    const dateString = formatDateAmPm(date)
+    const dateString = date && formatDateAmPm(date)
     const bubbleStyle = { ...styles.container };
     const textStyle = { ...styles.text };
     const wrapperStyle = { ...styles.wrapperStyle }
@@ -69,6 +73,10 @@ export const Bubble = props => {
             isUserMessage = true;
             break;
 
+        case "reply":
+            bubbleStyle.backgroundColor = colors.lightBlue;
+            break;
+
         default:
             break;
     }
@@ -83,24 +91,43 @@ export const Bubble = props => {
 
     const isStarred = isUserMessage && starredMessages[messageId] !== undefined;
     const replyingToUser = replyingTo && storedUsers[replyingTo.sentBy];
-    console.log(replyingToUser);
+    const isOwnReply = replyingToUser && replyingToUser.userId === userData.userId;
+
     return (
         <View style={wrapperStyle}  >
             <Container onLongPress={() => menuRef.current.props.ctx.menuActions.openMenu(id.current)} >
                 <View style={bubbleStyle} >
 
                     {
+                        name &&
+                        <Text>{name}</Text>
+                    }
+
+                    {
                         replyingToUser &&
                         <Bubble
                             type="reply"
                             text={replyingTo.text}
+                            name={
+                                isOwnReply ?
+                                    "You" :
+                                    `${replyingToUser.firstName} ${replyingToUser.lastName}`
+                            }
                         />
 
                     }
-                    <Text style={textStyle}>
-                        {text}
-                    </Text>
+                    {
+                        !imageUrl &&
+                        <Text style={textStyle}>
+                            {text}
+                        </Text>
+                    }
                     {/* <FontAwesome5 name="check-double" size={10} color={colors.primary} /> */}
+
+                    {
+                        imageUrl &&
+                        <Image source={{ uri: imageUrl }} style={{ height: 300, width: 300 }} />
+                    }
                     {
                         date &&
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
