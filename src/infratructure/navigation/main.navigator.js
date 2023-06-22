@@ -12,7 +12,8 @@ import { ActivityIndicator } from "react-native-paper";
 import { colors } from "../theme/colors";
 import { styled } from "styled-components";
 import { setStoredUsers } from "../../../store/user-slice";
-import { setChatMessages, setStarredMessage } from "../../../store/messages-slice";
+import { setChatMessages, setStarredMessages } from "../../../store/messages-slice";
+import ExersiceDetails from "../../features/exercises/screens/exercise-details.screen";
 
 const Stack = createStackNavigator();
 
@@ -77,6 +78,7 @@ const StackNavigator = () => {
                     };
 
                     const messagesRef = child(dbRef, `messages/${chatId}`);
+                    refs.push(messagesRef);
 
                     onValue(messagesRef, messagesSnapshot => {
                         const messagesData = messagesSnapshot.val();
@@ -102,7 +104,7 @@ const StackNavigator = () => {
 
         onValue(userStarredMessages, querySnapshot => {
             const starredMessages = querySnapshot.val() ?? {};
-            dispatch(setStarredMessage({ starredMessages }))
+            dispatch(setStarredMessages({ starredMessages }))
         })
 
         return () => {
@@ -130,8 +132,9 @@ const StackNavigator = () => {
                 <Stack.Screen name="Chat" component={ChatScreen} options={{ headerShadowVisible: false }} />
             </Stack.Group>
 
-            <Stack.Group screenOptions={{ presentation: 'modal', title: "New chat", headerShadowVisible: false }} >
-                <Stack.Screen name="NewChat" component={NewChatScreen} />
+            <Stack.Group screenOptions={{ presentation: 'modal', headerShadowVisible: false }} >
+                <Stack.Screen name="NewChat" component={NewChatScreen} options={{ title: "New chat" }} />
+                <Stack.Screen name="ExerciseDetails" component={ExersiceDetails} options={{ title: "Exercise" }} />
             </Stack.Group>
 
         </Stack.Navigator>

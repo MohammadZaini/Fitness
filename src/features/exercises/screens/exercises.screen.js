@@ -1,12 +1,61 @@
 import React from "react";
-import { View } from "react-native";
-import { Button, ImageBackground, Text } from "react-native";
+import { ScrollView } from "react-native";
+import { Text } from "react-native";
+import { Card } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { styled } from "styled-components";
+import { colors } from "../../../infratructure/theme/colors";
+import { TouchableOpacity } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const ExersicesScreen = props => {
+
     return (
-        <View>
-        </View>
+        <SafeAreaView>
+            <ScrollView>
+                <Text style={{ fontWeight: 'bold', fontSize: 20, marginLeft: 15 }}>Workouts</Text>
+
+                <TouchableOpacity onPress={() => props.navigation.navigate("ExerciseDetails", { id: 1 })}>
+                    <Card style={{ margin: 15, backgroundColor: colors.lightGrey }} >
+                        <ExersiceName>Chest</ExersiceName>
+                        <Card.Cover source={require("../../../../assets/images/Chest-exercises.jpg")} />
+                    </Card>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => props.navigation.navigate("ExerciseDetails", { id: 2 })}>
+                    <Card style={{ margin: 15, backgroundColor: colors.lightGrey }} >
+                        <ExersiceName>Triceps</ExersiceName>
+                        <Card.Cover source={require("../../../../assets/images/TricepsExercise.jpg")} />
+                    </Card>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => props.navigation.navigate("ExerciseDetails", { id: 3 })}>
+                    <Card style={{ margin: 15, backgroundColor: colors.lightGrey }} >
+                        <ExersiceName>Six packs</ExersiceName>
+                        <Card.Cover source={require("../../../../assets/images/sixPacks.jpg")} />
+                    </Card>
+                </TouchableOpacity>
+
+                <Card style={{ margin: 15, backgroundColor: colors.lightGrey }} >
+                    <ExersiceName>Biceps</ExersiceName>
+                    <Card.Cover source={require("../../../../assets/images/bicepsPushUp.jpg")} />
+                </Card>
+
+                <Card style={{ margin: 15, backgroundColor: colors.lightGrey }} >
+                    <ExersiceName>Back</ExersiceName>
+                    <Card.Cover source={require("../../../../assets/images/backExercise.jpg")} />
+                </Card>
+
+            </ScrollView>
+        </SafeAreaView>
     );
 };
 
 export default ExersicesScreen;
+
+const ExersiceName = styled.Text`
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 10px;
+    padding: 5px;
+`

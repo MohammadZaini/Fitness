@@ -49,6 +49,7 @@ const ChatListScreen = props => {
         <PageContainer>
             <FlatList
                 data={sortedUserChat()}
+                showsVerticalScrollIndicator={false}
                 keyExtractor={id => id.key}
                 renderItem={(itemData) => {
                     const chatData = itemData.item;

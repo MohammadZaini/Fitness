@@ -1,0 +1,54 @@
+import React from "react";
+import { StyleSheet } from "react-native";
+import { View, useWindowDimensions, Animated } from "react-native";
+import { colors } from "../src/infratructure/theme/colors";
+
+const Paginator = ({ data, scrollX }) => {
+
+    const { width } = useWindowDimensions();
+
+    return (
+
+        <View style={styles.container} >
+
+            {
+                data.map((_, i) => {
+                    //     previous dot     current dot  next dot
+                    const inputRange = [(i - 1) * width, i * width, (i + 1) * width];
+
+                    const dotWidth = scrollX.interpolate({
+                        inputRange,
+                        outputRange: [10, 20, 10], // width of prev , current and next dots
+                        extrapolate: 'clamp'
+                    });
+
+                    const opacity = scrollX.interpolate({
+                        inputRange,
+                        outputRange: [0.3, 1, 0.3], // width of prev , current and next dots
+                        extrapolate: 'clamp'
+                    })
+
+                    return <Animated.View style={[styles.dot, { width: dotWidth, opacity }]} key={i.toString()} />
+                })
+            }
+        </View>
+    )
+
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flexDirection: 'row',
+        height: 64
+    },
+    dot: {
+        height: 10,
+        borderRadius: 5,
+        backgroundColor: colors.primary,
+        marginHorizontal: 8
+
+    },
+
+})
+
+export default Paginator;

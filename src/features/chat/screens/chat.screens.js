@@ -14,6 +14,7 @@ import { launchImagePicker, openCamera, uploadImageAsync } from "../../../utils/
 import { StyleSheet } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { fonts } from "../../../infratructure/theme/fonts";
+import { createSelector } from 'reselect'
 
 const ChatScreen = props => {
     const [chatUsers, setChatUsers] = useState([]);
@@ -28,27 +29,49 @@ const ChatScreen = props => {
     const storedUsers = useSelector(state => state.users.storedUsers);
     const storedChats = useSelector(state => state.chats.chatsData);
 
-    const chatMessages = useSelector(state => {
-        // state.messages.messagesData
-        if (!chatId) return [];
+    // const chatMessages = useSelector(state => {
+    //     // state.messages.messagesData
+    //     if (!chatId) return [];
 
-        const chatMessagesData = state.messages.messagesData[chatId];
+    //     const chatMessagesData = state.messages.messagesData[chatId];
 
-        if (!chatMessagesData) return [];
+    //     if (!chatMessagesData) return [];
 
-        const messageList = [];
+    //     const messageList = [];
 
-        for (const key in chatMessagesData) {
-            const message = chatMessagesData[key]
+    //     for (const key in chatMessagesData) {
+    //         const message = chatMessagesData[key]
 
-            messageList.push({
-                key,
-                ...message,
-            })
+    //         messageList.push({
+    //             key,
+    //             ...message,
+    //         })
+    //     }
+
+    //     return messageList;
+    // })
+
+
+    const createSelectorTest = createSelector(
+        state => state.messages.messagesData[chatId],
+        (chatMessagesData) => {
+            if (!chatMessagesData) return [];
+
+            const messageList = [];
+
+            for (const key in chatMessagesData) {
+                const message = chatMessagesData[key]
+
+                messageList.push({
+                    key,
+                    ...message,
+                })
+            }
+            // console.log(messageList);
+            return messageList;
         }
-
-        return messageList;
-    })
+    )
+    const chatMessages = useSelector(state => createSelectorTest(state))
 
 
     // const chatMessagesList = useCallback(() => {
@@ -186,15 +209,15 @@ const ChatScreen = props => {
                         chatId &&
                         <FlatList
                             ref={ref => flatRef.current = ref}
-                            onContentSizeChange={() => chatMessages.length > 0 && flatRef.current.scrollToEnd({ animated: false })}
+                            onContentSizeChange={() => chatMessages.length > 0 && flatRef.current.scrollToEnd({ animated: true })}
                             showsVerticalScrollIndicator={false}
                             data={chatMessages}
                             // keyExtractor={(id, index) => id.key + index.toString()}
                             renderItem={(itemData) => {
                                 const message = itemData.item;
                                 const isOwnMessage = message.sentBy === userData.userId;
-                                // console.log(JSON.stringify(chatMessages, 0, 2));
                                 const messageType = isOwnMessage ? "myMessage" : "theirMessage";
+
                                 return <Bubble
                                     text={message.text}
                                     type={messageType}
