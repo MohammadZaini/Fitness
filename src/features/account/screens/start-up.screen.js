@@ -13,31 +13,27 @@ const StartUpScreen = () => {
 
     useEffect(() => {
         const tryAutoLogin = async () => {
-            const storedAuthInfo = await AsyncStorage.getItem("userData")
+            const storedAuthInfo = await AsyncStorage.getItem("userToken");
 
             if (!storedAuthInfo) {
-                console.log("failed");
                 dispatch(setDidTryAutoLogin());
                 return;
-            };
+            }
 
             const parsedData = JSON.parse(storedAuthInfo);
-            const { token, userId, expiryDate: expirationTime } = parsedData;
-            const expiryDate = new Date(expirationTime);
+            const { token, userId, expiryDate: expiryDateString } = parsedData;
+            const expiryDate = new Date(expiryDateString);
 
-            if (expiryDate <= new Date() || !token || !userId) {
+            if (expiryDate <= new Date || !token || !userId) {
                 dispatch(setDidTryAutoLogin());
                 return;
             };
 
             const userData = await getUserData(userId);
-            dispatch(authenticate(token, userData));
-            console.log("start up screen");
-            console.log("userData: " + JSON.stringify(userData, 0, 2));
+            dispatch(authenticate({ token, userData }));
         };
-
         tryAutoLogin();
-    }, []);
+    }, [dispatch]);
 
     return (
         <LoadingContainer >

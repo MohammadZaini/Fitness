@@ -15,7 +15,7 @@ const Onboarding = () => {
     const slidesRef = useRef(null);
 
     const navigation = useContext(NavigationContext);
-    console.log(navigation);
+    // console.log(navigation);
     const viewableItemsChanged = useRef(({ viewableItems }) => {
         setCurrentIndex(viewableItems[0].index)
     }).current;

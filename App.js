@@ -9,12 +9,13 @@ import { View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { colors } from "./src/infratructure/theme/colors";
 import { useEffect, useState } from "react";
+import { OnboardingNavigation } from "./src/infratructure/navigation/main.navigator";
 
 export default function App() {
   const [isloading, setIsLoading] = useState(true);
   const [viewedOnboarding, setViewedOnboarding] = useState(false);
 
-  AsyncStorage.clear();
+  // AsyncStorage.clear();
 
   const Loading = () => {
     return <View style={{ justifyContent: 'center', flex: 1 }}>

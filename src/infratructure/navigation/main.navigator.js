@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { createStackNavigator } from "@react-navigation/stack";
+import { CardStyleInterpolators, TransitionPresets, createStackNavigator } from "@react-navigation/stack";
 import NewChatScreen from "../../features/chat/screens/new-chat.screen";
 import ChatScreen from "../../features/chat/screens/chat.screens";
 import ChatSettingsScreen from "../../features/chat/screens/chat-settings.screen";
@@ -14,6 +14,10 @@ import { styled } from "styled-components";
 import { setStoredUsers } from "../../../store/user-slice";
 import { setChatMessages, setStarredMessages } from "../../../store/messages-slice";
 import ExersiceDetails from "../../features/exercises/screens/exercise-details.screen";
+import Onboarding from "../../../onboarding/onboarding";
+import { NavigationContainer } from "@react-navigation/native";
+import AuthScreen from "../../features/account/screens/auth.screen";
+import { TransitionSpecs } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
 
@@ -124,15 +128,16 @@ const StackNavigator = () => {
         <Stack.Navigator   >
 
             <Stack.Group screenOptions={{ headerShown: false }} >
+
                 <Stack.Screen name="Home" component={TabNavigator} options={{ headerTitle: '', headerShadowVisible: false }} />
                 <Stack.Screen name="ChatSettings" component={ChatSettingsScreen} />
             </Stack.Group>
 
-            <Stack.Group>
-                <Stack.Screen name="Chat" component={ChatScreen} options={{ headerShadowVisible: false }} />
+            <Stack.Group screenOptions={{ presentation: "modal" }}>
+                <Stack.Screen name="Chat" component={ChatScreen} options={{ headerShadowVisible: false, ...TransitionPresets.SlideFromRightIOS, }} />
             </Stack.Group>
 
-            <Stack.Group screenOptions={{ presentation: 'modal', headerShadowVisible: false }} >
+            <Stack.Group screenOptions={{ headerShadowVisible: false, ...TransitionPresets.SlideFromRightIOS, }} >
                 <Stack.Screen name="NewChat" component={NewChatScreen} options={{ title: "New chat" }} />
                 <Stack.Screen name="ExerciseDetails" component={ExersiceDetails} options={{ title: "Exercise" }} />
             </Stack.Group>
@@ -148,3 +153,32 @@ const LoadingContainer = styled.View`
     justify-content: center;
     align-items: center;
 `;
+
+
+const OnboardingStack = createStackNavigator();
+
+export const OnboardingNavigation = () => {
+    return <NavigationContainer>
+        <OnboardingStack.Navigator>
+
+            <OnboardingStack.Group screenOptions={{ headerShadowVisible: false, ...TransitionPresets.SlideFromRightIOS, headerShown: false }}>
+                <OnboardingStack.Screen name="Onboarding" component={Onboarding} />
+            </OnboardingStack.Group>
+
+            <OnboardingStack.Group screenOptions={{ headerShown: false }} >
+                <OnboardingStack.Screen name="Home" component={TabNavigator} options={{ headerTitle: '', headerShadowVisible: false }} />
+                <OnboardingStack.Screen name="ChatSettings" component={ChatSettingsScreen} />
+            </OnboardingStack.Group>
+
+            <OnboardingStack.Group>
+                <OnboardingStack.Screen name="Chat" component={ChatScreen} options={{ headerShadowVisible: false, ...TransitionPresets.ModalPresentationIOS, }} />
+            </OnboardingStack.Group>
+
+            <OnboardingStack.Group screenOptions={{ headerShadowVisible: false, ...TransitionPresets.SlideFromRightIOS, }} >
+                <OnboardingStack.Screen name="NewChat" component={NewChatScreen} options={{ title: "New chat" }} />
+                <OnboardingStack.Screen name="ExerciseDetails" component={ExersiceDetails} options={{ title: "Exercise" }} />
+            </OnboardingStack.Group>
+
+        </OnboardingStack.Navigator>
+    </NavigationContainer>
+}
