@@ -32,23 +32,20 @@ const Paginator = ({ data, scrollX }) => {
                 })
             }
         </View>
-    )
-
-}
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        height: 64
+        height: 64,
     },
     dot: {
         height: 10,
         borderRadius: 5,
         backgroundColor: colors.primary,
         marginHorizontal: 8
-
     },
-
-})
+});
 
 export default Paginator;

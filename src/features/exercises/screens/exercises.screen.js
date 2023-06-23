@@ -7,17 +7,21 @@ import { styled } from "styled-components";
 import { colors } from "../../../infratructure/theme/colors";
 import { TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { View } from "react-native";
 
 const ExersicesScreen = props => {
 
     return (
         <SafeAreaView>
             <ScrollView>
+
                 <Text style={{ fontWeight: 'bold', fontSize: 20, marginLeft: 15 }}>Workouts</Text>
 
+                <View style={{ backgroundColor: colors.lightBlue, height: 150, borderBottomRightRadius: 40, borderBottomLeftRadius: 10 }} />
                 <TouchableOpacity onPress={() => props.navigation.navigate("ExerciseDetails", { id: 1 })}>
-                    <Card style={{ margin: 15, backgroundColor: colors.lightGrey }} >
+                    <Card style={{ margin: 15, backgroundColor: colors.lightGrey, marginTop: -120 }} >
                         <ExersiceName>Chest</ExersiceName>
+                        <Text>Beginner</Text>
                         <Card.Cover source={require("../../../../assets/images/Chest-exercises.jpg")} />
                     </Card>
                 </TouchableOpacity>

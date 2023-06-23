@@ -121,7 +121,7 @@ const StackNavigator = () => {
     };
 
     return (
-        <Stack.Navigator  >
+        <Stack.Navigator   >
 
             <Stack.Group screenOptions={{ headerShown: false }} >
                 <Stack.Screen name="Home" component={TabNavigator} options={{ headerTitle: '', headerShadowVisible: false }} />

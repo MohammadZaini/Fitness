@@ -9,7 +9,6 @@ import { View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { colors } from "./src/infratructure/theme/colors";
 import { useEffect, useState } from "react";
-import ExersicesScreen from "./src/features/exercises/screens/exercises.screen";
 
 export default function App() {
   const [isloading, setIsLoading] = useState(true);

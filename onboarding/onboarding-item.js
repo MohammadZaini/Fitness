@@ -18,9 +18,8 @@ const OnboardingItem = ({ item }) => {
             </View>
 
         </View>
-    )
-
-}
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -45,6 +44,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         paddingHorizontal: 64
     }
-})
+});
 
 export default OnboardingItem;

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { FlatList } from "react-native";
 import { StyleSheet } from "react-native";
 import { View, Animated } from "react-native";
@@ -7,12 +7,15 @@ import OnboardingItem from "./onboarding-item";
 import Paginator from "./paginator";
 import NextButton from "./next-button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { NavigationContext } from "@react-navigation/native";
 
 const Onboarding = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const scrollX = useRef(new Animated.Value(0)).current; // A reference to an animated value using the horizontal scroll position of the flatlist
     const slidesRef = useRef(null);
 
+    const navigation = useContext(NavigationContext);
+    console.log(navigation);
     const viewableItemsChanged = useRef(({ viewableItems }) => {
         setCurrentIndex(viewableItems[0].index)
     }).current;
@@ -25,6 +28,10 @@ const Onboarding = () => {
         } else {
             try {
                 await AsyncStorage.setItem('@viewedOnboarding', 'true')
+
+                // const pushAction = StackActions.push("Exercises", { chatId });
+                // navigation.dispatch(pushAction);
+                navigation.navigate("Home")
             } catch (error) {
                 console.log(error);
             }

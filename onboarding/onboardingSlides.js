@@ -2,7 +2,7 @@ export default [
     {
         id: 1,
         title: "Personal trainer",
-        description: "",
+        description: "Now you can chat with your favourite personal trainer!",
         image: require("../assets/images/personal-trainer.png")
     },
     {
