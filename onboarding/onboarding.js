@@ -42,6 +42,7 @@ const Onboarding = () => {
         <View style={styles.container} >
             <View style={{ flex: 3 }}>
                 <FlatList
+                    ref={slidesRef}
                     data={onboardingSlides}
                     horizontal
                     showsHorizontalScrollIndicator={false}
@@ -55,7 +56,6 @@ const Onboarding = () => {
                     scrollEventThrottle={32}
                     onViewableItemsChanged={viewableItemsChanged}
                     viewabilityConfig={viewConfig}
-                    ref={slidesRef}
                 />
             </View>
 

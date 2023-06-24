@@ -11,6 +11,8 @@ import { useDispatch } from "react-redux";
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
+import SwitchSelector from "react-native-switch-selector";
+import { fonts } from "../../../infratructure/theme/fonts";
 
 const initialState = {
 
@@ -42,6 +44,7 @@ export const SignUpForm = props => {
     const [formState, dispatchFormState] = useReducer(reducer, initialState);
     const [isLoading, setIsloading] = useState(false);
     const [error, setError] = useState("");
+    const [personType, setPersonType] = useState("trainee");
 
     const dispatch = useDispatch();
 
@@ -64,7 +67,8 @@ export const SignUpForm = props => {
                 formState.inputValues.firstName,
                 formState.inputValues.lastName,
                 formState.inputValues.email,
-                formState.inputValues.password
+                formState.inputValues.password,
+                personType
             );
             setError(null);
             await dispatch(action);
@@ -75,7 +79,20 @@ export const SignUpForm = props => {
             setIsloading(false)
         }
 
-    }, [dispatch, formState])
+    }, [dispatch, formState, personType])
+
+    const switchOptions = [
+        {
+            label: "Coach",
+            value: "coach",
+            imageIcon: require("../../../../assets/images/personal-trainer-icon.png")
+        },
+        {
+            label: "Trainee",
+            value: "trainee",
+            imageIcon: require("../../../../assets/images/trainee-icon.png")
+        }
+    ];
 
     return (
         <>
@@ -137,6 +154,17 @@ export const SignUpForm = props => {
                 errorText={formState.inputValidities["password"]}
                 secureTextEntry
                 color={formState.inputIsValidColor["password"]}
+            />
+
+            <SwitchSelector
+                options={switchOptions}
+                initial={1}
+                onPress={(value) => setPersonType(value)}
+                style={{ marginHorizontal: 40, marginTop: 10 }}
+                buttonColor={colors.primary}
+                textStyle={{ fontFamily: fonts.body, flex: 1 }}
+                selectedTextStyle={{ fontFamily: fonts.body }}
+                imageStyle={{ height: 20, width: 20, marginRight: 15 }}
             />
 
             {

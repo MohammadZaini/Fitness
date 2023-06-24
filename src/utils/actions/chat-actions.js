@@ -19,7 +19,7 @@ export const createChat = async (loggedInUserId, chatData) => {
     const chatUsers = newChatData.users;
     for (let i = 0; i < chatUsers.length; i++) {
         const userId = chatUsers[i];
-        await push(child(dbRef, `chatUsers/${userId}`), newChat.key);
+        await push(child(dbRef, `userChats/${userId}`), newChat.key);
     };
 
     return newChat.key;

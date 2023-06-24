@@ -7,7 +7,7 @@ import { getUserData } from "./user-actions";
 
 let timer;
 
-export const SignUp = (firstName, lastName, email, password) => {
+export const SignUp = (firstName, lastName, email, password, personType) => {
 
     return async dispatch => {
         const app = getFirebaseApp();
@@ -29,7 +29,7 @@ export const SignUp = (firstName, lastName, email, password) => {
                     dispatch(userLogout());
                 }, milliSecondsUntilExpiry);
 
-                const userData = await createUser(firstName, lastName, email, uid);
+                const userData = await createUser(firstName, lastName, email, uid, personType);
                 dispatch(authenticate({ token: accessToken, userData }));
 
                 saveDatatoAsyncStorage(accessToken, uid, expiryDate)
@@ -115,7 +115,7 @@ export const updatedSignedInUserData = async (userId, newData) => {
     await update(childRef, newData);
 }
 
-const createUser = async (firstName, lastName, email, userId) => {
+const createUser = async (firstName, lastName, email, userId, personType) => {
     const firstLast = `${firstName} ${lastName}`.toLowerCase();
 
     const userData = {
@@ -127,9 +127,19 @@ const createUser = async (firstName, lastName, email, userId) => {
         signUpDate: new Date().toDateString()
     };
 
+    let path;
+
+    if (personType === "coach") {
+        path = `coaches/${userId}`;
+    } else if (personType === "trainee") {
+        path = `trainees/${userId}`;
+    } else {
+        return;
+    }
+
     const app = getFirebaseApp();
     const dbRef = ref(getDatabase(app));
-    const childRef = child(dbRef, `users/${userId}`)
+    const childRef = child(dbRef, path)
 
     await set(childRef, userData);
 

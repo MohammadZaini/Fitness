@@ -21,7 +21,7 @@ export const Input = props => {
 
                 {
                     props.iconPack &&
-                    <props.iconPack name={props.icon} size={15} color={props.iconColor} style={{ marginRight: 5 }} />
+                    <props.iconPack name={props.icon} size={15} color={props.iconColor} style={{ marginRight: 5, padding: 5 }} />
                 }
                 <TextInput
                     {...props}

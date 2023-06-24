@@ -35,7 +35,7 @@ const StackNavigator = () => {
 
         const app = getFirebaseApp();
         const dbRef = ref(getDatabase(app));
-        const chatUsersRef = child(dbRef, `chatUsers/${userData.userId}`);
+        const chatUsersRef = child(dbRef, `userChats/${userData.userId}`);
         const refs = [chatUsersRef];
 
         const chatsData = {};
