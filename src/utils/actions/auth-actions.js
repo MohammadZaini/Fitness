@@ -7,7 +7,7 @@ import { getUserData } from "./user-actions";
 
 let timer;
 
-export const SignUp = (firstName, lastName, email, password, personType) => {
+export const SignUp = (firstName, lastName, email, password, personType, gender) => {
 
     return async dispatch => {
         const app = getFirebaseApp();
@@ -29,7 +29,7 @@ export const SignUp = (firstName, lastName, email, password, personType) => {
                     dispatch(userLogout());
                 }, milliSecondsUntilExpiry);
 
-                const userData = await createUser(firstName, lastName, email, uid, personType);
+                const userData = await createUser(firstName, lastName, email, uid, personType, gender);
                 dispatch(authenticate({ token: accessToken, userData }));
 
                 saveDatatoAsyncStorage(accessToken, uid, expiryDate)
@@ -115,7 +115,7 @@ export const updatedSignedInUserData = async (userId, newData) => {
     await update(childRef, newData);
 }
 
-const createUser = async (firstName, lastName, email, userId, personType) => {
+const createUser = async (firstName, lastName, email, userId, personType, gender) => {
     const firstLast = `${firstName} ${lastName}`.toLowerCase();
 
     const userData = {
@@ -131,8 +131,12 @@ const createUser = async (firstName, lastName, email, userId, personType) => {
 
     if (personType === "coach") {
         path = `coaches/${userId}`;
+        userData.personType = personType;
+        userData.gender = gender;
     } else if (personType === "trainee") {
         path = `trainees/${userId}`;
+        userData.personType = personType;
+        userData.gender = gender;
     } else {
         return;
     }

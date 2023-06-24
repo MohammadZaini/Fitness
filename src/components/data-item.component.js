@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { ProfileImage } from "./profile-image.component";
-import { Text, View } from "react-native";
+import { Image, Text, View } from "react-native";
 import { TouchableWithoutFeedback } from "react-native";
 import { styled } from "styled-components";
 import { colors } from "../infratructure/theme/colors";
 import { StyleSheet } from "react-native";
 import { fonts } from "../infratructure/theme/fonts";
+import { Foundation } from '@expo/vector-icons';
 
 export const DataItem = props => {
     // const [navigating, setIsNavigating] = useState(false);
@@ -19,7 +20,7 @@ export const DataItem = props => {
 
                 <TextContainer>
 
-                    <View style={{ flexDirection: 'row' }} >
+                    <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center' }} >
                         <Text
                             style={{ ...styles.title }}
                             numberOfLines={1}
@@ -27,10 +28,17 @@ export const DataItem = props => {
                         </Text>
 
                         {
-                            !props.unOpenedMessages &&
-                            <View style={{ backgroundColor: colors.primary, width: 20, borderRadius: 50, alignItems: 'center' }} >
-                                <Text>3</Text>
-                            </View>
+                            props.personType === "coach" ?
+                                <Image source={require("../../assets/images/personal-trainer-icon.png")} style={{ width: 20, height: 20, marginRight: 5 }} /> :
+                                <Image source={require("../../assets/images/trainee-icon.png")} style={{ width: 20, height: 20 }} />
+                        }
+
+                        {
+                            props.gender === "female" ?
+                                <Foundation name="female-symbol" size={24} color="#F4338F" /> :
+                                <Foundation name="male-symbol" size={24} color={colors.primary} />
+
+
                         }
 
 

@@ -98,6 +98,8 @@ const NewChatScreen = props => {
                                 title={userData.firstName}
                                 subTitle={userData.about}
                                 onPress={() => userPressed(userId)}
+                                personType={userData.personType}
+                                gender={userData.gender}
                             />
                         )
                     }}
@@ -119,7 +121,7 @@ const NewChatScreen = props => {
                 !isLoading && !users && (
                     <UsersContainer>
                         <FontAwesome name="users" size={55} color={colors.lightGrey} />
-                        <DefaultText>Enter a name to search for a user</DefaultText>
+                        <DefaultText>Enter a name to search for a coach or a trainee</DefaultText>
                     </UsersContainer>
                 )
             }

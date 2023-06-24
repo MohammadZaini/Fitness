@@ -6,7 +6,7 @@ import { SubmitButton } from "../../../components/submit-button";
 import { SignUp } from "../../../utils/actions/auth-actions";
 import { ActivityIndicator } from "react-native-paper";
 import { colors } from "../../../infratructure/theme/colors";
-import { Alert } from "react-native";
+import { Alert, View } from "react-native";
 import { useDispatch } from "react-redux";
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -45,6 +45,7 @@ export const SignUpForm = props => {
     const [isLoading, setIsloading] = useState(false);
     const [error, setError] = useState("");
     const [personType, setPersonType] = useState("trainee");
+    const [gender, setGender] = useState("male");
 
     const dispatch = useDispatch();
 
@@ -68,7 +69,8 @@ export const SignUpForm = props => {
                 formState.inputValues.lastName,
                 formState.inputValues.email,
                 formState.inputValues.password,
-                personType
+                personType,
+                gender
             );
             setError(null);
             await dispatch(action);
@@ -79,9 +81,9 @@ export const SignUpForm = props => {
             setIsloading(false)
         }
 
-    }, [dispatch, formState, personType])
+    }, [dispatch, formState, personType, gender])
 
-    const switchOptions = [
+    const personTypeOptions = [
         {
             label: "Coach",
             value: "coach",
@@ -91,6 +93,19 @@ export const SignUpForm = props => {
             label: "Trainee",
             value: "trainee",
             imageIcon: require("../../../../assets/images/trainee-icon.png")
+        }
+    ];
+
+    const genderOptions = [
+        {
+            label: "Male",
+            value: "male",
+            imageIcon: require("../../../../assets/images/male-icon.png")
+        },
+        {
+            label: "Female",
+            value: "female",
+            imageIcon: require("../../../../assets/images/female-icon.png")
         }
     ];
 
@@ -156,17 +171,30 @@ export const SignUpForm = props => {
                 color={formState.inputIsValidColor["password"]}
             />
 
-            <SwitchSelector
-                options={switchOptions}
-                initial={1}
-                onPress={(value) => setPersonType(value)}
-                style={{ marginHorizontal: 40, marginTop: 10 }}
-                buttonColor={colors.primary}
-                textStyle={{ fontFamily: fonts.body, flex: 1 }}
-                selectedTextStyle={{ fontFamily: fonts.body }}
-                imageStyle={{ height: 20, width: 20, marginRight: 15 }}
-            />
 
+            <View style={{ flexDirection: 'row' }}>
+                <SwitchSelector
+                    options={personTypeOptions}
+                    initial={1}
+                    onPress={(value) => setPersonType(value)}
+                    style={{ marginTop: 10, width: "40%", marginRight: 10 }}
+                    buttonColor={colors.primary}
+                    textStyle={{ fontFamily: fonts.body, flex: 1 }}
+                    selectedTextStyle={{ fontFamily: fonts.body }}
+                    imageStyle={{ height: 20, width: 20, marginRight: 8 }}
+                />
+
+                <SwitchSelector
+                    options={genderOptions}
+                    initial={0}
+                    onPress={(value) => setGender(value)}
+                    style={{ marginTop: 10, width: "40%" }}
+                    buttonColor={gender === "male" ? colors.primary : "#F4338F"}
+                    textStyle={{ fontFamily: fonts.body, flex: 1 }}
+                    selectedTextStyle={{ fontFamily: fonts.body }}
+                    imageStyle={{ height: 20, width: 20, marginRight: 8 }}
+                />
+            </View>
             {
                 isLoading ?
                     <ActivityIndicator size="small" color={colors.primary} style={{ marginTop: 20 }} /> :

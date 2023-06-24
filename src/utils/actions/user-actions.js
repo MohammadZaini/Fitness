@@ -23,14 +23,18 @@ export const searchUsers = async (queryText) => {
 
         const app = getFirebaseApp();
         const dbRef = ref(getDatabase(app));
-        const userRef = child(dbRef, 'users');
 
-        const queryRef = query(userRef, orderByChild('firstLast'), startAt(searchTerm), endAt(searchTerm + "\uf8ff"));
+        const traineesRef = child(dbRef, 'trainees');
+        const coachesRef = child(dbRef, 'coaches');
 
-        const snapshot = await get(queryRef);
+        const queryTraineesRef = query(traineesRef, orderByChild('firstLast'), startAt(searchTerm), endAt(searchTerm + "\uf8ff"));
+        const queryCoachesRef = query(coachesRef, orderByChild('firstLast'), startAt(searchTerm), endAt(searchTerm + "\uf8ff"));
 
-        if (snapshot.exists()) {
-            return snapshot.val();
+        const traineesSnapshot = await get(queryTraineesRef);
+        const coachesSnapshot = await get(queryCoachesRef);
+
+        if (traineesSnapshot.exists() || coachesSnapshot.exists()) {
+            return { ...traineesSnapshot.val(), ...coachesSnapshot.val() };
         };
 
         return {};

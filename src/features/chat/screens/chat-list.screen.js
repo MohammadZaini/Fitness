@@ -57,7 +57,7 @@ const ChatListScreen = props => {
 
                     const otherUserId = chatData.users.find(uid => uid !== userData.userId);
                     const otherUser = storedUsers[otherUserId];
-
+                    console.log(otherUser);
                     const title = `${otherUser.firstName} ${otherUser.lastName}`;
                     const subTitle = chatData.latestTextMessage || "New chat"
                     const image = otherUser.profilePicture;
@@ -70,6 +70,8 @@ const ChatListScreen = props => {
                         subTitle={subTitle}
                         onPress={() => props.navigation.navigate("Chat", { chatId })}
                         unOpenedMessages={subTitle}
+                        personType={otherUser.personType}
+                        gender={otherUser.gender}
                     />
                 }}
             />
