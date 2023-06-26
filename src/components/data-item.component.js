@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { ProfileImage } from "./profile-image.component";
 import { Image, Text, View } from "react-native";
 import { TouchableWithoutFeedback } from "react-native";
@@ -9,7 +9,7 @@ import { fonts } from "../infratructure/theme/fonts";
 import { Foundation } from '@expo/vector-icons';
 
 export const DataItem = props => {
-    // const [navigating, setIsNavigating] = useState(false);
+
     return (
         <TouchableWithoutFeedback onPress={props.onPress} >
             <Container>
@@ -30,15 +30,13 @@ export const DataItem = props => {
                         {
                             props.personType === "coach" ?
                                 <Image source={require("../../assets/images/personal-trainer-icon.png")} style={{ width: 20, height: 20, marginRight: 5 }} /> :
-                                <Image source={require("../../assets/images/trainee-icon.png")} style={{ width: 20, height: 20 }} />
+                                <Image source={require("../../assets/images/trainee-icon.png")} style={{ width: 20, height: 20, marginRight: 5 }} />
                         }
 
                         {
                             props.gender === "female" ?
-                                <Foundation name="female-symbol" size={24} color="#F4338F" /> :
+                                <Foundation name="female-symbol" size={24} color={colors.female} /> :
                                 <Foundation name="male-symbol" size={24} color={colors.primary} />
-
-
                         }
 
 

@@ -85,7 +85,7 @@ export const SignIn = (email, password) => {
                 if (errorCode === "auth/user-not-found") {
                     message = "Invalid email";
                 } else if (errorCode === "auth/wrong-password") {
-                    message = "Inavlid password";
+                    message = "Invalid password";
                 };
 
                 throw new Error(message);
@@ -98,9 +98,8 @@ export const userLogout = () => {
         AsyncStorage.clear();
         clearTimeout(timer)
         dispatch(logout());
-    }
-
-}
+    };
+};
 
 export const updatedSignedInUserData = async (userId, newData) => {
     if (newData.firstLast && newData.lastName) {
@@ -110,7 +109,20 @@ export const updatedSignedInUserData = async (userId, newData) => {
 
     const app = getFirebaseApp();
     const dbRef = ref(getDatabase(app));
-    const childRef = child(dbRef, `users/${userId}`);
+
+    let path;
+
+    if (newData.personType === "coach") {
+        path = `coaches/${userId}`
+    } else if (newData.personType === "trainee") {
+        path = `trainees/${userId}`
+    } else {
+        path = `coaches/${userId}`
+        console.log("hmmm");
+        // return;
+    }
+
+    const childRef = child(dbRef, path);
 
     await update(childRef, newData);
 }

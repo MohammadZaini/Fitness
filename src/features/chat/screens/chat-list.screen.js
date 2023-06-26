@@ -26,7 +26,7 @@ const ChatListScreen = props => {
                 return <HeaderButtons HeaderButtonComponent={CustomHeaderButton} >
                     <Item
                         title="new chat"
-                        iconName="create-outline"
+                        iconName="account-search-outline"
                         onPress={() => props.navigation.navigate("NewChat")}
                     />
                 </HeaderButtons>
@@ -57,7 +57,7 @@ const ChatListScreen = props => {
 
                     const otherUserId = chatData.users.find(uid => uid !== userData.userId);
                     const otherUser = storedUsers[otherUserId];
-                    console.log(otherUser);
+
                     const title = `${otherUser.firstName} ${otherUser.lastName}`;
                     const subTitle = chatData.latestTextMessage || "New chat"
                     const image = otherUser.profilePicture;

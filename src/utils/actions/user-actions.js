@@ -6,7 +6,7 @@ export const getUserData = async (userId) => {
     try {
         const app = getFirebaseApp();
         const dbRef = ref(getDatabase(app));
-        const userRef = child(dbRef, `users/${userId}`);
+        const userRef = child(dbRef, `coaches/${userId}`);
 
         const snapshot = await get(userRef)
 
@@ -41,6 +41,6 @@ export const searchUsers = async (queryText) => {
 
     } catch (error) {
         console.log(error);
-        throw error
+        throw error;
     };
 };

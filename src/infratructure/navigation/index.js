@@ -14,7 +14,7 @@ const Navigation = () => {
     // const [isloading, setIsLoading] = useState(true);
     // const [viewedOnboarding, setViewedOnboarding] = useState(false);
 
-    AsyncStorage.clear();
+    // AsyncStorage.clear();
 
     // const Loading = () => {
     //     return <View style={{ justifyContent: 'center', flex: 1 }}>

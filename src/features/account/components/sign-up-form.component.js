@@ -189,7 +189,7 @@ export const SignUpForm = props => {
                     initial={0}
                     onPress={(value) => setGender(value)}
                     style={{ marginTop: 10, width: "40%" }}
-                    buttonColor={gender === "male" ? colors.primary : "#F4338F"}
+                    buttonColor={gender === "male" ? colors.primary : colors.female}
                     textStyle={{ fontFamily: fonts.body, flex: 1 }}
                     selectedTextStyle={{ fontFamily: fonts.body }}
                     imageStyle={{ height: 20, width: 20, marginRight: 8 }}

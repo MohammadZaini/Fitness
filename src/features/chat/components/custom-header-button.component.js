@@ -1,12 +1,12 @@
 import React from "react";
 import { HeaderButton } from "react-navigation-header-buttons";
-import { Ionicons } from '@expo/vector-icons';
 import { colors } from "../../../infratructure/theme/colors";
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export const CustomHeaderButton = props => {
     return <HeaderButton
         {...props}
-        IconComponent={Ionicons}
+        IconComponent={MaterialCommunityIcons}
         iconSize={23}
         color={props.color ?? colors.primary}
     />

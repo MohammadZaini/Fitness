@@ -1,6 +1,7 @@
 import { styled } from 'styled-components';
 import { colors } from '../../../infratructure/theme/colors';
 import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 export const ChatsBackground = styled.ImageBackground.attrs({
     source: require('../../../../assets/images/chat-background.jpg')
@@ -28,21 +29,21 @@ export const BottomView = styled.View`
     padding: 8px;
 `;
 
-export const SendMessageIcon = styled(Feather).attrs({
+export const SendMessageIcon = styled(Ionicons).attrs({
     name: "send",
     size: 20,
     color: "white"
 })`
     border-width: 1px;
     border-radius: 50px; 
-    padding: 7px;
+    padding: 6px;
     background-color: ${colors.primary}; 
     border-color: ${colors.primary};
 `;
 
 export const SendImageIcon = styled(Feather).attrs({
     name: "plus",
-    size: 24,
+    size: 27,
     color: colors.primary
 })`
     justify-content: center;
@@ -51,7 +52,7 @@ export const SendImageIcon = styled(Feather).attrs({
 
 export const TakePictureIcon = styled(Feather).attrs({
     name: "camera",
-    size: 24,
+    size: 27,
     color: colors.primary
 })`
     justify-content: center;

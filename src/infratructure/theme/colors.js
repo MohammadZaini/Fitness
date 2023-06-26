@@ -9,5 +9,6 @@ export const colors = {
     extraLightGrey: "#ededed",
     lightBlue: "#ADD8E6",
     red: "#e74c3c",
-    yellow: "yellow"
+    yellow: "yellow",
+    female: "#F4338F"
 }; 

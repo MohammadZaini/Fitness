@@ -17,6 +17,8 @@ const userSlice = createSlice({
                 existingUsers[userData.userId] = userData
             };
             state.storedUsers = existingUsers;
+
+            console.log(JSON.stringify(state.storedUsers, 0, 2));
         }
     }
 }
