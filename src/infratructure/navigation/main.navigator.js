@@ -154,7 +154,7 @@ const StackNavigator = () => {
 
             <Stack.Group screenOptions={{ headerShadowVisible: false, ...TransitionPresets.SlideFromRightIOS, }} >
                 <Stack.Screen name="NewChat" component={NewChatScreen} options={{ title: "New chat" }} />
-                <Stack.Screen name="ExerciseDetails" component={ExersiceDetails} options={{ title: "Exercise" }} />
+                <Stack.Screen name="ExerciseDetails" component={ExersiceDetails} options={{ title: "Exercise", headerShown: false }} />
             </Stack.Group>
 
         </Stack.Navigator>

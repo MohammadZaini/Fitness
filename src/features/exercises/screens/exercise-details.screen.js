@@ -1,117 +1,119 @@
 import React, { useEffect, useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import MuscleWiki from "../../../services/api/MuscleWiki";
-import { View, Switch } from "react-native";
+import { View } from "react-native";
 import { FlatList } from "react-native";
 import { colors } from "../../../infratructure/theme/colors";
-import { Card } from "react-native-paper";
-import { ExersiceName } from "./exercises.screen";
-import { ScrollView } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
+import { Video, ResizeMode } from 'expo-av';
+import { fonts } from "../../../infratructure/theme/fonts";
+import { useRef } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { styled } from "styled-components";
+import { Category, CategoryHeader, Header, Steps } from "../components/exercise-details.styles";
 
 const ExersiceDetails = props => {
+    const [isLoading, setIsLoading] = useState(false);
     const [apiResults, setApiResults] = useState([]);
-    const exerciseId = props.route.params.id;
-    const photoPath = props.route.params.photo;
+    const exerciseType = props.route.params.exerciseType;
 
     const getExercies = async () => {
         try {
+            setIsLoading(true)
             const results = await MuscleWiki.get(``, {
                 params: {
-                    name: "Chest",
-                    difficulty: "Beginner"
+                    name: exerciseType,
+                    // difficulty: "Beginner"
                 }
             });
             setApiResults(results.data);
-            console.log(JSON.stringify(results.data, 0, 2));
+            setIsLoading(false)
         } catch (error) {
             console.log(error);
         };
     };
 
-    const filterDataByDifficulty = () => {
-        return (apiResults.filter((exercise) => exercise.Difficulty === "Beginner"))
-    };
-
-    // console.log(JSON.stringify(filterDataByDifficulty(), 0, 2));
-
     useEffect(() => {
         getExercies();
     }, []);
 
+    const viewRef = useRef(null)
+
+    if (isLoading) {
+        return <>
+            <ActivityIndicator size="large" color={colors.primary} style={{ flex: 1 }} />
+        </>
+    };
+
     return (
         <View>
+            <SafeAreaView>
 
+                <FlatList
+                    data={apiResults.slice(-5)}
+                    renderItem={({ item }) => {
+                        return (
+                            <View style={{ marginBottom: 20, borderBottomWidth: 1, borderBottomColor: 'grey' }} >
 
-            {/* <Card style={{ margin: 15, backgroundColor: colors.lightGrey, marginTop: 10 }} > */}
-            {/* <ExersiceName>Chest</ExersiceName> */}
-            {/* <Text>Beginner</Text>  */}
-            {/* <Card.Cover source={photoPath} />
-            </Card> */}
+                                <Header >{item.exercise_name}</Header>
 
+                                {
+                                    item.videoURL[0] &&
+                                    <Video
+                                        style={styles.video}
+                                        source={{
+                                            uri: item.videoURL[0],
+                                        }}
+                                        useNativeControls
+                                        resizeMode={ResizeMode.CONTAIN}
+                                        isLooping
+                                    />}
 
+                                <View style={{ flexDirection: 'row', flexWrap: 'wrap' }} >
+                                    <Category> <CategoryHeader style={{ fontWeight: 'bold' }} >Category:</CategoryHeader> {item.Category}</Category>
+                                    <Category><CategoryHeader style={{ fontWeight: 'bold' }} >Difficulty:</CategoryHeader> {item.Difficulty}</Category>
+                                    {item.Grips && <Category><CategoryHeader >Grips:</CategoryHeader> {item.Grips}</Category>}
+                                    {item.Force && <Category><CategoryHeader >Force:</CategoryHeader> {item.Force}</Category>}
+                                    {item.target.Primary && <Category><CategoryHeader >Primary Target:</CategoryHeader> {item.target.Primary[0]}</Category>}
+                                    {item.target.Secondary && <Category><CategoryHeader >Secondary Target:</CategoryHeader> {item.target.Secondary[0]}</Category>}
+                                </View>
 
-            <FlatList
-                data={apiResults}
-                renderItem={({ item }) => {
-                    return (
-                        <>
-                            <Text style={styles.header} >{item.exercise_name}</Text>
+                                <Header>Steps</Header>
 
-                            <View style={{ flexDirection: 'row', flexWrap: 'wrap' }} >
-                                <Text style={styles.category}>Category: {item.Category}</Text>
-                                <Text style={styles.category}>Difficulty: {item.Difficulty}</Text>
-                                {item.Grips && <Text style={styles.category}>Grips: {item.Grips}</Text>}
-                                {item.Force && <Text style={styles.category}>Force: {item.Force}</Text>}
-                            </View>
-
-                            <View>
                                 {
                                     item.steps.map((step, index) => {
                                         return <View key={index.toString()}>
-                                            <Text>
+                                            <Steps >
                                                 {index + 1} - {step}
-                                            </Text>
+                                            </Steps>
                                         </View>
 
                                     })
                                 }
+
                             </View>
-                        </>
-                    )
-                }}
-            />
+                        )
+                    }}
+                />
 
-            {/* 
-            <Text style={{ fontSize: 28, fontWeight: 'bold' }}>Steps:</Text>
-            <FlatList
-                data={apiResults.steps}
-                horizontal
-                keyExtractor={(key, index) => key.id + index.toString()}
-                renderItem={({ item }) => {
-
-                    return <Text>
-                        {"-" + item}
-                    </Text>
-                }}
-            /> */}
-
-            {/* <Image source={require("../../../../assets/images/chatting.png")} style={{ height: 350, width: 400 }} /> */}
+            </SafeAreaView>
         </View>
     )
 };
 
 const styles = StyleSheet.create({
-    category: {
-        backgroundColor: colors.primary,
-        margin: 10,
-        borderRadius: 20,
-        maxWidth: "80%",
-        padding: 5,
+    video: {
+        height: 210,
+        width: 350,
+        marginLeft: 10,
+        borderRadius: 25
     },
-    header: {
-        fontSize: 18,
-        fontWeight: 'bold'
-    }
 })
 
 export default ExersiceDetails;
+
+
+
+
+
+
