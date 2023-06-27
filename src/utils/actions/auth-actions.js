@@ -145,10 +145,12 @@ const createUser = async (firstName, lastName, email, userId, personType, gender
         path = `coaches/${userId}`;
         userData.personType = personType;
         userData.gender = gender;
+
     } else if (personType === "trainee") {
         path = `trainees/${userId}`;
         userData.personType = personType;
         userData.gender = gender;
+
     } else {
         return;
     }

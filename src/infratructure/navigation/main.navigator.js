@@ -42,8 +42,8 @@ const StackNavigator = () => {
         dispatch that and save the chat data to our state.  
         */
         onValue(userChatsRef, (querySnapshot) => {
-            const chatIdData = querySnapshot.val() || {};
-            const chatIds = Object.values(chatIdData);
+            const chatIdData = querySnapshot.val() || {}; // chatKey: chatId.
+            const chatIds = Object.values(chatIdData); // ex. ["-NYjR4uHCJFF8f2Mi-H4", "-NYjRJDkK_6JDaRekhsN","-NYmwcDqwUcz-GT5cS1j"]
 
             const chatsData = {};
             let chatsFoundCount = 0;
@@ -54,7 +54,7 @@ const StackNavigator = () => {
                 refs.push(chatRef)
 
                 // Chat data
-                onValue(chatRef, (chatSnapshot) => {
+                onValue(chatRef, (chatSnapshot) => { // createdAt: "...", latestMessageText: "...", users: [0: "...", 1: "..."] ......
                     chatsFoundCount++
 
                     const data = chatSnapshot.val();
@@ -66,7 +66,7 @@ const StackNavigator = () => {
                         }
 
                         data.key = chatSnapshot.key;
-
+                        // console.log(JSON.stringify(chatSnapshot.key, 0, 2));
                         data.users.forEach(userId => {
                             if (storedUsers[userId]) return;
                             const coachesRef = child(dbRef, `coaches/${userId}`);
@@ -77,7 +77,9 @@ const StackNavigator = () => {
                             get(coachesRef)
                                 .then(coachesSnapshot => {
                                     const coachesSnapshotData = coachesSnapshot.val();
-                                    dispatch(setStoredUsers({ newUsers: { coachesSnapshotData } }))
+                                    if (coachesSnapshotData) {
+                                        dispatch(setStoredUsers({ newUsers: { coachesSnapshotData } }))
+                                    }
                                 });
 
                             refs.push(coachesRef);
@@ -85,12 +87,11 @@ const StackNavigator = () => {
                             get(traineesRef)
                                 .then(traineesSnapshot => {
                                     const traineesSnapshotData = traineesSnapshot.val();
-                                    dispatch(setStoredUsers({ newUsers: { traineesSnapshotData } }))
+                                    if (traineesSnapshotData) {
+                                        dispatch(setStoredUsers({ newUsers: { traineesSnapshotData } }))
+                                    }
                                 });
-
                             refs.push(traineesRef);
-
-
                         });
 
                         chatsData[chatSnapshot.key] = data

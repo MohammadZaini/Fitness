@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet } from "react-native";
 import MuscleWiki from "../../../services/api/MuscleWiki";
 import { View } from "react-native";
 import { FlatList } from "react-native";
 import { colors } from "../../../infratructure/theme/colors";
 import { ActivityIndicator } from "react-native-paper";
 import { Video, ResizeMode } from 'expo-av';
-import { fonts } from "../../../infratructure/theme/fonts";
-import { useRef } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { styled } from "styled-components";
 import { Category, CategoryHeader, Header, Steps } from "../components/exercise-details.styles";
 
 const ExersiceDetails = props => {
@@ -23,7 +20,6 @@ const ExersiceDetails = props => {
             const results = await MuscleWiki.get(``, {
                 params: {
                     name: exerciseType,
-                    // difficulty: "Beginner"
                 }
             });
             setApiResults(results.data);
@@ -36,8 +32,6 @@ const ExersiceDetails = props => {
     useEffect(() => {
         getExercies();
     }, []);
-
-    const viewRef = useRef(null)
 
     if (isLoading) {
         return <>
@@ -67,15 +61,28 @@ const ExersiceDetails = props => {
                                         useNativeControls
                                         resizeMode={ResizeMode.CONTAIN}
                                         isLooping
-                                    />}
+                                    />
+                                }
 
                                 <View style={{ flexDirection: 'row', flexWrap: 'wrap' }} >
                                     <Category> <CategoryHeader style={{ fontWeight: 'bold' }} >Category:</CategoryHeader> {item.Category}</Category>
                                     <Category><CategoryHeader style={{ fontWeight: 'bold' }} >Difficulty:</CategoryHeader> {item.Difficulty}</Category>
-                                    {item.Grips && <Category><CategoryHeader >Grips:</CategoryHeader> {item.Grips}</Category>}
-                                    {item.Force && <Category><CategoryHeader >Force:</CategoryHeader> {item.Force}</Category>}
-                                    {item.target.Primary && <Category><CategoryHeader >Primary Target:</CategoryHeader> {item.target.Primary[0]}</Category>}
-                                    {item.target.Secondary && <Category><CategoryHeader >Secondary Target:</CategoryHeader> {item.target.Secondary[0]}</Category>}
+                                    {
+                                        item.Grips &&
+                                        <Category><CategoryHeader >Grips:</CategoryHeader> {item.Grips}</Category>
+                                    }
+                                    {
+                                        item.Force &&
+                                        <Category><CategoryHeader >Force:</CategoryHeader> {item.Force}</Category>
+                                    }
+                                    {
+                                        item.target.Primary &&
+                                        <Category><CategoryHeader >Primary Target:</CategoryHeader> {item.target.Primary[0]}</Category>
+                                    }
+                                    {
+                                        item.target.Secondary &&
+                                        <Category><CategoryHeader >Secondary Target:</CategoryHeader> {item.target.Secondary[0]}</Category>
+                                    }
                                 </View>
 
                                 <Header>Steps</Header>
@@ -95,7 +102,6 @@ const ExersiceDetails = props => {
                         )
                     }}
                 />
-
             </SafeAreaView>
         </View>
     )
@@ -111,9 +117,3 @@ const styles = StyleSheet.create({
 })
 
 export default ExersiceDetails;
-
-
-
-
-
-
