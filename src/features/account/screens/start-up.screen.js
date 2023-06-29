@@ -21,7 +21,8 @@ const StartUpScreen = () => {
             }
 
             const parsedData = JSON.parse(storedAuthInfo);
-            const { token, userId, expiryDate: expiryDateString } = parsedData;
+            const { token, userId, expiryDate: expiryDateString, personType } = parsedData;
+            console.log(personType + "yea");
             const expiryDate = new Date(expiryDateString);
 
             if (expiryDate <= new Date || !token || !userId) {
@@ -29,7 +30,7 @@ const StartUpScreen = () => {
                 return;
             };
 
-            const userData = await getUserData(userId);
+            const userData = await getUserData(userId, personType);
             dispatch(authenticate({ token, userData }));
         };
         tryAutoLogin();

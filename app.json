@@ -4,10 +4,10 @@
     "slug": "Fitness",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/dumbbel-icon.png",
+    "icon": "./assets/images/newIcon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/images/splash.jpg",
+      "image": "./assets/images/splash.png",
       "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },

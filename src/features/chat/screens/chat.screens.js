@@ -19,11 +19,14 @@ import { createSelector } from 'reselect'
 const ChatScreen = props => {
     const [chatUsers, setChatUsers] = useState([]);
     const [messageText, setMessageText] = useState("");
+    const [chatId, setChatId] = useState(props.route?.params?.chatId) // to check wether it's a new chat or not.
     const [errorBannerText, setErrorBannerText] = useState("");
-    const [chatId, setChatId] = useState(props.route?.params?.chatId) // to check wether it's a new chat or not
+    // console.log("CHAT ID IS: " + "====>" + chatId);
     const [replyingTo, setReplyingTo] = useState("");
     const [tempImageUri, setTempImageUri] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+
+    const flatRef = useRef();
 
     const userData = useSelector(state => state.auth.userData);
     const storedUsers = useSelector(state => state.users.storedUsers);
@@ -52,27 +55,27 @@ const ChatScreen = props => {
     // })
 
 
-    const createSelectorTest = createSelector(
-        state => state.messages.messagesData[chatId],
-        (chatMessagesData) => {
-            if (!chatMessagesData) return [];
+    const chatMessages = useSelector(state => {
+        if (!chatId) return [];
 
-            const messageList = [];
+        const chatMessagesData = state.messages.messagesData[chatId];
 
-            for (const key in chatMessagesData) {
-                const message = chatMessagesData[key]
+        if (!chatMessagesData) return [];
 
-                messageList.push({
-                    key,
-                    ...message,
-                })
-            }
-            // console.log(messageList);
-            return messageList;
+        const messageList = [];
+
+        for (const key in chatMessagesData) {
+            const message = chatMessagesData[key]
+
+            messageList.push({
+                key,
+                ...message,
+            })
         }
-    )
-    const chatMessages = useSelector(state => createSelectorTest(state))
 
+        return messageList;
+    });
+    // console.log(chatMessages);
 
     // const chatMessagesList = useCallback(() => {
     //     if (!chatId) return [];
@@ -96,7 +99,6 @@ const ChatScreen = props => {
     // }, [chatId])
 
 
-    const flatRef = useRef();
 
 
     const chatData = (chatId && storedChats[chatId]) || props.route?.params?.newChatData;
@@ -108,7 +110,7 @@ const ChatScreen = props => {
     };
 
     useEffect(() => {
-
+        // if (!chatData) return;
         props.navigation.setOptions({
             headerTitle: getChatTilteFromName()
         });
@@ -127,7 +129,8 @@ const ChatScreen = props => {
             console.log("Created");
 
             await sendTextMessage(id, userData.userId, messageText, replyingTo && replyingTo.key);
-
+            setMessageText("");
+            setReplyingTo(null);
         } catch (error) {
             console.log(error);
             setErrorBannerText("Message failed to send");
@@ -135,8 +138,7 @@ const ChatScreen = props => {
                 setErrorBannerText("");
             }, 5000)
         }
-        setMessageText("");
-        setReplyingTo(null);
+
     }, [messageText, chatId]);
 
     const pickPhoto = useCallback(async () => {
@@ -201,7 +203,7 @@ const ChatScreen = props => {
                     }
 
                     {
-                        errorBannerText &&
+                        errorBannerText !== "" &&
                         <Bubble type="error" text={errorBannerText} />
                     }
 
@@ -210,6 +212,7 @@ const ChatScreen = props => {
                         <FlatList
                             ref={ref => flatRef.current = ref}
                             onContentSizeChange={() => chatMessages.length > 0 && flatRef.current.scrollToEnd({ animated: true })}
+                            onLayout={() => chatMessages.length > 0 && flatRef.current.scrollToEnd({ animated: false })}
                             showsVerticalScrollIndicator={false}
                             data={chatMessages}
                             // keyExtractor={(id, index) => id.key + index.toString()}

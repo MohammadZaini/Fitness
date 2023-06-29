@@ -8,38 +8,50 @@ import Onboarding from "./onboarding/onboarding";
 import { View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { colors } from "./src/infratructure/theme/colors";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import * as SplashScreen from 'expo-splash-screen';
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function App() {
-  const [isloading, setIsLoading] = useState(true);
-  const [viewedOnboarding, setViewedOnboarding] = useState(false);
+  // const [isloading, setIsLoading] = useState(true);
+  // const [viewedOnboarding, setViewedOnboarding] = useState(false);
+  const [appIsloaded, setAppIsLoaded] = useState(false);
 
   AsyncStorage.clear();
+  // const Loading = () => {
+  //   return <View style={{ justifyContent: 'center', flex: 1 }}>
+  //     <ActivityIndicator size="large" color={colors.primary} />
+  //   </View>
+  // }
 
-  const Loading = () => {
-    return <View style={{ justifyContent: 'center', flex: 1 }}>
-      <ActivityIndicator size="large" color={colors.primary} />
-    </View>
-  }
+  // const checkOnboarding = async () => {
+  //   try {
+  //     const value = await AsyncStorage.getItem('@viewedOnboarding');
 
-  const checkOnboarding = async () => {
-    try {
-      const value = await AsyncStorage.getItem('@viewedOnboarding');
+  //     if (value !== null) {
+  //       setViewedOnboarding(true);
+  //     }
 
-      if (value !== null) {
-        setViewedOnboarding(true);
-      }
-
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setIsLoading(false)
+  //   }
+  // }
 
   useEffect(() => {
-    checkOnboarding();
-  }, [])
+    // checkOnboarding();
+    setTimeout(() => {
+      setAppIsLoaded(true);
+    }, 2000)
+  }, []);
+
+
+  const onLayout = useCallback(async () => {
+    if (appIsloaded) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsloaded]);
 
   const [oswaldLoaded] = useFonts({
     Oswald_400Regular,
@@ -50,11 +62,13 @@ export default function App() {
   };
 
   return (
-    <Provider store={store} >
-      <MenuProvider>
+    <SafeAreaProvider onLayout={onLayout} >
+      <Provider store={store} >
+        <MenuProvider>
 
-        <Navigation />
-      </MenuProvider>
-    </Provider>
+          <Navigation />
+        </MenuProvider>
+      </Provider>
+    </SafeAreaProvider>
   );
 };

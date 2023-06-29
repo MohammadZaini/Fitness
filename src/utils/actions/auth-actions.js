@@ -32,7 +32,9 @@ export const SignUp = (firstName, lastName, email, password, personType, gender)
                 const userData = await createUser(firstName, lastName, email, uid, personType, gender);
                 dispatch(authenticate({ token: accessToken, userData }));
 
-                saveDatatoAsyncStorage(accessToken, uid, expiryDate)
+                saveDatatoAsyncStorage(accessToken, uid, expiryDate, personType)
+
+                getPersonType(personType)
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -71,10 +73,17 @@ export const SignIn = (email, password) => {
                     dispatch(userLogout());
                 }, milliSecondsUntilExpiry);
 
-                const userData = await getUserData(uid);
+                const personType = await AsyncStorage.getItem("type")
+                console.log(JSON.stringify(personType, 0, 2));
+
+                // if (!personType) {
+                //     throw new Error()
+                // };
+
+                const userData = await getUserData(uid, personType ?? "coach");
                 dispatch(authenticate({ token: accessToken, userData }));
 
-                saveDatatoAsyncStorage(accessToken, uid, expiryDate);
+                saveDatatoAsyncStorage(accessToken, uid, expiryDate, userData.personType);
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -164,11 +173,15 @@ const createUser = async (firstName, lastName, email, userId, personType, gender
     return userData;
 };
 
-const saveDatatoAsyncStorage = (token, userId, expiryDate) => {
+const saveDatatoAsyncStorage = (token, userId, expiryDate, personType) => {
     AsyncStorage.setItem("userToken", JSON.stringify({
         token,
         userId,
-        expiryDate: expiryDate.toISOString()
+        expiryDate: expiryDate.toISOString(),
+        personType
     }));
 };
 
+const getPersonType = (personType) => {
+    AsyncStorage.setItem("type", personType)
+}

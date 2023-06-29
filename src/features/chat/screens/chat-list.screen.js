@@ -10,7 +10,7 @@ const ChatListScreen = props => {
 
     const selectedUser = props.route?.params?.selectedUserId;
     const userData = useSelector(state => state.auth.userData);
-    const userChats = useSelector(state => state.chats.chatsData)
+    const userChats = useSelector(state => state.chats.chatsData);
 
     const sortedUserChat = () => {
         return Object.values(userChats).sort((a, b) => {

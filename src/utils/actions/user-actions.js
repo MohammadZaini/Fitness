@@ -1,13 +1,14 @@
 import { child, endAt, get, getDatabase, orderByChild, query, ref, startAt } from "firebase/database";
 import { getFirebaseApp } from "../firebase-helper"
 
-export const getUserData = async (userId) => {
+export const getUserData = async (userId, personType) => {
 
     try {
         const app = getFirebaseApp();
         const dbRef = ref(getDatabase(app));
-        const userRef = child(dbRef, `coaches/${userId}`);
 
+        const userRef = child(dbRef, `${personType}es/${userId}`);
+        console.log(`${personType}es`);
         const snapshot = await get(userRef)
 
         return snapshot.val();

@@ -92,6 +92,7 @@ const NewChatScreen = props => {
                     renderItem={(itemData) => {
                         const userId = itemData.item
                         const userData = users[userId]
+
                         return (
                             <DataItem
                                 uri={userData.profilePicture}
