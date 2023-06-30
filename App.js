@@ -18,6 +18,8 @@ export default function App() {
   const [appIsloaded, setAppIsLoaded] = useState(false);
 
   AsyncStorage.clear();
+  SplashScreen.preventAutoHideAsync();
+
   // const Loading = () => {
   //   return <View style={{ justifyContent: 'center', flex: 1 }}>
   //     <ActivityIndicator size="large" color={colors.primary} />
@@ -58,6 +60,10 @@ export default function App() {
   });
 
   if (!oswaldLoaded) {
+    return null;
+  };
+
+  if (!appIsloaded) {
     return null;
   };
 
