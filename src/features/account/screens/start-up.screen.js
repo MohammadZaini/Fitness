@@ -21,9 +21,10 @@ const StartUpScreen = () => {
             }
 
             const parsedData = JSON.parse(storedAuthInfo);
-            const { token, userId, expiryDate: expiryDateString, personType } = parsedData;
-            console.log(personType + "yea");
+            const { token, userId, expiryDate: expiryDateString } = parsedData;
             const expiryDate = new Date(expiryDateString);
+
+            const personType = await AsyncStorage.getItem(`type-${userId}`);
 
             if (expiryDate <= new Date || !token || !userId) {
                 dispatch(setDidTryAutoLogin());

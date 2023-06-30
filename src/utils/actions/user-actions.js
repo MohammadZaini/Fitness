@@ -7,8 +7,14 @@ export const getUserData = async (userId, personType) => {
         const app = getFirebaseApp();
         const dbRef = ref(getDatabase(app));
 
-        const userRef = child(dbRef, `${personType}es/${userId}`);
-        console.log(`${personType}es`);
+        let type;
+        if (personType === "trainee") {
+            type = "trainees"
+        } else if (personType === "coach") {
+            type = "coaches"
+        };
+
+        const userRef = child(dbRef, `${type}/${userId}`);
         const snapshot = await get(userRef)
 
         return snapshot.val();

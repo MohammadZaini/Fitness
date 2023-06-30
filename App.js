@@ -17,7 +17,7 @@ export default function App() {
   // const [viewedOnboarding, setViewedOnboarding] = useState(false);
   const [appIsloaded, setAppIsLoaded] = useState(false);
 
-  AsyncStorage.clear();
+  // AsyncStorage.clear();
   SplashScreen.preventAutoHideAsync();
 
   // const Loading = () => {

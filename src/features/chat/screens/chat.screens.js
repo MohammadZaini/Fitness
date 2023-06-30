@@ -54,7 +54,6 @@ const ChatScreen = props => {
     //     return messageList;
     // })
 
-
     const chatMessages = useSelector(state => {
         if (!chatId) return [];
 

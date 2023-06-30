@@ -31,10 +31,8 @@ export const SignUp = (firstName, lastName, email, password, personType, gender)
 
                 const userData = await createUser(firstName, lastName, email, uid, personType, gender);
                 dispatch(authenticate({ token: accessToken, userData }));
-
-                saveDatatoAsyncStorage(accessToken, uid, expiryDate, personType)
-
-                getPersonType(personType)
+                saveDatatoAsyncStorage(accessToken, uid, expiryDate);
+                getPersonType(uid, personType);
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -44,7 +42,7 @@ export const SignUp = (firstName, lastName, email, password, personType, gender)
 
                 if (errorCode === "auth/email-already-in-use") {
                     message = "Email is already in use";
-                }
+                };
 
                 throw new Error(message);
             });
@@ -73,14 +71,9 @@ export const SignIn = (email, password) => {
                     dispatch(userLogout());
                 }, milliSecondsUntilExpiry);
 
-                const personType = await AsyncStorage.getItem("type")
-                console.log(JSON.stringify(personType, 0, 2));
-
-                // if (!personType) {
-                //     throw new Error()
-                // };
-
-                const userData = await getUserData(uid, personType ?? "coach");
+                const personType = await AsyncStorage.getItem(`type-${uid}`);
+                console.log(personType + ":)");
+                const userData = await getUserData(uid, personType);
                 dispatch(authenticate({ token: accessToken, userData }));
 
                 saveDatatoAsyncStorage(accessToken, uid, expiryDate, userData.personType);
@@ -104,7 +97,7 @@ export const SignIn = (email, password) => {
 
 export const userLogout = () => {
     return async dispatch => {
-        AsyncStorage.clear();
+        AsyncStorage.removeItem("userToken")
         clearTimeout(timer)
         dispatch(logout());
     };
@@ -121,18 +114,14 @@ export const updatedSignedInUserData = async (userId, newData) => {
 
     let path;
 
-    if (newData.personType === "coach") {
+    const personType = await AsyncStorage.getItem("type")
+    if (personType === "coach") {
         path = `coaches/${userId}`
-    } else if (newData.personType === "trainee") {
+    } else if (personType === "trainee") {
         path = `trainees/${userId}`
-    } else {
-        path = `coaches/${userId}`
-        console.log("hmmm");
-        // return;
     }
 
     const childRef = child(dbRef, path);
-
     await update(childRef, newData);
 }
 
@@ -173,15 +162,14 @@ const createUser = async (firstName, lastName, email, userId, personType, gender
     return userData;
 };
 
-const saveDatatoAsyncStorage = (token, userId, expiryDate, personType) => {
+const saveDatatoAsyncStorage = (token, userId, expiryDate) => {
     AsyncStorage.setItem("userToken", JSON.stringify({
         token,
         userId,
         expiryDate: expiryDate.toISOString(),
-        personType
     }));
 };
 
-const getPersonType = (personType) => {
-    AsyncStorage.setItem("type", personType)
-}
+const getPersonType = (uid, personType) => {
+    AsyncStorage.setItem(`type-${uid}`, personType)
+};
