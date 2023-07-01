@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import StackNavigator from "./main.navigator";
 import AuthScreen from "../../features/account/screens/auth.screen";
@@ -12,40 +12,47 @@ const Navigation = () => {
     const didTryAutoLogin = useSelector(state => state.auth.didTryAutoLogin);
 
     // const [isloading, setIsLoading] = useState(true);
-    // const [viewedOnboarding, setViewedOnboarding] = useState(false);
+    // const [viewedOnboarding, setViewedOnboarding] = useState(true);
 
-    // AsyncStorage.clear();
-
+    // AsyncStorage.removeItem("@viewedOnboarding");
+    0
     // const Loading = () => {
     //     return <View style={{ justifyContent: 'center', flex: 1 }}>
     //         <ActivityIndicator size="large" color={colors.primary} />
     //     </View>
     // }
 
-    // // const checkOnboarding = async () => {
-    // //     try {
-    // //         const value = await AsyncStorage.getItem('@viewedOnboarding');
+    // const checkOnboarding = useCallback(async () => {
+    //     try {
+    //         const value = await AsyncStorage.getItem('@viewedOnboarding');
 
-    // //         if (value !== null) {
-    // //             setViewedOnboarding(true);
-    // //         } else {
-    // //             console.log(value);
-    // //         }
+    //         if (value !== null) {
+    //             console.log("has value");
+    //             setViewedOnboarding(true);
+    //         } else {
+    //             console.log(value + ":o");
+    //             // AsyncStorage.removeItem("@viewedOnboarding");
+    //             // setViewedOnboarding(false);
+    //         }
 
-    // //     } catch (error) {
-    // //         console.log(error);
-    // //     } finally {
-    // //         setIsLoading(false)
-    // //     }
-    // // }
+    //     } catch (error) {
+    //         console.log(error);
+    //     } finally {
+    //         setIsLoading(false)
+    //     }
+    // }, [viewedOnboarding]);
 
-    // // useEffect(() => {
-    // //     checkOnboarding();
-    // // }, []);
+    // useEffect(() => {
+    //     checkOnboarding();
+    // }, [viewedOnboarding]);
 
     return (
         <NavigationContainer>
 
+            {/* {
+                viewedOnboarding &&
+                <Onboarding />
+            } */}
             {isAuth && <StackNavigator />}
             {!isAuth && didTryAutoLogin && <AuthScreen />}
             {!isAuth && !didTryAutoLogin && <StartUpScreen />}

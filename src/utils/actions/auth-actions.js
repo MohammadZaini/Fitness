@@ -114,7 +114,7 @@ export const updatedSignedInUserData = async (userId, newData) => {
 
     let path;
 
-    const personType = await AsyncStorage.getItem("type")
+    const personType = await AsyncStorage.getItem(`type-${userId}`)
     if (personType === "coach") {
         path = `coaches/${userId}`
     } else if (personType === "trainee") {

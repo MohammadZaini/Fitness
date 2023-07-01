@@ -24,18 +24,18 @@ const SettingsScreen = () => {
 
     const userData = useSelector(state => state.auth.userData);
 
-    const firstName = userData.firstName;
-    const lastName = userData.lastName;
-    const email = userData.email;
-    const about = userData.about;
+    const firstName = userData.firstName || "";
+    const lastName = userData.lastName || "";
+    const email = userData.email || "";
+    const about = userData.about || "";
 
     const initialState = {
 
         inputValues: {
-            firstName: firstName || "",
-            lastName: lastName || "",
-            email: email || "",
-            about: about || ""
+            firstName,
+            lastName,
+            email,
+            about
         },
 
         inputValidities: {

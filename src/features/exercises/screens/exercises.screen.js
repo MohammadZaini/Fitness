@@ -6,6 +6,7 @@ import { styled } from "styled-components";
 import { TouchableOpacity } from "react-native";
 import { FlatList } from "react-native";
 import { workoutsData } from "../components/workouts-data";
+import { FadeInView } from "../../../components/animations/fade.animation";
 
 const ExersicesScreen = props => {
 
@@ -19,10 +20,12 @@ const ExersicesScreen = props => {
                     const cardData = itemData.item
                     return (
                         <TouchableOpacity onPress={() => props.navigation.navigate("ExerciseDetails", { exerciseType: cardData.type })} >
-                            <Card elevation={5} style={{ margin: 15 }}>
-                                <Card.Cover source={cardData.image} />
-                                <ExersiceName>{cardData.name}</ExersiceName>
-                            </Card>
+                            <FadeInView>
+                                <Card elevation={5} style={{ margin: 15 }}>
+                                    <Card.Cover source={cardData.image} />
+                                    <ExersiceName>{cardData.name}</ExersiceName>
+                                </Card>
+                            </FadeInView>
                         </TouchableOpacity>
                     )
                 }}

@@ -9,4 +9,5 @@ export const SuccessMessageContainer = styled.View`
     align-items: center; 
     padding: 2px;
     margin-top: 15px;
+    justify-content: center;
 `;

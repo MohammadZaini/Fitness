@@ -8,6 +8,7 @@ import { ActivityIndicator } from "react-native-paper";
 import { Video, ResizeMode } from 'expo-av';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Category, CategoryHeader, Header, Steps } from "../components/exercise-details.styles";
+import { FadeInView } from "../../../components/animations/fade.animation";
 
 const ExersiceDetails = props => {
     const [isLoading, setIsLoading] = useState(false);
@@ -49,54 +50,55 @@ const ExersiceDetails = props => {
                         return (
                             <View style={{ marginBottom: 20, borderBottomWidth: 1, borderBottomColor: 'grey' }} >
 
-                                <Header >{item.exercise_name}</Header>
-
-                                {
-                                    item.videoURL[0] &&
-                                    <Video
-                                        style={styles.video}
-                                        source={{
-                                            uri: item.videoURL[0],
-                                        }}
-                                        useNativeControls
-                                        resizeMode={ResizeMode.CONTAIN}
-                                        isLooping
-                                    />
-                                }
-
-                                <View style={{ flexDirection: 'row', flexWrap: 'wrap' }} >
-                                    <Category> <CategoryHeader style={{ fontWeight: 'bold' }} >Category:</CategoryHeader> {item.Category}</Category>
-                                    <Category><CategoryHeader style={{ fontWeight: 'bold' }} >Difficulty:</CategoryHeader> {item.Difficulty}</Category>
+                                <FadeInView>
+                                    <Header >{item.exercise_name}</Header>
                                     {
-                                        item.Grips &&
-                                        <Category><CategoryHeader >Grips:</CategoryHeader> {item.Grips}</Category>
+                                        item.videoURL[0] &&
+                                        <Video
+                                            style={styles.video}
+                                            source={{
+                                                uri: item.videoURL[0],
+                                            }}
+                                            useNativeControls
+                                            resizeMode={ResizeMode.CONTAIN}
+                                            isLooping
+                                        />
                                     }
-                                    {
-                                        item.Force &&
-                                        <Category><CategoryHeader >Force:</CategoryHeader> {item.Force}</Category>
-                                    }
-                                    {
-                                        item.target.Primary &&
-                                        <Category><CategoryHeader >Primary Target:</CategoryHeader> {item.target.Primary[0]}</Category>
-                                    }
-                                    {
-                                        item.target.Secondary &&
-                                        <Category><CategoryHeader >Secondary Target:</CategoryHeader> {item.target.Secondary[0]}</Category>
-                                    }
-                                </View>
 
-                                <Header>Steps</Header>
+                                    <View style={{ flexDirection: 'row', flexWrap: 'wrap' }} >
+                                        <Category> <CategoryHeader style={{ fontWeight: 'bold' }} >Category:</CategoryHeader> {item.Category}</Category>
+                                        <Category><CategoryHeader style={{ fontWeight: 'bold' }} >Difficulty:</CategoryHeader> {item.Difficulty}</Category>
+                                        {
+                                            item.Grips &&
+                                            <Category><CategoryHeader >Grips:</CategoryHeader> {item.Grips}</Category>
+                                        }
+                                        {
+                                            item.Force &&
+                                            <Category><CategoryHeader >Force:</CategoryHeader> {item.Force}</Category>
+                                        }
+                                        {
+                                            item.target.Primary &&
+                                            <Category><CategoryHeader >Primary Target:</CategoryHeader> {item.target.Primary[0]}</Category>
+                                        }
+                                        {
+                                            item.target.Secondary &&
+                                            <Category><CategoryHeader >Secondary Target:</CategoryHeader> {item.target.Secondary[0]}</Category>
+                                        }
+                                    </View>
 
-                                {
-                                    item.steps.map((step, index) => {
-                                        return <View key={index.toString()}>
-                                            <Steps >
-                                                {index + 1} - {step}
-                                            </Steps>
-                                        </View>
+                                    <Header>Steps</Header>
 
-                                    })
-                                }
+                                    {
+                                        item.steps.map((step, index) => {
+                                            return <View key={index.toString()}>
+                                                <Steps >
+                                                    {index + 1} - {step}
+                                                </Steps>
+                                            </View>
+
+                                        })
+                                    }
+                                </FadeInView>
 
                             </View>
                         )
@@ -110,7 +112,7 @@ const ExersiceDetails = props => {
 const styles = StyleSheet.create({
     video: {
         height: 210,
-        width: 350,
+        width: 370,
         marginLeft: 10,
         borderRadius: 25
     },

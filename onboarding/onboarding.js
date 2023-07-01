@@ -31,7 +31,13 @@ const Onboarding = () => {
 
                 // const pushAction = StackActions.push("Exercises", { chatId });
                 // navigation.dispatch(pushAction);
-                navigation.navigate("Home")
+                // navigation.navigate("Home")
+                console.log("go next :)");
+
+                // setTimeout(async () => {
+                //     await AsyncStorage.removeItem("@viewedOnboarding");
+                //     console.log("timeout");
+                // }, 1000)
             } catch (error) {
                 console.log(error);
             }
