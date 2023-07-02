@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { FlatList, Text } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { CustomHeaderButton } from "../components/custom-header-button.component";
@@ -12,11 +12,11 @@ const ChatListScreen = props => {
     const userData = useSelector(state => state.auth.userData);
     const userChats = useSelector(state => state.chats.chatsData);
 
-    const sortedUserChat = () => {
+    const sortedUserChat = useCallback(() => {
         return Object.values(userChats).sort((a, b) => {
             return new Date(b.updatedAt) - new Date(a.updatedAt)
         })
-    }
+    },[userChats])
 
     const storedUsers = useSelector(state => state.users.storedUsers);
 

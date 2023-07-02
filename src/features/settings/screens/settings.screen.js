@@ -15,6 +15,7 @@ import { updateLoggedInUserData } from "../../../../store/auth-slice";
 import { SuccessMessageContainer } from "../components/settings.styles";
 import { ProfileImage } from "../../../components/profile-image.component";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { FadeInView } from "../../../components/animations/fade.animation";
 
 const SettingsScreen = () => {
 
@@ -94,9 +95,10 @@ const SettingsScreen = () => {
     };
 
     return (
+        <FadeInView>
+
         <SafeAreaView>
             <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }} >
-
                 <ProfileImage
                     size={80}
                     userId={userData.userId}
@@ -190,6 +192,7 @@ const SettingsScreen = () => {
                 />
             </ScrollView>
         </SafeAreaView>
+        </FadeInView>
     );
 };
 

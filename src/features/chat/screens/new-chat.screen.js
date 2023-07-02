@@ -13,21 +13,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { setStoredUsers } from "../../../../store/user-slice";
 
 const NewChatScreen = props => {
+
+    const dispatch = useDispatch();
+
     const [isLoading, setIsloading] = useState(false);
     const [users, setUsers] = useState(); // An object of users data
     const [noResultsFound, setNoResultsFound] = useState(false);
-    const [searchTerm, setSearchTerm] = useState("");
+    const [searchTerm, setSearchTerm] = useState('');
 
     const userData = useSelector(state => state.auth.userData)
-
-    const dispatch = useDispatch();
 
     useEffect(() => {
         props.navigation.setOptions({
             headerLeft: () => {
                 return <HeaderButtons HeaderButtonComponent={CustomHeaderButton} >
                     <Item
-                        title="Cancel"
+                        title="Close"
                         onPress={() => props.navigation.goBack()}
                     />
                 </HeaderButtons>
@@ -65,7 +66,7 @@ const NewChatScreen = props => {
 
     }, [searchTerm]);
 
-    const userPressed = (userId) => {
+    const userPressed = userId => {
         props.navigation.navigate("Chats", { selectedUserId: userId })
     };
 
@@ -88,7 +89,7 @@ const NewChatScreen = props => {
                 !isLoading && !noResultsFound && users &&
                 <FlatList
                     data={Object.keys(users)}
-                    keyExtractor={user => user}
+                    // keyExtractor={user => user}c
                     renderItem={(itemData) => {
                         const userId = itemData.item
                         const userData = users[userId]
@@ -96,7 +97,7 @@ const NewChatScreen = props => {
                         return (
                             <DataItem
                                 uri={userData.profilePicture}
-                                title={userData.firstName}
+                                title={`${userData.firstName} ${userData.lastName}`}
                                 subTitle={userData.about}
                                 onPress={() => userPressed(userId)}
                                 personType={userData.personType}

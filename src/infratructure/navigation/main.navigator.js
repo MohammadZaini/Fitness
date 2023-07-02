@@ -42,13 +42,14 @@ const StackNavigator = () => {
         dispatch that and save the chat data to our state.  
         */
         onValue(userChatsRef, (querySnapshot) => {
-            const chatIdData = querySnapshot.val() || {}; // chatKey: chatId.
-            const chatIds = Object.values(chatIdData); // ex. ["-NYjR4uHCJFF8f2Mi-H4", "-NYjRJDkK_6JDaRekhsN","-NYmwcDqwUcz-GT5cS1j"]
+            const chatIdsData = querySnapshot.val() || {}; // chatKey: chatId.
+            const chatIds = Object.values(chatIdsData); // ex. ["-NYjR4uHCJFF8f2Mi-H4", "-NYjRJDkK_6JDaRekhsN","-NYmwcDqwUcz-GT5cS1j"]
 
             const chatsData = {};
             let chatsFoundCount = 0;
 
             for (let i = 0; i < chatIds.length; i++) {
+                console.log(i);
                 const chatId = chatIds[i];
                 const chatRef = child(dbRef, `chats/${chatId}`);
                 refs.push(chatRef)
@@ -60,7 +61,6 @@ const StackNavigator = () => {
                     const data = chatSnapshot.val();
 
                     if (data) {
-
                         if (!data.users.includes(userData.userId)) {
                             return;
                         }
@@ -95,13 +95,14 @@ const StackNavigator = () => {
                         });
 
                         chatsData[chatSnapshot.key] = data
+                        // console.log(chatsData[chatSnapshot.key] = data);
                     };
 
                     // Checks if we loaded all of the chats.
                     if (chatsFoundCount >= chatIds.length) {
                         dispatch(setChatsData({ chatsData }));
                         setIsLoading(false);
-                    };
+                    } 
                 });
 
                 const messagesRef = child(dbRef, `messages/${chatId}`);
@@ -117,6 +118,7 @@ const StackNavigator = () => {
                     setIsLoading(false);
                 }
             };
+            dispatch(setChatsData({ chatsData }));
         });
 
         const userStarredMessagesRef = child(dbRef, `starredMessages/${userData.userId}`);
@@ -171,30 +173,30 @@ const LoadingContainer = styled.View`
 `;
 
 
-const OnboardingStack = createStackNavigator();
+// const OnboardingStack = createStackNavigator();
 
-export const OnboardingNavigation = () => {
-    return <NavigationContainer>
-        <OnboardingStack.Navigator>
+// export const OnboardingNavigation = () => {
+//     return <NavigationContainer>
+//         <OnboardingStack.Navigator>
 
-            <OnboardingStack.Group screenOptions={{ headerShadowVisible: false, ...TransitionPresets.SlideFromRightIOS, headerShown: false }}>
-                <OnboardingStack.Screen name="Onboarding" component={Onboarding} />
-            </OnboardingStack.Group>
+//             <OnboardingStack.Group screenOptions={{ headerShadowVisible: false, ...TransitionPresets.SlideFromRightIOS, headerShown: false }}>
+//                 <OnboardingStack.Screen name="Onboarding" component={Onboarding} />
+//             </OnboardingStack.Group>
 
-            <OnboardingStack.Group screenOptions={{ headerShown: false }} >
-                <OnboardingStack.Screen name="Home" component={TabNavigator} options={{ headerTitle: '', headerShadowVisible: false }} />
-                <OnboardingStack.Screen name="ChatSettings" component={ChatSettingsScreen} />
-            </OnboardingStack.Group>
+//             <OnboardingStack.Group screenOptions={{ headerShown: false }} >
+//                 <OnboardingStack.Screen name="Home" component={TabNavigator} options={{ headerTitle: '', headerShadowVisible: false }} />
+//                 <OnboardingStack.Screen name="ChatSettings" component={ChatSettingsScreen} />
+//             </OnboardingStack.Group>
 
-            <OnboardingStack.Group>
-                <OnboardingStack.Screen name="Chat" component={ChatScreen} options={{ headerShadowVisible: false, ...TransitionPresets.ModalPresentationIOS, }} />
-            </OnboardingStack.Group>
+//             <OnboardingStack.Group>
+//                 <OnboardingStack.Screen name="Chat" component={ChatScreen} options={{ headerShadowVisible: false, ...TransitionPresets.ModalPresentationIOS, }} />
+//             </OnboardingStack.Group>
 
-            <OnboardingStack.Group screenOptions={{ headerShadowVisible: false, ...TransitionPresets.SlideFromRightIOS, }} >
-                <OnboardingStack.Screen name="NewChat" component={NewChatScreen} options={{ title: "New chat" }} />
-                <OnboardingStack.Screen name="ExerciseDetails" component={ExersiceDetails} options={{ title: "Exercise" }} />
-            </OnboardingStack.Group>
+//             <OnboardingStack.Group screenOptions={{ headerShadowVisible: false, ...TransitionPresets.SlideFromRightIOS, }} >
+//                 <OnboardingStack.Screen name="NewChat" component={NewChatScreen} options={{ title: "New chat" }} />
+//                 <OnboardingStack.Screen name="ExerciseDetails" component={ExersiceDetails} options={{ title: "Exercise" }} />
+//             </OnboardingStack.Group>
 
-        </OnboardingStack.Navigator>
-    </NavigationContainer>
-}
+//         </OnboardingStack.Navigator>
+//     </NavigationContainer>
+// }

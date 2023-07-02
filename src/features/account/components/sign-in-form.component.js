@@ -11,6 +11,7 @@ import { colors } from "../../../infratructure/theme/colors";
 import { MaterialIcons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons'
 import { Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const isTestMode = true
 
@@ -38,6 +39,9 @@ export const SignInForm = props => {
     const [isLoading, setIsloading] = useState(false);
     const [error, setError] = useState("");
     const dispatch = useDispatch();
+
+    const [rememberMe, setRememberMe] = useState(true);
+
 
     useEffect(() => {
         if (error) {
@@ -67,7 +71,16 @@ export const SignInForm = props => {
             setIsloading(false)
         }
 
-    }, [dispatch, formState])
+    }, [dispatch, formState]);
+
+    // const rememberUser = (emailValue, passwordValue) => {
+    //     setRememberMe(prevState => !prevState);
+
+    //     AsyncStorage.setItem("rememberMe",JSON.stringify({
+    //         emailValue,
+    //         passwordValue
+    //     }) )
+    // }
 
     return (
         <>
@@ -103,6 +116,18 @@ export const SignInForm = props => {
                 initialValue={formState.inputValues.password}
             />
 
+
+{/* {
+    rememberMe ?
+    <MaterialIcons name="check-box-outline-blank" size={24} 
+color="black" style={{alignSelf: 'flex-start', marginLeft: 50, marginTop: 5}}
+onPress={() => setRememberMe(prevState => !prevState)}
+/>  :
+<MaterialIcons name="check-box" size={24} color={colors.primary}
+style={{alignSelf: 'flex-start', marginLeft: 50, marginTop: 5}}
+onPress={() => setRememberMe(prevState => !prevState)}
+/>
+} */}
             {
                 isLoading ?
                     <ActivityIndicator size="small" color={colors.primary} style={{ marginTop: 20, marginBottom: 5 }} /> :
