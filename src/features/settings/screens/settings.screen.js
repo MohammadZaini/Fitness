@@ -148,6 +148,7 @@ const SettingsScreen = () => {
                     keyboardType="email-address"
                     color={formState.inputIsValidColor["email"]}
                     initialValue={userData.email}
+                    editable={false}
                 />
 
                 <Input
