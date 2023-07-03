@@ -146,7 +146,6 @@ const StackNavigator = () => {
         <Stack.Navigator   >
 
             <Stack.Group screenOptions={{ headerShown: false }} >
-
                 <Stack.Screen name="Home" component={TabNavigator} options={{ headerTitle: '', headerShadowVisible: false }} />
                 <Stack.Screen name="ChatSettings" component={ChatSettingsScreen} />
             </Stack.Group>
