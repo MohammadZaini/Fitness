@@ -102,7 +102,7 @@ const StackNavigator = () => {
                     if (chatsFoundCount >= chatIds.length) {
                         dispatch(setChatsData({ chatsData }));
                         setIsLoading(false);
-                    } 
+                    }
                 });
 
                 const messagesRef = child(dbRef, `messages/${chatId}`);
