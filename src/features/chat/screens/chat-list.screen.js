@@ -52,10 +52,7 @@ const ChatListScreen = props => {
             newChatData: { users: chatUsers }
         };
         };
-
-
         
-
         props.navigation.navigate("Chat", naviagtionProps)
     }, [props.route?.params]);
 
