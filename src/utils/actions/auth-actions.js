@@ -1,6 +1,8 @@
+import { isDevice } from "expo-device";
+import * as Notification from "expo-notifications";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { getFirebaseApp } from "../firebase-helper";
-import { child, getDatabase, ref, set, update } from "firebase/database"
+import { child, get, getDatabase, ref, set, update } from "firebase/database"
 import { authenticate, logout } from "../../../store/auth-slice";
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { getUserData } from "./user-actions";
@@ -25,14 +27,15 @@ export const SignUp = (firstName, lastName, email, password, personType, gender)
 
                 const milliSecondsUntilExpiry = expiryDate - timeNow;
 
-                timer = setTimeout(() => {
-                    dispatch(userLogout());
-                }, milliSecondsUntilExpiry);
-
                 const userData = await createUser(firstName, lastName, email, uid, personType, gender);
                 dispatch(authenticate({ token: accessToken, userData }));
                 saveDatatoAsyncStorage(accessToken, uid, expiryDate);
                 getPersonType(uid, personType);
+                await storePushTokens(userData, personType);
+
+                timer = setTimeout(() => {
+                    dispatch(userLogout(userData, personType));
+                }, milliSecondsUntilExpiry);
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -67,16 +70,16 @@ export const SignIn = (email, password) => {
 
                 const milliSecondsUntilExpiry = expiryDate - timeNow;
 
-                timer = setTimeout(() => {
-                    dispatch(userLogout());
-                }, milliSecondsUntilExpiry);
-
                 const personType = await AsyncStorage.getItem(`type-${uid}`);
                 console.log(personType + ":)");
                 const userData = await getUserData(uid, personType);
                 dispatch(authenticate({ token: accessToken, userData }));
-
                 saveDatatoAsyncStorage(accessToken, uid, expiryDate, userData.personType);
+                await storePushTokens(userData, personType);
+
+                timer = setTimeout(() => {
+                    dispatch(userLogout(userData, personType));
+                }, milliSecondsUntilExpiry);
             })
             .catch((error) => {
                 const errorCode = error.code;
@@ -95,8 +98,15 @@ export const SignIn = (email, password) => {
     };
 };
 
-export const userLogout = () => {
+export const userLogout = (userData, personType) => {
     return async dispatch => {
+
+        try {
+            await removePushTokens(userData, personType);
+        } catch (error) {
+            console.log(error);
+        };
+
         AsyncStorage.removeItem("userToken")
         clearTimeout(timer)
         dispatch(logout());
@@ -172,4 +182,96 @@ const saveDatatoAsyncStorage = (token, userId, expiryDate) => {
 
 const getPersonType = (uid, personType) => {
     AsyncStorage.setItem(`type-${uid}`, personType)
+};
+
+const storePushTokens = async (userData, personType) => {
+    if (!isDevice) {
+        return;
+    };
+
+    const token = (await Notification.getExpoPushTokenAsync()).data;
+
+    const tokenData = { ...userData.pushTokens } || {};
+    const tokenArray = Object.values(tokenData);
+
+    if (tokenArray.includes(token)) {
+        return;
+    };
+
+    tokenArray.push(token);
+
+    for (let i = 0; i < tokenArray.length; i++) {
+        const tok = tokenArray[i];
+        tokenData[i] = tok;
+    };
+
+    let path;
+
+    if (personType === "coach") {
+        path = "coaches";
+    } else if (personType === "trainee") {
+        path = "trainees";
+    };
+
+    const app = getFirebaseApp();
+    const dbRef = ref(getDatabase(app));
+    const userRef = child(dbRef, `${path}/${userData.userId}/pushTokens`);
+
+    await set(userRef, tokenData);
+};
+
+const removePushTokens = async (userData, personType) => {
+    if (!isDevice) {
+        return;
+    };
+
+    const token = (await Notification.getExpoPushTokenAsync()).data;
+
+    const tokenData = await getUserPushTokens(userData.userId, personType);
+
+    for (const key in tokenData) {
+        if (tokenData[key] === token) {
+            delete tokenData[key];
+            break;
+        };
+    };
+
+    let path;
+
+    if (personType === "coach") {
+        path = "coaches";
+    } else if (personType === "trainee") {
+        path = "trainees";
+    };
+
+    const app = getFirebaseApp();
+    const dbRef = ref(getDatabase(app));
+    const userRef = child(dbRef, `${path}/${userData.userId}/pushTokens`);
+
+    await set(userRef, tokenData);
+};
+
+export const getUserPushTokens = async (userId, personType) => {
+    try {
+        let path;
+        if (personType === "coach") {
+            path = "coaches";
+        } else if (personType === "trainee") {
+            path = "trainees";
+        };
+
+        const app = getFirebaseApp();
+        const dbRef = ref(getDatabase(app));
+        const userRef = child(dbRef, `${path}/${userId}/pushTokens`);
+
+        const snapshot = await get(userRef);
+        if (!snapshot || !snapshot.exists()) {
+            return {};
+        };
+
+        return snapshot.val() || {};
+
+    } catch (error) {
+        console.log(error);
+    };
 };

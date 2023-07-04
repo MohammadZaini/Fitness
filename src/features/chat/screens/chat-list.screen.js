@@ -19,7 +19,7 @@ const ChatListScreen = props => {
     },[userChats])
 
     const storedUsers = useSelector(state => state.users.storedUsers);
-
+console.log(storedUsers);
     useEffect(() => {
         props.navigation.setOptions({
             headerRight: () => {
@@ -52,9 +52,6 @@ const ChatListScreen = props => {
             newChatData: { users: chatUsers }
         };
         };
-
-
-        
 
         props.navigation.navigate("Chat", naviagtionProps)
     }, [props.route?.params]);

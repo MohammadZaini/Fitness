@@ -11,15 +11,19 @@ import { colors } from "./src/infratructure/theme/colors";
 import { useCallback, useEffect, useState } from "react";
 import * as SplashScreen from 'expo-splash-screen';
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import * as Application from "expo-application";
+import { LogBox } from "react-native";
+
 
 export default function App() {
   // const [isloading, setIsLoading] = useState(true);
   // const [viewedOnboarding, setViewedOnboarding] = useState(false);
   const [appIsloaded, setAppIsLoaded] = useState(false);
 
+  console.log(Application.androidId);
   // AsyncStorage.clear();
   SplashScreen.preventAutoHideAsync();
-
+  // LogBox.ignoreAllLogs()
   // const Loading = () => {
   //   return <View style={{ justifyContent: 'center', flex: 1 }}>
   //     <ActivityIndicator size="large" color={colors.primary} />
