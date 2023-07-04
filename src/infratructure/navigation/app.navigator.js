@@ -22,7 +22,7 @@ const TabNavigator = () => {
                 }} />
 
             <Tab.Screen
-                name="Chats"
+                name="ChatList"
                 component={ChatListScreen}
                 options={{
                     tabBarIcon: () => <Ionicons name="md-chatbubbles-outline" size={24} color={colors.primary} />,

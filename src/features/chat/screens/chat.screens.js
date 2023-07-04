@@ -21,7 +21,7 @@ const ChatScreen = props => {
     const [messageText, setMessageText] = useState("");
     const [chatId, setChatId] = useState(props.route?.params?.chatId) // to check wether it's a new chat or not.
     const [errorBannerText, setErrorBannerText] = useState("");
-    // console.log("CHAT ID IS: " + "====>" + chatId);
+    console.log("CHAT ID IS: " + "====>" + chatId);
     const [replyingTo, setReplyingTo] = useState("");
     const [tempImageUri, setTempImageUri] = useState("");
     const [isLoading, setIsLoading] = useState(false);

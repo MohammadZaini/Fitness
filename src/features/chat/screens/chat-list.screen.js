@@ -19,7 +19,7 @@ const ChatListScreen = props => {
     },[userChats])
 
     const storedUsers = useSelector(state => state.users.storedUsers);
-console.log(storedUsers);
+
     useEffect(() => {
         props.navigation.setOptions({
             headerRight: () => {
@@ -37,12 +37,26 @@ console.log(storedUsers);
     useEffect(() => {
         if (!selectedUser) return;
 
-        const chatUsers = [selectedUser, userData.userId];
-        const navigationProps = {
-            newChatData: { users: chatUsers }
+        let chatData;
+        let naviagtionProps;
+
+        if (selectedUser) {
+            chatData = sortedUserChat().find(cd => cd.users.includes(selectedUser))
         };
 
-        props.navigation.navigate("Chat", navigationProps)
+        if (chatData) {
+            naviagtionProps = { chatId: chatData.key }
+        } else {
+            const chatUsers = [selectedUser, userData.userId];
+            naviagtionProps = {
+            newChatData: { users: chatUsers }
+        };
+        };
+
+
+        
+
+        props.navigation.navigate("Chat", naviagtionProps)
     }, [props.route?.params]);
 
     return (
