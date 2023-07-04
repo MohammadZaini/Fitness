@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from "react";
+import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+
+import React, { useEffect, useRef, useState } from "react";
 import { TransitionPresets, createStackNavigator } from "@react-navigation/stack";
 import NewChatScreen from "../../features/chat/screens/new-chat.screen";
 import ChatScreen from "../../features/chat/screens/chat.screens";
@@ -27,6 +30,29 @@ const StackNavigator = () => {
 
     const userData = useSelector(state => state.auth.userData);
     const storedUsers = useSelector(state => state.users.storedUsers);
+
+    const [expoPushToken, setExpoPushToken] = useState('');
+    const [notification, setNotification] = useState(false);
+    const notificationListener = useRef();
+    const responseListener = useRef();
+
+    useEffect(() => {
+        registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
+
+        notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+            setNotification(notification);
+        });
+
+        responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            console.log("Notification tapped:");
+            console.log(JSON.stringify(response, 0, 2));
+        });
+
+        return () => {
+            Notifications.removeNotificationSubscription(notificationListener.current);
+            Notifications.removeNotificationSubscription(responseListener.current);
+        };
+    }, []);
 
     useEffect(() => {
         console.log("Subscribing to firebase listener");
@@ -102,7 +128,7 @@ const StackNavigator = () => {
                     if (chatsFoundCount >= chatIds.length) {
                         dispatch(setChatsData({ chatsData }));
                         setIsLoading(false);
-                    } 
+                    }
                 });
 
                 const messagesRef = child(dbRef, `messages/${chatId}`);
@@ -199,3 +225,37 @@ const LoadingContainer = styled.View`
 //         </OnboardingStack.Navigator>
 //     </NavigationContainer>
 // }
+
+async function registerForPushNotificationsAsync() {
+    let token;
+
+    if (Platform.OS === 'android') {
+        await Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+        });
+    }
+
+    if (Device.isDevice) {
+        const { status: existingStatus } = await Notifications.getPermissionsAsync();
+        let finalStatus = existingStatus;
+        if (existingStatus !== 'granted') {
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
+        }
+        if (finalStatus !== 'granted') {
+            alert('Failed to get push token for push notification!');
+            return;
+        }
+        token = (await Notifications.getExpoPushTokenAsync({
+            projectId: '2aac6eab732d3846',
+        })).data;
+        console.log(token);
+    } else {
+        alert('Must use physical device for Push Notifications');
+    }
+
+    return token;
+}
