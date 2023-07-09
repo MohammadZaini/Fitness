@@ -2,56 +2,24 @@ import Navigation from "./src/infratructure/navigation";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 import { useFonts, Oswald_400Regular } from '@expo-google-fonts/oswald';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MenuProvider } from "react-native-popup-menu";
-import Onboarding from "./onboarding/onboarding";
-import { View } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
-import { colors } from "./src/infratructure/theme/colors";
 import { useCallback, useEffect, useState } from "react";
 import * as SplashScreen from 'expo-splash-screen';
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import * as Application from "expo-application";
 import { LogBox } from "react-native";
 
-
 export default function App() {
-  // const [isloading, setIsLoading] = useState(true);
-  // const [viewedOnboarding, setViewedOnboarding] = useState(false);
   const [appIsloaded, setAppIsLoaded] = useState(false);
 
-  console.log(Application.androidId);
-  // AsyncStorage.clear();
   SplashScreen.preventAutoHideAsync();
-  // LogBox.ignoreAllLogs()
-  // const Loading = () => {
-  //   return <View style={{ justifyContent: 'center', flex: 1 }}>
-  //     <ActivityIndicator size="large" color={colors.primary} />
-  //   </View>
-  // }
-
-  // const checkOnboarding = async () => {
-  //   try {
-  //     const value = await AsyncStorage.getItem('@viewedOnboarding');
-
-  //     if (value !== null) {
-  //       setViewedOnboarding(true);
-  //     }
-
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     setIsLoading(false)
-  //   }
-  // }
+  // LogBox.ignoreAllLogs();
 
   useEffect(() => {
-    // checkOnboarding();
+
     setTimeout(() => {
       setAppIsLoaded(true);
     }, 2000)
   }, []);
-
 
   const onLayout = useCallback(async () => {
     if (appIsloaded) {

@@ -6,13 +6,13 @@ import { Text } from "react-native";
 import { StyleSheet } from "react-native";
 import { Octicons } from '@expo/vector-icons';
 import { TouchableWithoutFeedback } from "react-native";
-import { Menu, MenuTrigger, MenuOptions, MenuOption } from "react-native-popup-menu";
+import { Menu, MenuTrigger, MenuOptions } from "react-native-popup-menu";
 import uuid from "react-native-uuid"
 import * as Clipboard from "expo-clipboard"
 import { MenuItem } from "./menu-item.component";
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
-import { starMessage } from "../../../utils/actions/chat-actions";
+import { deleteMessage, starMessage } from "../../../utils/actions/chat-actions";
 import { useSelector } from "react-redux";
 import { Image } from "react-native";
 
@@ -147,6 +147,7 @@ export const Bubble = props => {
                             <MenuItem text="Copy to clipboard" onSelect={() => copyToClipboard(text)} iconPack={Ionicons} icon="ios-copy-outline" />
                             <MenuItem text={`${isStarred ? "Unstar" : "Star"} message`} onSelect={() => starMessage(userId, chatId, messageId)} iconPack={Octicons} icon={`${isStarred ? "star-fill" : "star"}`} color={isStarred ? colors.yellow : "black"} />
                             <MenuItem text="Reply to message" onSelect={setReply} iconPack={MaterialIcons} icon="reply" />
+                            <MenuItem text="Delete message" onSelect={() => deleteMessage(chatId, messageId)} iconPack={MaterialIcons} icon="delete" color={colors.red} />
 
                         </MenuOptions>
 

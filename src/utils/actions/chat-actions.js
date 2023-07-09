@@ -122,4 +122,15 @@ const sendPushNotificationForUsers = (chatUsers, title, body, chatId, userType) 
             })
         }
     })
-}
+};
+
+export const deleteMessage = async (chatId, messageId) => {
+    try {
+        const app = getFirebaseApp();
+        const dbRef = ref(getDatabase(app));
+        const childRef = child(dbRef, `messages/${chatId}/${messageId}`);
+        await remove(childRef)
+    } catch (error) {
+        console.log(error);
+    };
+};
