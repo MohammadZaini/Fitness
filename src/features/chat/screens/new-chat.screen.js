@@ -100,7 +100,7 @@ const NewChatScreen = props => {
                                 title={`${userData.firstName} ${userData.lastName}`}
                                 subTitle={userData.about}
                                 onPress={() => userPressed(userId)}
-                                personType={userData.personType}
+                                userType={userData.userType}
                                 gender={userData.gender}
                             />
                         )

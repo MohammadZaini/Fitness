@@ -1,7 +1,7 @@
-import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Image, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { BottomView, ChatInput, ChatsBackground, SendIcon, SendImageIcon, SendMessageIcon, TakePictureIcon } from "../components/chat.styles";
+import { BottomView, ChatInput, ChatsBackground, SendImageIcon, SendMessageIcon, TakePictureIcon } from "../components/chat.styles";
 import { useSelector } from "react-redux";
 import { PageContainer } from "../../../components/page-container";
 import { Bubble } from "../components/bubble";
@@ -14,7 +14,6 @@ import { launchImagePicker, openCamera, uploadImageAsync } from "../../../utils/
 import { StyleSheet } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { fonts } from "../../../infratructure/theme/fonts";
-import { createSelector } from 'reselect'
 
 const ChatScreen = props => {
     const [chatUsers, setChatUsers] = useState([]);
@@ -31,28 +30,6 @@ const ChatScreen = props => {
     const userData = useSelector(state => state.auth.userData);
     const storedUsers = useSelector(state => state.users.storedUsers);
     const storedChats = useSelector(state => state.chats.chatsData);
-
-    // const chatMessages = useSelector(state => {
-    //     // state.messages.messagesData
-    //     if (!chatId) return [];
-
-    //     const chatMessagesData = state.messages.messagesData[chatId];
-
-    //     if (!chatMessagesData) return [];
-
-    //     const messageList = [];
-
-    //     for (const key in chatMessagesData) {
-    //         const message = chatMessagesData[key]
-
-    //         messageList.push({
-    //             key,
-    //             ...message,
-    //         })
-    //     }
-
-    //     return messageList;
-    // })
 
     const chatMessages = useSelector(state => {
         if (!chatId) return [];
@@ -73,37 +50,14 @@ const ChatScreen = props => {
 
         return messageList;
     });
-    // console.log(chatMessages);
-
-    // const chatMessagesList = useCallback(() => {
-    //     if (!chatId) return [];
-
-    //     const chatMessagesData = chatMessages[chatId];
-
-    //     if (!chatMessagesData) return [];
-
-    //     const messageList = [];
-
-    //     for (const key in chatMessagesData) {
-    //         const message = chatMessagesData[key]
-
-    //         messageList.push({
-    //             key,
-    //             ...message,
-    //         })
-    //     }
-
-    //     return messageList;
-    // }, [chatId])
-
-
-
 
     const chatData = (chatId && storedChats[chatId]) || props.route?.params?.newChatData;
 
+    const otherUserId = chatUsers.find(uid => uid !== userData.userId);
+    const otherUserData = storedUsers[otherUserId];
+    const userType = otherUserData.userType
+
     const getChatTilteFromName = () => {
-        const otherUserId = chatUsers.find(uid => uid !== userData.userId);
-        const otherUserData = storedUsers[otherUserId];
         return otherUserData && `${otherUserData.firstName} ${otherUserData.lastName}`;
     };
 
@@ -126,7 +80,7 @@ const ChatScreen = props => {
             }
             console.log("Created");
 
-            await sendTextMessage(id, userData, messageText, replyingTo && replyingTo.key, chatUsers);
+            await sendTextMessage(id, userData, messageText, replyingTo && replyingTo.key, chatUsers, userType);
             setMessageText("");
             setReplyingTo(null);
         } catch (error) {

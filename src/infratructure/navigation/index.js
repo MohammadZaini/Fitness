@@ -6,60 +6,66 @@ import { useSelector } from "react-redux";
 import StartUpScreen from "../../features/account/screens/start-up.screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Onboarding from "../../../onboarding/onboarding";
+import { navigationRef } from "../../../navigation-ref";
+import { View } from "react-native";
+import { ActivityIndicator } from "react-native-paper";
+import { colors } from "../theme/colors";
 
 const Navigation = () => {
     const isAuth = useSelector(state => state.auth.token !== null && state.auth.token !== "");
     const didTryAutoLogin = useSelector(state => state.auth.didTryAutoLogin);
 
-    // const [isloading, setIsLoading] = useState(true);
-    // const [viewedOnboarding, setViewedOnboarding] = useState(true);
+    const [isloading, setIsLoading] = useState(true);
+    const [viewedOnboarding, setViewedOnboarding] = useState(false);
 
-    // AsyncStorage.removeItem("@viewedOnboarding");
-    0
-    // const Loading = () => {
-    //     return <View style={{ justifyContent: 'center', flex: 1 }}>
-    //         <ActivityIndicator size="large" color={colors.primary} />
-    //     </View>
-    // }
+    AsyncStorage.removeItem("@viewedOnboarding");
 
-    // const checkOnboarding = useCallback(async () => {
-    //     try {
-    //         const value = await AsyncStorage.getItem('@viewedOnboarding');
+    const Loading = () => {
+        return <View style={{ justifyContent: 'center', flex: 1 }}>
+            <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+    }
 
-    //         if (value !== null) {
-    //             console.log("has value");
-    //             setViewedOnboarding(true);
-    //         } else {
-    //             console.log(value + ":o");
-    //             // AsyncStorage.removeItem("@viewedOnboarding");
-    //             // setViewedOnboarding(false);
-    //         }
+    const checkOnboarding = useCallback(async () => {
+        try {
+            const value = await AsyncStorage.getItem('@viewedOnboarding');
 
-    //     } catch (error) {
-    //         console.log(error);
-    //     } finally {
-    //         setIsLoading(false)
-    //     }
-    // }, [viewedOnboarding]);
+            if (value !== null) {
+                setViewedOnboarding(true);
+            } else {
+                console.log(value + ":o");
+            }
 
-    // useEffect(() => {
-    //     checkOnboarding();
-    // }, [viewedOnboarding]);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsLoading(false)
+        }
+    }, [viewedOnboarding]);
+
+    useEffect(() => {
+        checkOnboarding();
+    }, []);
+
+    const switchValue = (value = false) => {
+        console.log("hi");
+        setViewedOnboarding(value)
+        console.log(value);
+    };
 
     return (
-        <NavigationContainer>
+        <NavigationContainer ref={navigationRef}  >
 
-            {/* {
-                viewedOnboarding &&
-                <Onboarding />
-            } */}
+            {
+                isloading ? <Loading /> : !viewedOnboarding && <Onboarding swap={switchValue} />
+            }
+
             {isAuth && <StackNavigator />}
-            {!isAuth && didTryAutoLogin && <AuthScreen />}
-            {!isAuth && !didTryAutoLogin && <StartUpScreen />}
-            {/* {!isAuth && didTryAutoLogin && viewedOnboarding ? <AuthScreen /> : <Onboarding />} */}
+            {!isAuth && didTryAutoLogin && viewedOnboarding && <AuthScreen />}
+            {!isAuth && !didTryAutoLogin && viewedOnboarding && <StartUpScreen />}
 
         </NavigationContainer>
     )
-}
+};
 
 export default Navigation;

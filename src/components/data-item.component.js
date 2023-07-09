@@ -28,7 +28,7 @@ export const DataItem = props => {
                         </Text>
 
                         {
-                            props.personType === "coach" ?
+                            props.userType === "coach" ?
                                 <Image source={require("../../assets/images/personal-trainer-icon.png")} style={{ width: 20, height: 20, marginRight: 5 }} /> :
                                 <Image source={require("../../assets/images/trainee-icon.png")} style={{ width: 20, height: 20, marginRight: 5 }} />
                         }

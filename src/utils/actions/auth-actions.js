@@ -9,7 +9,7 @@ import { getUserData } from "./user-actions";
 
 let timer;
 
-export const SignUp = (firstName, lastName, email, password, personType, gender) => {
+export const SignUp = (firstName, lastName, email, password, userType, gender) => {
 
     return async dispatch => {
         const app = getFirebaseApp();
@@ -27,14 +27,14 @@ export const SignUp = (firstName, lastName, email, password, personType, gender)
 
                 const milliSecondsUntilExpiry = expiryDate - timeNow;
 
-                const userData = await createUser(firstName, lastName, email, uid, personType, gender);
+                const userData = await createUser(firstName, lastName, email, uid, userType, gender);
                 dispatch(authenticate({ token: accessToken, userData }));
                 saveDatatoAsyncStorage(accessToken, uid, expiryDate);
-                getPersonType(uid, personType);
-                await storePushTokens(userData, personType);
+                getuserType(uid, userType);
+                await storePushTokens(userData, userType);
 
                 timer = setTimeout(() => {
-                    dispatch(userLogout(userData, personType));
+                    dispatch(userLogout(userData, userType));
                 }, milliSecondsUntilExpiry);
             })
             .catch((error) => {
@@ -70,15 +70,15 @@ export const SignIn = (email, password) => {
 
                 const milliSecondsUntilExpiry = expiryDate - timeNow;
 
-                const personType = await AsyncStorage.getItem(`type-${uid}`);
-                console.log(personType + ":)");
-                const userData = await getUserData(uid, personType);
+                const userType = await AsyncStorage.getItem(`type-${uid}`);
+                console.log(userType + ":)");
+                const userData = await getUserData(uid, userType);
                 dispatch(authenticate({ token: accessToken, userData }));
-                saveDatatoAsyncStorage(accessToken, uid, expiryDate, userData.personType);
-                await storePushTokens(userData, personType);
+                saveDatatoAsyncStorage(accessToken, uid, expiryDate, userData.userType);
+                await storePushTokens(userData, userType);
 
                 timer = setTimeout(() => {
-                    dispatch(userLogout(userData, personType));
+                    dispatch(userLogout(userData, userType));
                 }, milliSecondsUntilExpiry);
             })
             .catch((error) => {
@@ -98,11 +98,11 @@ export const SignIn = (email, password) => {
     };
 };
 
-export const userLogout = (userData, personType) => {
+export const userLogout = (userData, userType) => {
     return async dispatch => {
 
         try {
-            await removePushTokens(userData, personType);
+            await removePushTokens(userData, userType);
         } catch (error) {
             console.log(error);
         };
@@ -124,10 +124,10 @@ export const updatedSignedInUserData = async (userId, newData) => {
 
     let path;
 
-    const personType = await AsyncStorage.getItem(`type-${userId}`)
-    if (personType === "coach") {
+    const userType = await AsyncStorage.getItem(`type-${userId}`)
+    if (userType === "coach") {
         path = `coaches/${userId}`
-    } else if (personType === "trainee") {
+    } else if (userType === "trainee") {
         path = `trainees/${userId}`
     }
 
@@ -135,7 +135,7 @@ export const updatedSignedInUserData = async (userId, newData) => {
     await update(childRef, newData);
 }
 
-const createUser = async (firstName, lastName, email, userId, personType, gender) => {
+const createUser = async (firstName, lastName, email, userId, userType, gender) => {
     const firstLast = `${firstName} ${lastName}`.toLowerCase();
 
     const userData = {
@@ -149,14 +149,14 @@ const createUser = async (firstName, lastName, email, userId, personType, gender
 
     let path;
 
-    if (personType === "coach") {
+    if (userType === "coach") {
         path = `coaches/${userId}`;
-        userData.personType = personType;
+        userData.userType = userType;
         userData.gender = gender;
 
-    } else if (personType === "trainee") {
+    } else if (userType === "trainee") {
         path = `trainees/${userId}`;
-        userData.personType = personType;
+        userData.userType = userType;
         userData.gender = gender;
 
     } else {
@@ -180,11 +180,11 @@ const saveDatatoAsyncStorage = (token, userId, expiryDate) => {
     }));
 };
 
-const getPersonType = (uid, personType) => {
-    AsyncStorage.setItem(`type-${uid}`, personType)
+const getuserType = (uid, userType) => {
+    AsyncStorage.setItem(`type-${uid}`, userType)
 };
 
-const storePushTokens = async (userData, personType) => {
+const storePushTokens = async (userData, userType) => {
     if (!isDevice) {
         return;
     };
@@ -207,9 +207,9 @@ const storePushTokens = async (userData, personType) => {
 
     let path;
 
-    if (personType === "coach") {
+    if (userType === "coach") {
         path = "coaches";
-    } else if (personType === "trainee") {
+    } else if (userType === "trainee") {
         path = "trainees";
     };
 
@@ -220,14 +220,14 @@ const storePushTokens = async (userData, personType) => {
     await set(userRef, tokenData);
 };
 
-const removePushTokens = async (userData, personType) => {
+const removePushTokens = async (userData, userType) => {
     if (!isDevice) {
         return;
     };
 
     const token = (await Notification.getExpoPushTokenAsync()).data;
 
-    const tokenData = await getUserPushTokens(userData.userId, personType);
+    const tokenData = await getUserPushTokens(userData.userId, userType);
 
     for (const key in tokenData) {
         if (tokenData[key] === token) {
@@ -238,9 +238,9 @@ const removePushTokens = async (userData, personType) => {
 
     let path;
 
-    if (personType === "coach") {
+    if (userType === "coach") {
         path = "coaches";
-    } else if (personType === "trainee") {
+    } else if (userType === "trainee") {
         path = "trainees";
     };
 
@@ -251,19 +251,19 @@ const removePushTokens = async (userData, personType) => {
     await set(userRef, tokenData);
 };
 
-export const getUserPushTokens = async (userId, personType) => {
+export const getUserPushTokens = async (userId, userType) => {
     try {
         let path;
-        if (personType === "coach") {
+        if (userType === "coach") {
             path = "coaches";
-        } else if (personType === "trainee") {
+        } else if (userType === "trainee") {
             path = "trainees";
         };
 
         const app = getFirebaseApp();
         const dbRef = ref(getDatabase(app));
         const userRef = child(dbRef, `${path}/${userId}/pushTokens`);
-
+        console.log(path);
         const snapshot = await get(userRef);
         if (!snapshot || !snapshot.exists()) {
             return {};

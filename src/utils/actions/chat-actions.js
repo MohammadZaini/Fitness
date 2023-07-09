@@ -26,20 +26,20 @@ export const createChat = async (loggedInUserId, chatData) => {
     return newChat.key;
 };
 
-export const sendTextMessage = async (chatId, senderData, messageText, replyTo, chatUsers) => {
+export const sendTextMessage = async (chatId, senderData, messageText, replyTo, chatUsers, otherUserType) => {
     await sendMessage(chatId, senderData.userId, messageText, null, replyTo);
 
     const otherUsers = chatUsers.filter(uid => uid !== senderData.userId)
-    await sendPushNotificationForUsers(otherUsers, `${senderData.firstName} ${senderData.lastName}`, messageText), chatId;
+    console.log(otherUserType);
+    await sendPushNotificationForUsers(otherUsers, `${senderData.firstName} ${senderData.lastName}`, messageText, chatId, otherUserType);
 };
 
-export const sendPhoto = async (chatId, senderData, imageUrl, replyTo, chatUsers) => {
+export const sendPhoto = async (chatId, senderData, imageUrl, replyTo, chatUsers, otherUserType) => {
     await sendMessage(chatId, senderData.userId, "Photo", imageUrl, replyTo, null);
 
     const otherUsers = chatUsers.filter(uid => uid !== senderData.userId)
-    await sendPushNotificationForUsers(otherUsers, `${senderData.firstName} ${senderData.lastName}`, `${senderData.firstName} sent a photo`, chatId);
+    await sendPushNotificationForUsers(otherUsers, `${senderData.firstName} ${senderData.lastName}`, `${senderData.firstName} sent a photo`, chatId, otherUserType);
 };
-
 
 const sendMessage = async (chatId, senderId, messageText, imageUrl, replyTo) => {
     const app = getFirebaseApp();
@@ -100,9 +100,10 @@ export const starMessage = async (userId, chatId, messageId) => {
     };
 };
 
-const sendPushNotificationForUsers = (chatUsers, title, body, chatId) => {
+const sendPushNotificationForUsers = (chatUsers, title, body, chatId, userType) => {
     chatUsers.forEach(async uid => {
-        const tokens = await getUserPushTokens(uid);
+        console.log("test");
+        const tokens = await getUserPushTokens(uid, userType);
 
         for (const key in tokens) {
             const token = tokens[key];
@@ -120,6 +121,5 @@ const sendPushNotificationForUsers = (chatUsers, title, body, chatId) => {
                 })
             })
         }
-
-    });
+    })
 }

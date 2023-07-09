@@ -44,7 +44,7 @@ export const SignUpForm = props => {
     const [formState, dispatchFormState] = useReducer(reducer, initialState);
     const [isLoading, setIsloading] = useState(false);
     const [error, setError] = useState("");
-    const [personType, setPersonType] = useState("trainee");
+    const [userType, setuserType] = useState("trainee");
     const [gender, setGender] = useState("male");
 
     const dispatch = useDispatch();
@@ -69,7 +69,7 @@ export const SignUpForm = props => {
                 formState.inputValues.lastName,
                 formState.inputValues.email,
                 formState.inputValues.password,
-                personType,
+                userType,
                 gender
             );
             setError(null);
@@ -81,9 +81,9 @@ export const SignUpForm = props => {
             setIsloading(false)
         }
 
-    }, [dispatch, formState, personType, gender])
+    }, [dispatch, formState, userType, gender])
 
-    const personTypeOptions = [
+    const userTypeOptions = [
         {
             label: "Coach",
             value: "coach",
@@ -174,9 +174,9 @@ export const SignUpForm = props => {
 
             <View style={{ flexDirection: 'row' }}>
                 <SwitchSelector
-                    options={personTypeOptions}
+                    options={userTypeOptions}
                     initial={1}
-                    onPress={(value) => setPersonType(value)}
+                    onPress={(value) => setuserType(value)}
                     style={{ marginTop: 10, width: "40%", marginRight: 10 }}
                     buttonColor={colors.primary}
                     textStyle={{ fontFamily: fonts.body, flex: 1 }}

@@ -18,13 +18,14 @@ import { setStoredUsers } from "../../../store/user-slice";
 import { setChatMessages, setStarredMessages } from "../../../store/messages-slice";
 import ExersiceDetails from "../../features/exercises/screens/exercise-details.screen";
 import Onboarding from "../../../onboarding/onboarding";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, StackActions, useNavigation } from "@react-navigation/native";
 
 const Stack = createStackNavigator();
 
 const StackNavigator = () => {
 
     const dispatch = useDispatch();
+    const navigation = useNavigation();
 
     const [isLoading, setIsLoading] = useState(true);
 
@@ -38,12 +39,23 @@ const StackNavigator = () => {
 
     useEffect(() => {
         registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-
+        console.log(expoPushToken);
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-            setNotification(notification);
+            // setNotification(notification);
         });
 
         responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            const { data } = response.notification.request.content;
+            const chatId = data["chatId"];
+
+            if (chatId) {
+                const pushActions = StackActions.push("Chat", { chatId });
+                navigation.dispatch(pushActions);
+
+            } else {
+                console.log("No chat id sent with notification");
+            }
+
             console.log("Notification tapped:");
             console.log(JSON.stringify(response, 0, 2));
         });
@@ -169,7 +181,7 @@ const StackNavigator = () => {
     };
 
     return (
-        <Stack.Navigator   >
+        <Stack.Navigator >
 
             <Stack.Group screenOptions={{ headerShown: false }} >
                 <Stack.Screen name="Home" component={TabNavigator} options={{ headerTitle: '', headerShadowVisible: false }} />
@@ -249,12 +261,9 @@ async function registerForPushNotificationsAsync() {
             alert('Failed to get push token for push notification!');
             return;
         }
-        token = (await Notifications.getExpoPushTokenAsync({
-            projectId: '2aac6eab732d3846',
-        })).data;
-        console.log(token);
+        token = (await Notifications.getExpoPushTokenAsync({ projectId: '2aac6eab732d3846' })).data;
     } else {
-        alert('Must use physical device for Push Notifications');
+        console.log('Must use physical device for Push Notifications');
     }
 
     return token;

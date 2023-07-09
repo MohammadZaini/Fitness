@@ -16,7 +16,6 @@ import { SuccessMessageContainer } from "../components/settings.styles";
 import { ProfileImage } from "../../../components/profile-image.component";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FadeInView } from "../../../components/animations/fade.animation";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SettingsScreen = () => {
 
@@ -93,10 +92,6 @@ const SettingsScreen = () => {
             currentValues.lastName !== lastName ||
             currentValues.email !== email ||
             currentValues.about !== about;
-    };
-    const getPersonType = async () => {
-        const personType = await AsyncStorage.getItem(`type-${userData.userId}`);
-        return personType
     };
 
     return (
@@ -193,7 +188,7 @@ const SettingsScreen = () => {
                     <SubmitButton
                         title="Log out"
                         color={colors.red}
-                        onPress={() => dispatch(userLogout(userData, getPersonType()))}
+                        onPress={() => dispatch(userLogout(userData, userData.userType))}
                     />
                 </ScrollView>
             </SafeAreaView>

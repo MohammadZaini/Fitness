@@ -24,14 +24,14 @@ const StartUpScreen = () => {
             const { token, userId, expiryDate: expiryDateString } = parsedData;
             const expiryDate = new Date(expiryDateString);
 
-            const personType = await AsyncStorage.getItem(`type-${userId}`);
+            const userType = await AsyncStorage.getItem(`type-${userId}`);
 
             if (expiryDate <= new Date || !token || !userId) {
                 dispatch(setDidTryAutoLogin());
                 return;
             };
 
-            const userData = await getUserData(userId, personType);
+            const userData = await getUserData(userId, userType);
             dispatch(authenticate({ token, userData }));
         };
         tryAutoLogin();

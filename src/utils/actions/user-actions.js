@@ -1,16 +1,16 @@
 import { child, endAt, get, getDatabase, orderByChild, query, ref, startAt } from "firebase/database";
 import { getFirebaseApp } from "../firebase-helper"
 
-export const getUserData = async (userId, personType) => {
+export const getUserData = async (userId, userType) => {
 
     try {
         const app = getFirebaseApp();
         const dbRef = ref(getDatabase(app));
 
         let type;
-        if (personType === "trainee") {
+        if (userType === "trainee") {
             type = "trainees"
-        } else if (personType === "coach") {
+        } else if (userType === "coach") {
             type = "coaches"
         };
 

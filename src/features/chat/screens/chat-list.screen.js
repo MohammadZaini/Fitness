@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect } from "react";
-import { FlatList, Text } from "react-native";
+import { FlatList } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { CustomHeaderButton } from "../components/custom-header-button.component";
 import { useSelector } from "react-redux";
@@ -16,10 +16,10 @@ const ChatListScreen = props => {
         return Object.values(userChats).sort((a, b) => {
             return new Date(b.updatedAt) - new Date(a.updatedAt)
         })
-    },[userChats])
+    }, [userChats]);
 
     const storedUsers = useSelector(state => state.users.storedUsers);
-console.log(storedUsers);
+
     useEffect(() => {
         props.navigation.setOptions({
             headerRight: () => {
@@ -49,8 +49,8 @@ console.log(storedUsers);
         } else {
             const chatUsers = [selectedUser, userData.userId];
             naviagtionProps = {
-            newChatData: { users: chatUsers }
-        };
+                newChatData: { users: chatUsers }
+            };
         };
         props.navigation.navigate("Chat", naviagtionProps)
     }, [props.route?.params]);
@@ -72,7 +72,7 @@ console.log(storedUsers);
 
                     const title = otherUser && `${otherUser.firstName} ${otherUser.lastName}`;
                     const subTitle = chatData.latestTextMessage || "New chat"
-                    const image = otherUser &&  otherUser.profilePicture;
+                    const image = otherUser && otherUser.profilePicture;
 
                     return <DataItem
                         uri={image}
@@ -80,7 +80,7 @@ console.log(storedUsers);
                         subTitle={subTitle}
                         onPress={() => props.navigation.navigate("Chat", { chatId })}
                         unOpenedMessages={subTitle}
-                        personType={otherUser && otherUser.personType}
+                        userType={otherUser && otherUser.userType}
                         gender={otherUser && otherUser.gender}
                     />
                 }}

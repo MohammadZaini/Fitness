@@ -7,15 +7,13 @@ import OnboardingItem from "./onboarding-item";
 import Paginator from "./paginator";
 import NextButton from "./next-button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { NavigationContext } from "@react-navigation/native";
+import { navigate } from "../navigation-ref";
 
-const Onboarding = () => {
+const Onboarding = ({ swap }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const scrollX = useRef(new Animated.Value(0)).current; // A reference to an animated value using the horizontal scroll position of the flatlist
     const slidesRef = useRef(null);
 
-    const navigation = useContext(NavigationContext);
-    // console.log(navigation);
     const viewableItemsChanged = useRef(({ viewableItems }) => {
         setCurrentIndex(viewableItems[0].index)
     }).current;
@@ -28,21 +26,13 @@ const Onboarding = () => {
         } else {
             try {
                 await AsyncStorage.setItem('@viewedOnboarding', 'true')
-
-                // const pushAction = StackActions.push("Exercises", { chatId });
-                // navigation.dispatch(pushAction);
-                // navigation.navigate("Home")
                 console.log("go next :)");
-
-                // setTimeout(async () => {
-                //     await AsyncStorage.removeItem("@viewedOnboarding");
-                //     console.log("timeout");
-                // }, 1000)
+                swap(true)
             } catch (error) {
                 console.log(error);
-            }
-        }
-    }
+            };
+        };
+    };
 
     return (
         <View style={styles.container} >
@@ -69,8 +59,7 @@ const Onboarding = () => {
             <NextButton scrollTo={scrollTo} percentage={(currentIndex + 1) * (100 / onboardingSlides.length)} />
         </View>
     )
-
-}
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -78,6 +67,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     }
-})
+});
 
 export default Onboarding;
