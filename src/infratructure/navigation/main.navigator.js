@@ -17,8 +17,7 @@ import { styled } from "styled-components";
 import { setStoredUsers } from "../../../store/user-slice";
 import { setChatMessages, setStarredMessages } from "../../../store/messages-slice";
 import ExersiceDetails from "../../features/exercises/screens/exercise-details.screen";
-import Onboarding from "../../../onboarding/onboarding";
-import { NavigationContainer, StackActions, useNavigation } from "@react-navigation/native";
+import { StackActions, useNavigation } from "@react-navigation/native";
 
 const Stack = createStackNavigator();
 
@@ -209,35 +208,6 @@ const LoadingContainer = styled.View`
     align-items: center;
 `;
 
-
-// const OnboardingStack = createStackNavigator();
-
-// export const OnboardingNavigation = () => {
-//     return <NavigationContainer>
-//         <OnboardingStack.Navigator>
-
-//             <OnboardingStack.Group screenOptions={{ headerShadowVisible: false, ...TransitionPresets.SlideFromRightIOS, headerShown: false }}>
-//                 <OnboardingStack.Screen name="Onboarding" component={Onboarding} />
-//             </OnboardingStack.Group>
-
-//             <OnboardingStack.Group screenOptions={{ headerShown: false }} >
-//                 <OnboardingStack.Screen name="Home" component={TabNavigator} options={{ headerTitle: '', headerShadowVisible: false }} />
-//                 <OnboardingStack.Screen name="ChatSettings" component={ChatSettingsScreen} />
-//             </OnboardingStack.Group>
-
-//             <OnboardingStack.Group>
-//                 <OnboardingStack.Screen name="Chat" component={ChatScreen} options={{ headerShadowVisible: false, ...TransitionPresets.ModalPresentationIOS, }} />
-//             </OnboardingStack.Group>
-
-//             <OnboardingStack.Group screenOptions={{ headerShadowVisible: false, ...TransitionPresets.SlideFromRightIOS, }} >
-//                 <OnboardingStack.Screen name="NewChat" component={NewChatScreen} options={{ title: "New chat" }} />
-//                 <OnboardingStack.Screen name="ExerciseDetails" component={ExersiceDetails} options={{ title: "Exercise" }} />
-//             </OnboardingStack.Group>
-
-//         </OnboardingStack.Navigator>
-//     </NavigationContainer>
-// }
-
 async function registerForPushNotificationsAsync() {
     let token;
 
@@ -264,7 +234,7 @@ async function registerForPushNotificationsAsync() {
         token = (await Notifications.getExpoPushTokenAsync({ projectId: '2aac6eab732d3846' })).data;
     } else {
         console.log('Must use physical device for Push Notifications');
-    }
+    };
 
     return token;
-}
+};

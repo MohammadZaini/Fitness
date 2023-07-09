@@ -168,7 +168,6 @@ const ChatScreen = props => {
                             onLayout={() => chatMessages.length > 0 && flatRef.current.scrollToEnd({ animated: false })}
                             showsVerticalScrollIndicator={false}
                             data={chatMessages}
-                            // keyExtractor={(id, index) => id.key + index.toString()}
                             renderItem={(itemData) => {
                                 const message = itemData.item;
                                 const isOwnMessage = message.sentBy === userData.userId;
