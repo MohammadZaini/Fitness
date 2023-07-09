@@ -24,7 +24,7 @@ const Navigation = () => {
         return <View style={{ justifyContent: 'center', flex: 1 }}>
             <ActivityIndicator size="large" color={colors.primary} />
         </View>
-    }
+    };
 
     const checkOnboarding = useCallback(async () => {
         try {
@@ -33,7 +33,7 @@ const Navigation = () => {
             if (value !== null) {
                 setViewedOnboarding(true);
             } else {
-                console.log(value + ":o");
+                console.log(value);
             }
 
         } catch (error) {
@@ -48,9 +48,7 @@ const Navigation = () => {
     }, []);
 
     const switchValue = (value = false) => {
-        console.log("hi");
         setViewedOnboarding(value)
-        console.log(value);
     };
 
     return (

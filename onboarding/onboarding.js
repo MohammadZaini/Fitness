@@ -7,7 +7,6 @@ import OnboardingItem from "./onboarding-item";
 import Paginator from "./paginator";
 import NextButton from "./next-button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { navigate } from "../navigation-ref";
 
 const Onboarding = ({ swap }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -26,7 +25,6 @@ const Onboarding = ({ swap }) => {
         } else {
             try {
                 await AsyncStorage.setItem('@viewedOnboarding', 'true')
-                console.log("go next :)");
                 swap(true)
             } catch (error) {
                 console.log(error);
