@@ -10,8 +10,9 @@ import { ActivityIndicator } from "react-native-paper";
 import { colors } from "../../../infratructure/theme/colors";
 import { MaterialIcons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons'
-import { Alert } from "react-native";
+import { Alert, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from '@expo/vector-icons';
 
 const isTestMode = true
 
@@ -41,7 +42,7 @@ export const SignInForm = props => {
     const dispatch = useDispatch();
 
     const [rememberMe, setRememberMe] = useState(true);
-
+    const [hidePassword, setHidePassword] = useState(true)
 
     useEffect(() => {
         if (error) {
@@ -100,24 +101,39 @@ export const SignInForm = props => {
                 initialValue={formState.inputValues.email}
             />
 
-            <Input
-                id="password"
-                label="Password"
-                labelColor={formState.inputIsValidColor["password"]}
-                iconPack={Entypo}
-                icon={"lock"}
-                iconColor={colors.primary}
-                onInputChanged={onChangedHandler}
-                autoCapitalize='none'
-                autoCorrect={false}
-                errorText={formState.inputValidities["password"]}
-                secureTextEntry
-                color={formState.inputIsValidColor["password"]}
-                initialValue={formState.inputValues.password}
-            />
+            <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
+                <Input
+                    id="password"
+                    label="Password"
+                    labelColor={formState.inputIsValidColor["password"]}
+                    iconPack={Entypo}
+                    icon={"lock"}
+                    iconColor={colors.primary}
+                    onInputChanged={onChangedHandler}
+                    autoCapitalize='none'
+                    autoCorrect={false}
+                    errorText={formState.inputValidities["password"]}
+                    secureTextEntry={hidePassword}
+                    color={formState.inputIsValidColor["password"]}
+                    initialValue={formState.inputValues.password}
+                />
+                {
 
+                    hidePassword ?
+                        <Ionicons name="md-eye-off-outline" size={20}
+                            color="black"
+                            style={{ alignSelf: 'center', position: 'absolute', right: 15, bottom: 12 }}
+                            onPress={() => setHidePassword(!hidePassword)}
+                        /> :
+                        <Ionicons name="md-eye-outline" size={20}
+                            color="black"
+                            style={{ alignSelf: 'center', position: 'absolute', right: 15, bottom: 12 }}
+                            onPress={() => setHidePassword(!hidePassword)}
+                        />
+                }
+            </View>
 
-{/* {
+            {/* {
     rememberMe ?
     <MaterialIcons name="check-box-outline-blank" size={24} 
 color="black" style={{alignSelf: 'flex-start', marginLeft: 50, marginTop: 5}}
