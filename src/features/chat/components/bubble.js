@@ -15,9 +15,10 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { deleteMessage, starMessage } from "../../../utils/actions/chat-actions";
 import { useSelector } from "react-redux";
 import { Image } from "react-native";
+import { ProfileImage } from "../../../components/profile-image.component";
 
 export const Bubble = props => {
-    const { text, type, date, userId, chatId, messageId, setReply, replyingTo, name, imageUrl } = props;
+    const { text, type, date, userId, chatId, messageId, setReply, replyingTo, name, imageUrl, uri, isGroupChat } = props;
 
     const starredMessages = useSelector(state => state.messages.starredMessages[chatId] ?? {});
     const storedUsers = useSelector(state => state.users.storedUsers);
@@ -95,12 +96,16 @@ export const Bubble = props => {
 
     return (
         <View style={wrapperStyle}  >
+            {
+                type === "theirMessage" && isGroupChat &&
+                <ProfileImage uri={uri} size={30} style={{ marginRight: 5 }} />
+            }
             <Container onLongPress={() => menuRef.current.props.ctx.menuActions.openMenu(id.current)} >
                 <View style={bubbleStyle} >
 
                     {
                         name &&
-                        <Text>{name}</Text>
+                        <Text style={{ fontWeight: 'bold' }} >{name}</Text>
                     }
 
                     {

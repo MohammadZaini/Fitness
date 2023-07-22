@@ -39,3 +39,26 @@ export const LoadingContainer = styled.View`
     align-items: center;
     justify-content: center;
 `;
+
+export const ChatNameInput = styled.TextInput.attrs(props => ({
+    placeholder: "Enter a name for your chat ",
+    value: props.value,
+    onChangeText: props.onChangeText
+}))`
+    margin-left: 8px;
+    font-size: 15px;
+    width: 100%;
+    letter-spacing: 0.3px;
+`;
+
+export const ChatNameContainer = styled.View`
+    margin-vertical: 10px;
+`;
+
+export const ChatNameInputContainer = styled.View`
+    width: 100%;
+    margin-horizontal: 10px;
+    margin-vertical: 15px;
+    border-radius: 2px;
+    flex-direction: row;
+`;

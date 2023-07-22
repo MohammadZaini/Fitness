@@ -40,13 +40,13 @@ const ChatScreen = props => {
         const messageList = [];
 
         for (const key in chatMessagesData) {
-            const message = chatMessagesData[key]
+            const message = chatMessagesData[key];
 
             messageList.push({
                 key,
                 ...message,
-            })
-        }
+            });
+        };
 
         return messageList;
     });
@@ -64,14 +64,14 @@ const ChatScreen = props => {
     useEffect(() => {
         // if (!chatData) return;
         props.navigation.setOptions({
-            headerTitle: getChatTilteFromName()
+            headerTitle: chatData.chatName ?? getChatTilteFromName()
         });
         setChatUsers(chatData.users);
     }, [chatUsers]);
 
     const sendMessage = useCallback(async () => {
         try {
-            let id = chatId
+            let id = chatId;
             if (!id) {
                 // create new chat
                 console.log("Creating chat");
@@ -172,17 +172,23 @@ const ChatScreen = props => {
                                 const message = itemData.item;
                                 const isOwnMessage = message.sentBy === userData.userId;
                                 const messageType = isOwnMessage ? "myMessage" : "theirMessage";
+                                const sender = message.sentBy && storedUsers[message.sentBy];
+                                const name = sender && `${sender.firstName} ${sender.lastName}`;
+                                const profilePicture = sender && sender.profilePicture;
 
                                 return <Bubble
                                     text={message.text}
                                     type={messageType}
                                     date={message.sentAt}
+                                    name={!chatData.isGroupChat || isOwnMessage ? undefined : name}
                                     userId={userData.userId}
                                     chatId={chatId}
+                                    uri={profilePicture}
                                     messageId={message.key}
                                     setReply={() => setReplyingTo(message)}
                                     replyingTo={message.replyTo && chatMessages.find(i => i.key === message.replyTo)}
                                     imageUrl={message.imageUrl}
+                                    isGroupChat={chatData.isGroupChat}
                                 />
                             }}
                         />

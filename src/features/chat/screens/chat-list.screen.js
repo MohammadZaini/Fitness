@@ -1,21 +1,26 @@
 import React, { useCallback, useEffect } from "react";
-import { FlatList } from "react-native";
+import { FlatList, TouchableOpacity, View } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { CustomHeaderButton } from "../components/custom-header-button.component";
 import { useSelector } from "react-redux";
 import { DataItem } from "../../../components/data-item.component";
 import { PageContainer } from "../../../components/page-container";
+import { styled } from "styled-components";
+import { colors } from "../../../infratructure/theme/colors";
 
 const ChatListScreen = props => {
 
     const selectedUser = props.route?.params?.selectedUserId;
+    const selectedUserList = props.route?.params?.selectedUsers;
+    const chatName = props.route?.params?.chatName;
+
     const userData = useSelector(state => state.auth.userData);
     const userChats = useSelector(state => state.chats.chatsData);
 
     const sortedUserChat = useCallback(() => {
         return Object.values(userChats).sort((a, b) => {
-            return new Date(b.updatedAt) - new Date(a.updatedAt)
-        })
+            return new Date(b.updatedAt) - new Date(a.updatedAt);
+        });
     }, [userChats]);
 
     const storedUsers = useSelector(state => state.users.storedUsers);
@@ -35,7 +40,7 @@ const ChatListScreen = props => {
     }, []);
 
     useEffect(() => {
-        if (!selectedUser) return;
+        if (!selectedUser && !selectedUserList) return;
 
         let chatData;
         let naviagtionProps;
@@ -47,32 +52,65 @@ const ChatListScreen = props => {
         if (chatData) {
             naviagtionProps = { chatId: chatData.key }
         } else {
-            const chatUsers = [selectedUser, userData.userId];
+            const chatUsers = selectedUserList || [selectedUser];
+
+            if (!chatUsers.includes(userData.userId)) {
+                chatUsers.push(userData.userId)
+            }
+
             naviagtionProps = {
-                newChatData: { users: chatUsers }
+                newChatData: {
+                    users: chatUsers,
+                    isGroupChat: selectedUserList !== undefined,
+                    // chatName
+                }
+            };
+
+            if (chatName) {
+                naviagtionProps.newChatData.chatName = chatName;
             };
         };
-        props.navigation.navigate("Chat", naviagtionProps)
+
+        props.navigation.navigate("Chat", naviagtionProps);
+
     }, [props.route?.params]);
 
     return (
         <PageContainer>
+            <View>
+                <TouchableOpacity onPress={() => props.navigation.navigate("NewChat", { isGroupChat: true })}>
+                    <NewGroupText>New Group</NewGroupText>
+                </TouchableOpacity>
+            </View>
             <FlatList
                 data={sortedUserChat()}
                 showsVerticalScrollIndicator={false}
-                keyExtractor={id => id.key}
+                keyExtractor={item => item.key}
                 renderItem={(itemData) => {
                     const chatData = itemData.item;
                     const chatId = chatData.key;
+                    const isGroupChat = chatData.isGroupChat;
 
-                    const otherUserId = chatData.users.find(uid => uid !== userData.userId);
-                    const otherUser = storedUsers[otherUserId];
+                    let title = "";
+                    const subTitle = chatData.latestTextMessage || "New chat";
+                    let image = "";
+                    let userType = "";
+                    let gender = "";
 
-                    if (!otherUserId) return;
+                    if (isGroupChat) {
+                        title = chatData.chatName;
+                        image = chatData.chatImage;
 
-                    const title = otherUser && `${otherUser.firstName} ${otherUser.lastName}`;
-                    const subTitle = chatData.latestTextMessage || "New chat"
-                    const image = otherUser && otherUser.profilePicture;
+                    } else {
+                        const otherUserId = chatData.users.find(uid => uid !== userData.userId);
+                        const otherUser = storedUsers[otherUserId];
+                        if (!otherUserId) return;
+
+                        title = otherUser && `${otherUser.firstName} ${otherUser.lastName}`;
+                        image = otherUser && otherUser.profilePicture;
+                        userType = otherUser.userType;
+                        gender = otherUser.gender;
+                    }
 
                     return <DataItem
                         uri={image}
@@ -80,8 +118,8 @@ const ChatListScreen = props => {
                         subTitle={subTitle}
                         onPress={() => props.navigation.navigate("Chat", { chatId })}
                         unOpenedMessages={subTitle}
-                        userType={otherUser && otherUser.userType}
-                        gender={otherUser && otherUser.gender}
+                        userType={isGroupChat ? "" : userType}
+                        gender={isGroupChat ? "" : gender}
                     />
                 }}
             />
@@ -90,3 +128,10 @@ const ChatListScreen = props => {
 };
 
 export default ChatListScreen;
+
+
+const NewGroupText = styled.Text`
+    color: ${colors.primary};
+    font-size: 17px;
+    margin-vertical: 5px;
+`;

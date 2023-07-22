@@ -7,6 +7,7 @@ import { colors } from "../infratructure/theme/colors";
 import { StyleSheet } from "react-native";
 import { fonts } from "../infratructure/theme/fonts";
 import { Foundation } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 export const DataItem = props => {
 
@@ -29,16 +30,19 @@ export const DataItem = props => {
 
                         {
                             props.userType === "coach" ?
-                                <Image source={require("../../assets/images/personal-trainer-icon.png")} style={{ width: 20, height: 20, marginRight: 5 }} /> :
-                                <Image source={require("../../assets/images/trainee-icon.png")} style={{ width: 20, height: 20, marginRight: 5 }} />
+                                <Image source={require("../../assets/images/personal-trainer-icon.png")} style={{ width: 20, height: 20, marginRight: 5 }} />
+                                : props.userType === "trainee"
+                                    ? <Image source={require("../../assets/images/trainee-icon.png")} style={{ width: 20, height: 20, marginRight: 5 }} />
+                                    : ""
                         }
 
                         {
                             props.gender === "female" ?
-                                <Foundation name="female-symbol" size={24} color={colors.female} /> :
-                                <Foundation name="male-symbol" size={24} color={colors.primary} />
+                                <Foundation name="female-symbol" size={24} color={colors.female} />
+                                : props.gender === "male"
+                                    ? <Foundation name="male-symbol" size={24} color={colors.primary} />
+                                    : ""
                         }
-
 
                     </View>
 
@@ -52,6 +56,12 @@ export const DataItem = props => {
 
                 </TextContainer>
 
+                {
+                    props.type === "checkbox" &&
+                    <View style={{ ...styles.iconContainer, ...props.isChecked && styles.checkedStyle }}>
+                        <Ionicons name="checkmark" size={20} color="black" />
+                    </View>
+                }
             </Container>
         </TouchableWithoutFeedback>
     )
@@ -62,7 +72,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 50,
         borderColor: colors.lightGrey,
-        backgroundColor: 'white'
+        backgroundColor: 'white',
+        marginLeft: 8
     },
     checkedStyle: {
         backgroundColor: colors.primary,

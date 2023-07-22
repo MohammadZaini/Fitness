@@ -121,12 +121,12 @@ export const SignInForm = props => {
 
                     hidePassword ?
                         <Ionicons name="md-eye-off-outline" size={20}
-                            color="black"
+                            color={colors.lightGrey}
                             style={{ alignSelf: 'center', position: 'absolute', right: 15, bottom: 12 }}
                             onPress={() => setHidePassword(!hidePassword)}
                         /> :
                         <Ionicons name="md-eye-outline" size={20}
-                            color="black"
+                            color={colors.lightGrey}
                             style={{ alignSelf: 'center', position: 'absolute', right: 15, bottom: 12 }}
                             onPress={() => setHidePassword(!hidePassword)}
                         />

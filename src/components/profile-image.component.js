@@ -10,6 +10,7 @@ import { updatedSignedInUserData } from "../utils/actions/auth-actions";
 import { updateLoggedInUserData } from "../../store/auth-slice";
 import { useDispatch } from "react-redux";
 import { ActivityIndicator } from "react-native-paper";
+import { Ionicons } from '@expo/vector-icons';
 
 export const ProfileImage = props => {
     const dispatch = useDispatch()
@@ -19,6 +20,7 @@ export const ProfileImage = props => {
     const userId = props.userId;
 
     const showEditButton = props.showEditButton && props.showEditButton === true
+    const showRemoveButton = props.showRemoveButton && props.showRemoveButton === true
 
     const [image, setImage] = useState(source);
     const [isLoading, setIsloading] = useState(false);
@@ -50,9 +52,10 @@ export const ProfileImage = props => {
         };
     };
 
-    const Container = showEditButton ? TouchableOpacity : View;
+    const Container = props.onPress || showEditButton ? TouchableOpacity : View;
+
     return (
-        <Container onPress={pickImage} >
+        <Container style={props.style} onPress={props.onPress || pickImage} >
 
             {
                 isLoading ?
@@ -67,6 +70,13 @@ export const ProfileImage = props => {
                 <ShowIconContainer  >
                     <MaterialIcons name="edit" size={20} color={"black"} style={styles.icon} />
                 </ShowIconContainer>
+            }
+
+            {
+                showRemoveButton && !isLoading &&
+                <ShowRemoveIconContainer  >
+                    <Ionicons name="remove-circle-sharp" size={24} color={colors.error} />
+                </ShowRemoveIconContainer>
             }
         </Container>
     );
@@ -91,3 +101,14 @@ const ShowIconContainer = styled.View`
     border-radius: 20px;
     padding: 7px;
 `;
+
+const ShowRemoveIconContainer = styled.View`
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    top: -10px;
+    left: -5px;
+    border-radius: 20px;
+    padding: 7px;
+`;
+
