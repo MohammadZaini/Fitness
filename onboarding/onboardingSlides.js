@@ -20,7 +20,7 @@ export default [
     {
         id: 4,
         title: "Workouts",
-        description: "Discover all kind of exercises!",
+        description: "Discover all kinds of exercises!",
         image: require("../assets/images/workout.png")
     },
 ];

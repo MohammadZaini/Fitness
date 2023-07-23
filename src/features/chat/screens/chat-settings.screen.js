@@ -8,7 +8,7 @@ import { useCallback } from "react";
 import { InputValidation } from "../../../utils/actions/form-actions";
 import { useReducer } from "react";
 import { reducer } from "../../../utils/reducers/form-reducer";
-import { updateChatData } from "../../../utils/actions/chat-actions";
+import { removeUserFromChat, updateChatData } from "../../../utils/actions/chat-actions";
 import { useState } from "react";
 import { Input } from "../../account/components/input.components";
 import { ActivityIndicator } from "react-native-paper";
@@ -23,7 +23,7 @@ const ChatSettingsScreen = props => {
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
     const chatId = props.route.params.chatId;
-    const chatData = useSelector(state => state.chats.chatsData[chatId]);
+    const chatData = useSelector(state => state.chats.chatsData[chatId] || {});
     const userData = useSelector(state => state.auth.userData);
     const storedUsers = useSelector(state => state.users.storedUsers);
 
@@ -68,6 +68,22 @@ const ChatSettingsScreen = props => {
         return currentValues.chatName !== chatData.chatName
     };
 
+    const leaveChat = useCallback(async () => {
+        try {
+            setIsLoading(true);
+
+            await removeUserFromChat(userData, userData, chatData)
+            props.navigation.popToTop();
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [props.navigation, isLoading]);
+
+
+    if (!chatData.users) return null;
+
     return (
         <PageContainer>
             <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center' }}>
@@ -87,6 +103,7 @@ const ChatSettingsScreen = props => {
                     allowEmpty={false}
                     onInputChanged={onChangedHandler}
                     errorText={formState.inputValidities["chatName"]}
+                    style={{ width: "100%", padding: 5, }}
                 />
 
                 {
@@ -106,18 +123,33 @@ const ChatSettingsScreen = props => {
                     />
 
                     {
-                        chatData.users.map(uid => {
+                        chatData.users.slice(0, 4).map(uid => {
                             const currentUser = storedUsers[uid];
 
                             return <DataItem
                                 key={uid}
-                                uri={currentUser.profilePicture}
-                                title={`${currentUser.firstName} ${currentUser.lastName}`}
-                                subTitle={currentUser.about}
+                                uri={currentUser && currentUser.profilePicture}
+                                title={currentUser && `${currentUser.firstName} ${currentUser.lastName}`}
+                                subTitle={currentUser && currentUser.about}
                                 type={uid !== userData.userId && "link"}
-                                onPress={() => props.navigation.navigate("Contact", { uid })}
+                                onPress={() => uid !== userData.userId && props.navigation.navigate("Contact", { uid, chatId })}
                             />
                         })
+                    }
+
+                    {
+                        chatData.users.length > 3 &&
+                        <DataItem
+                            title="View all"
+                            type="link"
+                            hideImage={true}
+                            onPress={() => props.navigation.navigate("DataList", {
+                                title: "Participants",
+                                data: chatData.users,
+                                type: "users",
+                                chatId
+                            })}
+                        />
                     }
                 </ParticipantsContainer>
 
@@ -134,6 +166,16 @@ const ChatSettingsScreen = props => {
                 }
             </ScrollView>
 
+            {
+                isLoading ?
+                    <ActivityIndicator size="small" color={colors.red} style={{ justifyContent: 'center', alignItems: 'center' }} /> :
+                    <SubmitButton
+                        title="Leave chat"
+                        color={colors.red}
+                        style={{ marginHorizontal: 40 }}
+                        onPress={leaveChat}
+                    />
+            }
         </PageContainer>
     );
 };

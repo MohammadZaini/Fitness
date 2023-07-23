@@ -26,7 +26,7 @@ export const Input = props => {
                 <TextInput
                     {...props}
                     value={value}
-                    style={{ height: 35, width: 300, letterSpacing: 0.3 }}
+                    style={{ ...{ height: 35, width: 300, letterSpacing: 0.3 }, ...{ ...props.style } }}
                     onChangeText={onChangeText}
                 />
             </View>
@@ -44,4 +44,5 @@ const ErrorMessage = styled.Text`
     font-size: 12px;
     margin-left: 5px;
 `
+
 

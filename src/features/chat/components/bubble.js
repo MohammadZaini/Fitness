@@ -78,6 +78,11 @@ export const Bubble = props => {
             bubbleStyle.backgroundColor = colors.lightBlue;
             break;
 
+        case "info":
+            bubbleStyle.justifyContent = 'center';
+            bubbleStyle.backgroundColor = colors.lightBlue;
+            break;
+
         default:
             break;
     }
@@ -104,7 +109,7 @@ export const Bubble = props => {
                 <View style={bubbleStyle} >
 
                     {
-                        name &&
+                        name && type !== "info" &&
                         <Text style={{ fontWeight: 'bold' }} >{name}</Text>
                     }
 
@@ -134,7 +139,7 @@ export const Bubble = props => {
                         <Image source={{ uri: imageUrl }} style={{ height: 300, width: 300 }} />
                     }
                     {
-                        date &&
+                        date && type !== "info" &&
                         <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
                             {
                                 isStarred &&

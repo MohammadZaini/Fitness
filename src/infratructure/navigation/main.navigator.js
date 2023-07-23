@@ -19,6 +19,7 @@ import { setChatMessages, setStarredMessages } from "../../../store/messages-sli
 import ExersiceDetails from "../../features/exercises/screens/exercise-details.screen";
 import { StackActions, useNavigation } from "@react-navigation/native";
 import ContactScreen from '../../features/settings/screens/contact.screen';
+import DataListScreen from '../../features/chat/screens/data-list.screen';
 
 const Stack = createStackNavigator();
 
@@ -99,9 +100,11 @@ const StackNavigator = () => {
                     const data = chatSnapshot.val();
 
                     if (data) {
+
+                        // check wether we're part of the user list
                         if (!data.users.includes(userData.userId)) {
                             return;
-                        }
+                        };
 
                         data.key = chatSnapshot.key;
                         // console.log(JSON.stringify(chatSnapshot.key, 0, 2));
@@ -195,6 +198,7 @@ const StackNavigator = () => {
                 <Stack.Screen name="NewChat" component={NewChatScreen} options={{ title: "New chat" }} />
                 <Stack.Screen name="ExerciseDetails" component={ExersiceDetails} options={{ title: "Exercise", headerShown: false }} />
                 <Stack.Screen name="Contact" component={ContactScreen} options={{ title: "Contact info" }} />
+                <Stack.Screen name="DataList" component={DataListScreen} />
                 <Stack.Screen name="ChatSettings" component={ChatSettingsScreen} options={{ title: "Chat Settings" }} />
             </Stack.Group>
 

@@ -9,13 +9,23 @@ import { useEffect } from 'react';
 import { getUserChats } from '../../../utils/actions/user-actions';
 import { useState } from 'react';
 import { DataItem } from '../../../components/data-item.component';
+import { SubmitButton } from '../../../components/submit-button';
+import { ActivityIndicator } from 'react-native-paper';
+import { removeUserFromChat } from '../../../utils/actions/chat-actions';
+import { useCallback } from 'react';
 
 const ContactScreen = props => {
+    const [isLoading, setIsLoading] = useState(false);
+
     const storedUsers = useSelector(state => state.users.storedUsers);
     const currentUser = storedUsers[props.route.params.uid];
 
     const storedChats = useSelector(state => state.chats.chatsData);
+    const userData = useSelector(state => state.auth.userData);
     const [commonChats, setCommonChats] = useState([]);
+
+    const chatId = props.route.params.chatId;
+    const chatData = chatId && storedChats[chatId];
 
     useEffect(() => {
         const getCommonUserChats = async () => {
@@ -32,20 +42,33 @@ const ContactScreen = props => {
         getCommonUserChats();
 
     }, []);
-    console.log(commonChats);
+
+    const removeFromChat = useCallback(async () => {
+        try {
+            setIsLoading(true);
+
+            await removeUserFromChat(userData, currentUser, chatData)
+            props.navigation.goBack();
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [props.navigation, isLoading]);
+
     return (
         <PageContainer>
             <Container>
                 <ProfileImage
-                    uri={currentUser.profilePicture}
+                    uri={currentUser && currentUser.profilePicture}
                     size={80}
                     style={{ marginBottom: 15 }}
                 />
 
-                <CurrentUserName>{`${currentUser.firstName} ${currentUser.lastName}`}</CurrentUserName>
+                <CurrentUserName>{currentUser && `${currentUser.firstName} ${currentUser.lastName}`}</CurrentUserName>
                 {
-                    currentUser.about &&
-                    <About>{currentUser.about}</About>
+                    currentUser && currentUser.about &&
+                    <About>{currentUser && currentUser.about}</About>
                 }
 
             </Container>
@@ -70,6 +93,24 @@ const ContactScreen = props => {
                                 />
                             )
                         })
+                    }
+
+
+                    {
+                        chatData && chatData.isGroupChat &&
+
+                        (
+                            isLoading ?
+                                <ActivityIndicator size="small" color={colors.red} />
+                                :
+                                <SubmitButton
+                                    title="Remove from chat"
+                                    color={colors.red}
+                                    style={{ marginHorizontal: 40, }}
+                                    onPress={removeFromChat}
+                                />
+                        )
+
                     }
                 </>
             }

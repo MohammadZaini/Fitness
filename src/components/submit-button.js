@@ -13,7 +13,7 @@ export const SubmitButton = props => {
 
         <TouchableOpacity
             onPress={props.disabled ? () => { } : props.onPress}
-            style={{ ...styles.button, ...{ backgroundColor: bgColor } }}>
+            style={{ ...styles.button, ...{ backgroundColor: bgColor }, ...props.style }}>
 
             <Text style={{ marginVertical: 8, fontFamily: fonts.body }
             } > {props.title}</ Text>

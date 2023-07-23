@@ -11,12 +11,14 @@ import { Ionicons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 export const DataItem = props => {
 
+
+    const hideImage = props.hideImage && props.hideImage === true;
     return (
         <TouchableWithoutFeedback onPress={props.onPress} >
             <Container>
 
                 {
-                    !props.icon &&
+                    !props.icon && !hideImage &&
                     <ProfileImage
                         size={40}
                         uri={props.uri} />
@@ -35,7 +37,7 @@ export const DataItem = props => {
 
                     <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center' }} >
                         <Text
-                            style={{ ...styles.title, ...{ color: props.type === "button" ? colors.primary : colors.lightGrey } }}
+                            style={{ ...styles.title, ...{ color: props.type === "button" ? colors.primary : colors.textColor } }}
 
                             numberOfLines={1}
                         >{props.title}
@@ -106,7 +108,6 @@ const styles = StyleSheet.create({
         fontSize: 16,
         letterSpacing: 0.3,
         flex: 1
-
     }
 })
 

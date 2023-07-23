@@ -53,7 +53,7 @@ const ChatScreen = props => {
         return messageList;
     });
 
-    const chatData = (chatId && storedChats[chatId]) || props.route?.params?.newChatData;
+    const chatData = (chatId && storedChats[chatId]) || props.route?.params?.newChatData || {};
 
     const otherUserId = chatUsers.find(uid => uid !== userData.userId);
     const otherUserData = storedUsers[otherUserId];
@@ -63,12 +63,10 @@ const ChatScreen = props => {
         return otherUserData && `${otherUserData.firstName} ${otherUserData.lastName}`;
     };
 
-    const title = chatData.chatName ?? getChatTilteFromName();
-
     useEffect(() => {
-        // if (!chatData) return;
+        if (!chatData) return;
         props.navigation.setOptions({
-            headerTitle: title,
+            headerTitle: chatData.chatName ?? getChatTilteFromName(),
             headerRight: () => {
                 return <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
                     {
@@ -88,7 +86,7 @@ const ChatScreen = props => {
             }
         });
         setChatUsers(chatData.users);
-    }, [chatUsers, title]);
+    }, [chatUsers]);
 
     const sendMessage = useCallback(async () => {
         try {
@@ -192,10 +190,19 @@ const ChatScreen = props => {
                             renderItem={(itemData) => {
                                 const message = itemData.item;
                                 const isOwnMessage = message.sentBy === userData.userId;
-                                const messageType = isOwnMessage ? "myMessage" : "theirMessage";
                                 const sender = message.sentBy && storedUsers[message.sentBy];
                                 const name = sender && `${sender.firstName} ${sender.lastName}`;
                                 const profilePicture = sender && sender.profilePicture;
+
+                                let messageType;
+
+                                if (message.type && message.type === "info") {
+                                    messageType = "info";
+                                } else if (isOwnMessage) {
+                                    messageType = "myMessage";
+                                } else {
+                                    messageType = "theirMessage";
+                                };
 
                                 return <Bubble
                                     text={message.text}
