@@ -7,6 +7,7 @@ import { TouchableOpacity } from "react-native";
 import { FlatList } from "react-native";
 import { workoutsData } from "../components/workouts-data";
 import { FadeInView } from "../../../components/animations/fade.animation";
+import { colors } from "../../../infratructure/theme/colors";
 
 const ExersicesScreen = props => {
 
@@ -42,6 +43,7 @@ export const ExersiceName = styled.Text`
     position: absolute;
     left: 20px;
     top: 20px;
+    color:${colors.nearlyWhite};
 `;
 
 

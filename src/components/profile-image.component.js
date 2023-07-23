@@ -11,6 +11,7 @@ import { updateLoggedInUserData } from "../../store/auth-slice";
 import { useDispatch } from "react-redux";
 import { ActivityIndicator } from "react-native-paper";
 import { Ionicons } from '@expo/vector-icons';
+import { updateChatData } from "../utils/actions/chat-actions";
 
 export const ProfileImage = props => {
     const dispatch = useDispatch()
@@ -18,6 +19,7 @@ export const ProfileImage = props => {
     const source = props.uri ? { uri: props.uri } : userImage;
 
     const userId = props.userId;
+    const chatId = props.chatId;
 
     const showEditButton = props.showEditButton && props.showEditButton === true
     const showRemoveButton = props.showRemoveButton && props.showRemoveButton === true
@@ -33,18 +35,21 @@ export const ProfileImage = props => {
             if (!tempUri) return;
 
             setIsloading(true);
-            const uploadUrl = await uploadImageAsync(tempUri);
+            const uploadUrl = await uploadImageAsync(tempUri, chatId !== undefined);
             setIsloading(false);
 
             if (!uploadUrl) {
                 throw new Error("Could not upload image")
             }
 
-            const newData = { profilePicture: uploadUrl }
+            if (chatId) {
+                await updateChatData(chatId, userId, { chatImage: uploadUrl })
+            } else {
+                const newData = { profilePicture: uploadUrl }
 
-            await updatedSignedInUserData(userId, newData);
-            dispatch(updateLoggedInUserData({ newData }));
-
+                await updatedSignedInUserData(userId, newData);
+                dispatch(updateLoggedInUserData({ newData }));
+            }
 
             setImage({ uri: uploadUrl });
         } catch (error) {

@@ -18,6 +18,7 @@ import { setStoredUsers } from "../../../store/user-slice";
 import { setChatMessages, setStarredMessages } from "../../../store/messages-slice";
 import ExersiceDetails from "../../features/exercises/screens/exercise-details.screen";
 import { StackActions, useNavigation } from "@react-navigation/native";
+import ContactScreen from '../../features/settings/screens/contact.screen';
 
 const Stack = createStackNavigator();
 
@@ -184,7 +185,6 @@ const StackNavigator = () => {
 
             <Stack.Group screenOptions={{ headerShown: false }} >
                 <Stack.Screen name="Home" component={TabNavigator} options={{ headerTitle: '', headerShadowVisible: false }} />
-                <Stack.Screen name="ChatSettings" component={ChatSettingsScreen} />
             </Stack.Group>
 
             <Stack.Group screenOptions={{ presentation: "modal" }}>
@@ -194,6 +194,8 @@ const StackNavigator = () => {
             <Stack.Group screenOptions={{ headerShadowVisible: false, ...TransitionPresets.SlideFromRightIOS, }} >
                 <Stack.Screen name="NewChat" component={NewChatScreen} options={{ title: "New chat" }} />
                 <Stack.Screen name="ExerciseDetails" component={ExersiceDetails} options={{ title: "Exercise", headerShown: false }} />
+                <Stack.Screen name="Contact" component={ContactScreen} options={{ title: "Contact info" }} />
+                <Stack.Screen name="ChatSettings" component={ChatSettingsScreen} options={{ title: "Chat Settings" }} />
             </Stack.Group>
 
         </Stack.Navigator>

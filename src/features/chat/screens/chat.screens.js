@@ -14,18 +14,20 @@ import { launchImagePicker, openCamera, uploadImageAsync } from "../../../utils/
 import { StyleSheet } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { fonts } from "../../../infratructure/theme/fonts";
+import { HeaderButtons, Item } from "react-navigation-header-buttons";
+import { CustomHeaderButton } from "../components/custom-header-button.component";
+import { Ionicons } from '@expo/vector-icons';
 
 const ChatScreen = props => {
     const [chatUsers, setChatUsers] = useState([]);
     const [messageText, setMessageText] = useState("");
     const [chatId, setChatId] = useState(props.route?.params?.chatId) // to check wether it's a new chat or not.
     const [errorBannerText, setErrorBannerText] = useState("");
-    console.log("CHAT ID IS: " + "====>" + chatId);
     const [replyingTo, setReplyingTo] = useState("");
     const [tempImageUri, setTempImageUri] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
-    const flatRef = useRef();
+    const flatlistRef = useRef();
 
     const userData = useSelector(state => state.auth.userData);
     const storedUsers = useSelector(state => state.users.storedUsers);
@@ -61,13 +63,32 @@ const ChatScreen = props => {
         return otherUserData && `${otherUserData.firstName} ${otherUserData.lastName}`;
     };
 
+    const title = chatData.chatName ?? getChatTilteFromName();
+
     useEffect(() => {
         // if (!chatData) return;
         props.navigation.setOptions({
-            headerTitle: chatData.chatName ?? getChatTilteFromName()
+            headerTitle: title,
+            headerRight: () => {
+                return <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
+                    {
+                        chatId &&
+                        <Item
+                            title="Chat settings"
+                            iconPackge={Ionicons}
+                            iconName="settings-outline"
+                            onPress={() => {
+                                chatData.isGroupChat ?
+                                    props.navigation.navigate("ChatSettings", { chatId }) :
+                                    props.navigation.navigate("Contact", { uid: chatUsers.find(uid => uid !== userData.userId) })
+                            }}
+                        />
+                    }
+                </HeaderButtons>
+            }
         });
         setChatUsers(chatData.users);
-    }, [chatUsers]);
+    }, [chatUsers, title]);
 
     const sendMessage = useCallback(async () => {
         try {
@@ -163,9 +184,9 @@ const ChatScreen = props => {
                     {
                         chatId &&
                         <FlatList
-                            ref={ref => flatRef.current = ref}
-                            onContentSizeChange={() => chatMessages.length > 0 && flatRef.current.scrollToEnd({ animated: true })}
-                            onLayout={() => chatMessages.length > 0 && flatRef.current.scrollToEnd({ animated: false })}
+                            ref={ref => flatlistRef.current = ref}
+                            onContentSizeChange={() => chatMessages.length > 0 && flatlistRef.current.scrollToEnd({ animated: true })}
+                            onLayout={() => chatMessages.length > 0 && flatlistRef.current.scrollToEnd({ animated: false })}
                             showsVerticalScrollIndicator={false}
                             data={chatMessages}
                             renderItem={(itemData) => {

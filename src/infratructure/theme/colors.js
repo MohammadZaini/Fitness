@@ -10,5 +10,6 @@ export const colors = {
     lightBlue: "#ADD8E6",
     red: "#e74c3c",
     yellow: "yellow",
-    female: "#F4338F"
+    female: "#F4338F",
+    nearlyWhite: "#F4F8F7"
 }; 

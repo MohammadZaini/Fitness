@@ -8,22 +8,35 @@ import { StyleSheet } from "react-native";
 import { fonts } from "../infratructure/theme/fonts";
 import { Foundation } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
-
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 export const DataItem = props => {
 
     return (
         <TouchableWithoutFeedback onPress={props.onPress} >
             <Container>
 
-                <ProfileImage
-                    size={40}
-                    uri={props.uri} />
+                {
+                    !props.icon &&
+                    <ProfileImage
+                        size={40}
+                        uri={props.uri} />
+                }
+
+
+                {
+                    props.icon &&
+                    <View>
+                        <Ionicons name={props.icon} size={20} color={colors.primary} />
+                    </View>
+                }
+
 
                 <TextContainer>
 
                     <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center' }} >
                         <Text
-                            style={{ ...styles.title }}
+                            style={{ ...styles.title, ...{ color: props.type === "button" ? colors.primary : colors.lightGrey } }}
+
                             numberOfLines={1}
                         >{props.title}
                         </Text>
@@ -54,12 +67,20 @@ export const DataItem = props => {
                         </SubTitle>
                     }
 
+
                 </TextContainer>
 
                 {
                     props.type === "checkbox" &&
                     <View style={{ ...styles.iconContainer, ...props.isChecked && styles.checkedStyle }}>
                         <Ionicons name="checkmark" size={20} color="black" />
+                    </View>
+                }
+
+                {
+                    props.type === "link" &&
+                    <View >
+                        <MaterialCommunityIcons name="chevron-right" size={24} color={colors.lightGrey} />
                     </View>
                 }
             </Container>

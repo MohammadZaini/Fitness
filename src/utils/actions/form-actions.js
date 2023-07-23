@@ -15,6 +15,9 @@ export const InputValidation = (id, value) => {
         case "about":
             return validateLength(id, value, 0, 150, true);
 
+        case "chatName":
+            return validateLength(id, value, 5, 50, false);
+
         default:
             break;
     };

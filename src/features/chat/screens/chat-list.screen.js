@@ -77,11 +77,14 @@ const ChatListScreen = props => {
 
     return (
         <PageContainer>
-            <View>
-                <TouchableOpacity onPress={() => props.navigation.navigate("NewChat", { isGroupChat: true })}>
-                    <NewGroupText>New Group</NewGroupText>
-                </TouchableOpacity>
-            </View>
+            {
+                userData.userType === "coach" &&
+                <View>
+                    <TouchableOpacity onPress={() => props.navigation.navigate("NewChat", { isGroupChat: true })}>
+                        <NewGroupText>New Group</NewGroupText>
+                    </TouchableOpacity>
+                </View>
+            }
             <FlatList
                 data={sortedUserChat()}
                 showsVerticalScrollIndicator={false}
@@ -118,8 +121,8 @@ const ChatListScreen = props => {
                         subTitle={subTitle}
                         onPress={() => props.navigation.navigate("Chat", { chatId })}
                         unOpenedMessages={subTitle}
-                        userType={isGroupChat ? "" : userType}
-                        gender={isGroupChat ? "" : gender}
+                        userType={isGroupChat ? "" : userType && userType}
+                        gender={isGroupChat ? "" : gender && gender}
                     />
                 }}
             />

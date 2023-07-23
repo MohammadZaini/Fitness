@@ -275,3 +275,15 @@ export const getUserPushTokens = async (userId, userType) => {
         console.log(error);
     };
 };
+
+export const refreshJwtToken = async () => {
+    try {
+        const app = getFirebaseApp();
+        const auth = getAuth(app);
+        const jwt = await auth.currentUser.getIdToken(true);
+        console.log(jwt);
+        // we will use jwt-decode (if required)
+    } catch (error) {
+        console.log(error);
+    }
+};

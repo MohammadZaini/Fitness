@@ -6,7 +6,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 export const CustomHeaderButton = props => {
     return <HeaderButton
         {...props}
-        IconComponent={MaterialCommunityIcons}
+        IconComponent={props.iconPackge || MaterialCommunityIcons}
         iconSize={23}
         color={props.color ?? colors.primary}
     />

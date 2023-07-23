@@ -41,6 +41,19 @@ export const sendPhoto = async (chatId, senderData, imageUrl, replyTo, chatUsers
     await sendPushNotificationForUsers(otherUsers, `${senderData.firstName} ${senderData.lastName}`, `${senderData.firstName} sent a photo`, chatId, otherUserType);
 };
 
+export const updateChatData = async (chatId, userId, chatData) => {
+
+    const app = getFirebaseApp();
+    const dbRef = ref(getDatabase(app));
+    const chatRef = child(dbRef, `chats/${chatId}`);
+
+    await update(chatRef, {
+        ...chatData,
+        updatedAt: new Date().toDateString(),
+        updatedBy: userId
+    });
+};
+
 const sendMessage = async (chatId, senderId, messageText, imageUrl, replyTo) => {
     const app = getFirebaseApp();
     const dbRef = ref(getDatabase(app));
