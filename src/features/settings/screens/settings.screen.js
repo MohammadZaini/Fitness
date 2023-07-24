@@ -19,10 +19,26 @@ import { FadeInView } from "../../../components/animations/fade.animation";
 import { ImageBackground } from "react-native";
 import { List } from "react-native-paper";
 import { styled } from "styled-components";
+import { DataItem } from "../../../components/data-item.component";
+import { useMemo } from "react";
 
 const SettingsScreen = props => {
 
     const userData = useSelector(state => state.auth.userData);
+    const starredMessages = useSelector(state => state.messages.starredMessages ?? {});
+
+    const sortedStarredMessages = useMemo(() => {
+        let result = [];
+
+        const chats = Object.values(starredMessages);
+
+        chats.forEach(chat => {
+            const chatMessages = Object.values(chat);
+            result = result.concat(chatMessages);
+        });
+
+        return result;
+    }, [starredMessages]);
 
     return (
         <FadeInView duration={200}>
@@ -43,10 +59,14 @@ const SettingsScreen = props => {
                             onPress={() => props.navigation.navigate("Profile")}
                         />
                         <SettingsItem
-                            title="View starred messages"
+                            title="Starred messages"
                             left={(props) => <List.Icon {...props} icon="star" color="yellow" />}
+                            onPress={() => props.navigation.navigate("DataList", {
+                                title: "Starred messages",
+                                data: sortedStarredMessages,
+                                type: "messages",
+                            })}
                         />
-
                         <SettingsItem
                             title="Reset password"
                             left={(props) => <List.Icon {...props} icon="lock-reset" />}

@@ -289,7 +289,6 @@ export const refreshJwtToken = async () => {
     }
 };
 
-
 const setUserType = async (uid, userType) => {
 
     AsyncStorage.setItem(`type-${uid}`, userType);
@@ -321,4 +320,3 @@ const getUserType = async (uid) => {
         console.log(error);
     };
 };
-

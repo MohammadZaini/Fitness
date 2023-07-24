@@ -8,7 +8,7 @@ import { useCallback } from "react";
 import { InputValidation } from "../../../utils/actions/form-actions";
 import { useReducer } from "react";
 import { reducer } from "../../../utils/reducers/form-reducer";
-import { removeUserFromChat, updateChatData } from "../../../utils/actions/chat-actions";
+import { addUsersToChat, removeUserFromChat, updateChatData } from "../../../utils/actions/chat-actions";
 import { useState } from "react";
 import { Input } from "../../account/components/input.components";
 import { ActivityIndicator } from "react-native-paper";
@@ -17,12 +17,14 @@ import { SubmitButton } from "../../../components/submit-button";
 import { SuccessMessageContainer } from "../../settings/components/settings.styles";
 import { styled } from "styled-components";
 import { DataItem } from "../../../components/data-item.component";
+import { useEffect } from "react";
 
 const ChatSettingsScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
     const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
     const chatId = props.route.params.chatId;
+    const selectedUsers = props.route.params && props.route.params.selectedUsers;
     const chatData = useSelector(state => state.chats.chatsData[chatId] || {});
     const userData = useSelector(state => state.auth.userData);
     const storedUsers = useSelector(state => state.users.storedUsers);
@@ -36,6 +38,26 @@ const ChatSettingsScreen = props => {
     };
 
     const [formState, dispatchFormState] = useReducer(reducer, initialState);
+
+
+    useEffect(() => {
+        if (!selectedUsers) return;
+
+        const selectedUsersData = [];
+
+        selectedUsers.forEach(uid => {
+            if (uid === userData.userId) return;
+
+            if (!storedUsers[uid]) {
+                console.log("No user data found in the data store");
+                return;
+            };
+
+            selectedUsersData.push(storedUsers[uid])
+        });
+
+        addUsersToChat(userData, selectedUsersData, chatData);
+    }, [selectedUsers]);
 
     const onChangedHandler = useCallback((inputId, inputValue) => {
         const result = InputValidation(inputId, inputValue);
@@ -87,7 +109,7 @@ const ChatSettingsScreen = props => {
 
     return (
         <PageContainer>
-            <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center' }}>
+            <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center' }} showsVerticalScrollIndicator={false}>
                 <ProfileImage
                     size={80}
                     uri={chatData.chatImage}
@@ -117,10 +139,10 @@ const ChatSettingsScreen = props => {
                 <ParticipantsContainer >
                     <ParticipantsHeading>{chatData.users.length} Participants</ParticipantsHeading>
                     <DataItem
-                        title="Add users"
+                        title="Add participants"
                         icon="person-add-outline"
                         type="button"
-
+                        onPress={() => props.navigation.navigate("NewChat", { isGroupChat: true, existingUsers: chatData.users, chatId })}
                     />
 
                     {
@@ -159,8 +181,8 @@ const ChatSettingsScreen = props => {
                         hideImage={true}
                         onPress={() => props.navigation.navigate("DataList", {
                             title: "Starred messages",
-                            data: chatData.users,
-                            type: "users",
+                            data: Object.values(starredMessages),
+                            type: "messages",
                         })}
                     />
                 </ParticipantsContainer>
