@@ -20,6 +20,7 @@ import ExersiceDetails from "../../features/exercises/screens/exercise-details.s
 import { StackActions, useNavigation } from "@react-navigation/native";
 import ContactScreen from '../../features/settings/screens/contact.screen';
 import DataListScreen from '../../features/chat/screens/data-list.screen';
+import ProfileScreen from '../../features/settings/screens/profile.screen';
 
 const Stack = createStackNavigator();
 
@@ -199,6 +200,7 @@ const StackNavigator = () => {
                 <Stack.Screen name="ExerciseDetails" component={ExersiceDetails} options={{ title: "Exercise", headerShown: false }} />
                 <Stack.Screen name="Contact" component={ContactScreen} options={{ title: "Contact info" }} />
                 <Stack.Screen name="DataList" component={DataListScreen} />
+                <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="ChatSettings" component={ChatSettingsScreen} options={{ title: "Chat Settings" }} />
             </Stack.Group>
 

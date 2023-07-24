@@ -67,7 +67,7 @@ export const ProfileImage = props => {
                     <View height={props.size} width={props.size} style={{ alignItems: 'center', justifyContent: 'center' }} >
                         <ActivityIndicator size="small" color={colors.primary} />
                     </View> :
-                    <Image source={image} style={{ ...styles.image, ...{ height: props.size, width: props.size } }} />
+                    <Image source={image} style={{ ...styles.image, ...{ height: props.size, width: props.size }, ...{ ...props.style } }} />
             }
 
             {

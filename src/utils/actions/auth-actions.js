@@ -2,7 +2,7 @@ import { isDevice } from "expo-device";
 import * as Notification from "expo-notifications";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { getFirebaseApp } from "../firebase-helper";
-import { child, get, getDatabase, ref, set, update } from "firebase/database"
+import { child, get, getDatabase, push, ref, set, update } from "firebase/database"
 import { authenticate, logout } from "../../../store/auth-slice";
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { getUserData } from "./user-actions";
@@ -28,9 +28,12 @@ export const SignUp = (firstName, lastName, email, password, userType, gender) =
                 const milliSecondsUntilExpiry = expiryDate - timeNow;
 
                 const userData = await createUser(firstName, lastName, email, uid, userType, gender);
+
+                await setUserType(uid, userType);
+
                 dispatch(authenticate({ token: accessToken, userData }));
                 saveDatatoAsyncStorage(accessToken, uid, expiryDate);
-                getuserType(uid, userType);
+
                 await storePushTokens(userData, userType);
 
                 timer = setTimeout(() => {
@@ -70,9 +73,11 @@ export const SignIn = (email, password) => {
 
                 const milliSecondsUntilExpiry = expiryDate - timeNow;
 
-                const userType = await AsyncStorage.getItem(`type-${uid}`);
-                console.log(userType + ":)");
-                const userData = await getUserData(uid, userType);
+                const userType = await getUserType(uid);
+                const localUserType = await AsyncStorage.getItem(`type-${uid}`);
+                console.log(userType + localUserType);
+
+                const userData = await getUserData(uid, userType ?? localUserType);
                 dispatch(authenticate({ token: accessToken, userData }));
                 saveDatatoAsyncStorage(accessToken, uid, expiryDate, userData.userType);
                 await storePushTokens(userData, userType);
@@ -92,7 +97,7 @@ export const SignIn = (email, password) => {
                 } else if (errorCode === "auth/wrong-password") {
                     message = "Invalid password";
                 };
-
+                console.log(errorCode);
                 throw new Error(message);
             });
     };
@@ -178,10 +183,6 @@ const saveDatatoAsyncStorage = (token, userId, expiryDate) => {
         userId,
         expiryDate: expiryDate.toISOString(),
     }));
-};
-
-const getuserType = (uid, userType) => {
-    AsyncStorage.setItem(`type-${uid}`, userType)
 };
 
 const storePushTokens = async (userData, userType) => {
@@ -287,3 +288,37 @@ export const refreshJwtToken = async () => {
         console.log(error);
     }
 };
+
+
+const setUserType = async (uid, userType) => {
+
+    AsyncStorage.setItem(`type-${uid}`, userType);
+    try {
+        const app = getFirebaseApp();
+        const dbRef = ref(getDatabase(app));
+        const userRef = child(dbRef, `userType/${uid}`);
+
+        await push(userRef, userType);
+
+    } catch (error) {
+        console.log(error);
+    };
+};
+
+const getUserType = async (uid) => {
+
+    try {
+        const app = getFirebaseApp();
+        const dbRef = ref(getDatabase(app));
+        const userRef = child(dbRef, `userType/${uid}`);
+
+        const snapshot = await get(userRef);
+        const data = snapshot.val();
+
+        return Object.values(data).toString();
+
+    } catch (error) {
+        console.log(error);
+    };
+};
+

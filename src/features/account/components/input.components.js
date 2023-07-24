@@ -9,10 +9,10 @@ export const Input = props => {
 
     const onChangeText = text => {
         setValue(text);
-        props.onInputChanged(props.id, text)
+        props.onInputChanged(props.id, text);
     };
 
-    labelTextColor = props.labelColor === "grey" && "black" || props.labelColor
+    const labelTextColor = props.labelColor === "grey" && "black" || props.labelColor;
 
     return (
         <View  >

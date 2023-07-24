@@ -16,184 +16,67 @@ import { SuccessMessageContainer } from "../components/settings.styles";
 import { ProfileImage } from "../../../components/profile-image.component";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FadeInView } from "../../../components/animations/fade.animation";
+import { ImageBackground } from "react-native";
+import { List } from "react-native-paper";
+import { styled } from "styled-components";
 
-const SettingsScreen = () => {
-
-    const [isLoading, setIsloading] = useState(false);
-    const [showSuccessMessage, setShowSuccessMessage] = useState("");
-    const dispatch = useDispatch();
+const SettingsScreen = props => {
 
     const userData = useSelector(state => state.auth.userData);
 
-    const firstName = userData.firstName || "";
-    const lastName = userData.lastName || "";
-    const email = userData.email || "";
-    const about = userData.about || "";
-
-    const initialState = {
-
-        inputValues: {
-            firstName,
-            lastName,
-            email,
-            about
-        },
-
-        inputValidities: {
-            firstName: undefined,
-            lastName: undefined,
-            email: undefined,
-            about: undefined
-        },
-
-        inputIsValidColor: {
-            firstName: "grey",
-            lastName: "grey",
-            email: "grey",
-            about: "grey"
-        },
-
-        formIsValid: false
-    };
-
-    const [formState, dispatchFormState] = useReducer(reducer, initialState);
-
-    const onChangedHandler = useCallback((inputId, inputValue) => {
-        const result = InputValidation(inputId, inputValue);
-        dispatchFormState({ inputId, validationResult: result, inputValue })
-    }, [dispatchFormState]);
-
-    const saveHandler = useCallback(async () => {
-        const updatedValues = formState.inputValues
-
-        try {
-            setIsloading(true)
-            await updatedSignedInUserData(userData.userId, updatedValues);
-            dispatch(updateLoggedInUserData({ newData: updatedValues }));
-
-            setShowSuccessMessage("Saved!");
-
-            setTimeout(() => {
-                setShowSuccessMessage("");
-            }, 3000);
-
-            setIsloading(false);
-
-        } catch (error) {
-            console.log(error);
-            setIsloading(false)
-        };
-    }, [formState]);
-
-    const hasChanges = () => {
-        const currentValues = formState.inputValues;
-
-        return currentValues.firstName !== firstName ||
-            currentValues.lastName !== lastName ||
-            currentValues.email !== email ||
-            currentValues.about !== about;
-    };
-
     return (
         <FadeInView duration={200}>
+            <ImageBackground source={require("../../../../assets/images/splash.png")} style={{ height: "100%", width: "100%" }}>
+                <SafeAreaView>
 
-            <SafeAreaView>
-                <ScrollView contentContainerStyle={{ alignItems: 'center', justifyContent: 'center' }} >
                     <ProfileImage
-                        size={80}
+                        size={120}
                         userId={userData.userId}
                         uri={userData.profilePicture}
-                        showEditButton={true}
+                        style={{ alignSelf: 'center', borderRadius: 60 }}
                     />
 
-                    <Input
-                        id="firstName"
-                        label="First name"
-                        labelColor={formState.inputIsValidColor["firstName"]}
-                        iconPack={Ionicons}
-                        icon={"ios-person"}
-                        iconColor={colors.primary}
-                        onInputChanged={onChangedHandler}
-                        autoCapitalize='none'
-                        autoCorrect={false}
-                        errorText={formState.inputValidities["firstName"]}
-                        color={formState.inputIsValidColor["firstName"]}
-                        initialValue={userData.firstName}
-                    />
+                    <List.Section>
+                        <SettingsItem
+                            title="Profile"
+                            left={(props) => <List.Icon {...props} icon="account" />}
+                            onPress={() => props.navigation.navigate("Profile")}
+                        />
+                        <SettingsItem
+                            title="View starred messages"
+                            left={(props) => <List.Icon {...props} icon="star" color="yellow" />}
+                        />
 
-                    <Input
-                        id="lastName"
-                        label="Last name"
-                        labelColor={formState.inputIsValidColor["lastName"]}
-                        iconPack={Ionicons}
-                        icon={"ios-person"}
-                        iconColor={colors.primary}
-                        onInputChanged={onChangedHandler}
-                        autoCapitalize='none'
-                        autoCorrect={false}
-                        errorText={formState.inputValidities["lastName"]}
-                        color={formState.inputIsValidColor["lastName"]}
-                        initialValue={userData.lastName}
-                    />
+                        <SettingsItem
+                            title="Reset password"
+                            left={(props) => <List.Icon {...props} icon="lock-reset" />}
+                        />
 
-                    <Input
-                        id="email"
-                        label="Email"
-                        labelColor={formState.inputIsValidColor["email"]}
-                        iconPack={MaterialIcons}
-                        icon={"email"}
-                        iconColor={colors.primary}
-                        onInputChanged={onChangedHandler}
-                        autoCapitalize='none'
-                        autoCorrect={false}
-                        errorText={formState.inputValidities["email"]}
-                        keyboardType="email-address"
-                        color={formState.inputIsValidColor["email"]}
-                        initialValue={userData.email}
-                        editable={false}
-                    />
+                        <SettingsItem
+                            title="About"
+                            left={(props) => <List.Icon {...props} icon="information-outline" />}
+                        />
 
-                    <Input
-                        id="about"
-                        label="About"
-                        labelColor={formState.inputIsValidColor["about"]}
-                        iconPack={Entypo}
-                        icon={"lock"}
-                        iconColor={colors.primary}
-                        onInputChanged={onChangedHandler}
-                        autoCapitalize='none'
-                        autoCorrect={false}
-                        errorText={formState.inputValidities["about"]}
-                        color={formState.inputIsValidColor["about"]}
-                        initialValue={userData.about}
-                    />
-
-                    {
-                        showSuccessMessage &&
-                        <SuccessMessageContainer >
-                            <Text>{showSuccessMessage}</Text>
-                        </SuccessMessageContainer >
-                    }
-
-                    {
-                        isLoading ?
-                            <ActivityIndicator size="small" color={colors.primary} style={{ marginTop: 20 }} /> :
-                            hasChanges() && <SubmitButton
-                                title="Save"
-                                disabled={!formState.formIsValid}
-                                onPress={saveHandler}
-                            />
-                    }
-
-                    <SubmitButton
-                        title="Log out"
-                        color={colors.red}
-                        onPress={() => dispatch(userLogout(userData, userData.userType))}
-                    />
-                </ScrollView>
-            </SafeAreaView>
+                        <SettingsItem
+                            title="Log out"
+                            left={(props) => <List.Icon {...props} icon="logout" />}
+                        />
+                        <SettingsItem
+                            title="Delete accout"
+                            titleStyle={{ color: "red" }}
+                            left={(props) => <List.Icon {...props} icon="account-remove" />}
+                        />
+                    </List.Section>
+                </SafeAreaView>
+            </ImageBackground>
         </FadeInView>
     );
 };
 
 export default SettingsScreen;
+
+export const SettingsItem = styled(List.Item)`
+    padding: 16px;
+    background-color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 7px
+`
