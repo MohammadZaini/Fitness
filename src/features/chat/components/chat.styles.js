@@ -2,7 +2,7 @@ import { styled } from 'styled-components';
 import { colors } from '../../../infratructure/theme/colors';
 import { Feather } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
-
+import { Image } from 'react-native';
 export const ChatsBackground = styled.ImageBackground.attrs({
     source: require('../../../../assets/images/chat-background.jpg')
 })`
@@ -58,3 +58,16 @@ export const TakePictureIcon = styled(Feather).attrs({
     justify-content: center;
     align-items: center;
 `;
+
+export const HeaderImage = styled(Image).attrs(props => ({
+    source: props.source
+}))`
+    height: 40px;
+    width: 40px;
+    border-radius: 25px;
+    position: absolute;
+    top: 45px;
+    right: 0px;
+    left: 50px;
+`;
+

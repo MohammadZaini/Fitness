@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Image, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { BottomView, ChatInput, ChatsBackground, SendImageIcon, SendMessageIcon, TakePictureIcon } from "../components/chat.styles";
+import { BottomView, ChatInput, ChatsBackground, HeaderImage, SendImageIcon, SendMessageIcon, TakePictureIcon } from "../components/chat.styles";
 import { useSelector } from "react-redux";
 import { PageContainer } from "../../../components/page-container";
 import { Bubble } from "../components/bubble";
@@ -88,9 +88,12 @@ const ChatScreen = props => {
                 </HeaderButtons>
             },
             headerBackground: () => (
-                <Image
-                    style={{ height: 40, width: 40, borderRadius: 25, position: 'absolute', top: 45, right: 0, left: 50 }}
-                    source={{ uri: chatData.isGroupChat && chatData.chatImage ? chatData.chatImage : otherUserData && otherUserData.profilePicture }}
+                <HeaderImage
+                    source={{
+                        uri: chatData.isGroupChat && chatData.chatImage ?
+                            chatData.chatImage :
+                            otherUserData && otherUserData.profilePicture
+                    }}
                 />
             ),
         });

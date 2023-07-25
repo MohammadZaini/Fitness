@@ -117,7 +117,7 @@ export const SignUpForm = props => {
                 labelColor={formState.inputIsValidColor["firstName"]}
                 iconPack={Ionicons}
                 icon={"ios-person"}
-                iconColor={colors.primary}
+                iconColor={formState.inputIsValidColor["firstName"]}
                 onInputChanged={onChangedHandler}
                 autoCapitalize='none'
                 autoCorrect={false}
@@ -131,7 +131,7 @@ export const SignUpForm = props => {
                 labelColor={formState.inputIsValidColor["lastName"]}
                 iconPack={Ionicons}
                 icon={"ios-person"}
-                iconColor={colors.primary}
+                iconColor={formState.inputIsValidColor["lastName"]}
                 onInputChanged={onChangedHandler}
                 autoCapitalize='none'
                 autoCorrect={false}
@@ -146,7 +146,7 @@ export const SignUpForm = props => {
                 labelColor={formState.inputIsValidColor["email"]}
                 iconPack={MaterialIcons}
                 icon={"email"}
-                iconColor={colors.primary}
+                iconColor={formState.inputIsValidColor["email"]}
                 onInputChanged={onChangedHandler}
                 autoCapitalize='none'
                 autoCorrect={false}
@@ -162,7 +162,7 @@ export const SignUpForm = props => {
                 labelColor={formState.inputIsValidColor["password"]}
                 iconPack={Entypo}
                 icon={"lock"}
-                iconColor={colors.primary}
+                iconColor={formState.inputIsValidColor["password"]}
                 onInputChanged={onChangedHandler}
                 autoCapitalize='none'
                 autoCorrect={false}

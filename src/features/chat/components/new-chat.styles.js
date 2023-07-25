@@ -15,7 +15,8 @@ export const SearchBarContainer = styled.View`
 export const SearchInput = styled.TextInput.attrs(props => ({
     placeholder: "Search",
     value: props.value,
-    onChangeText: props.onChangeText
+    onChangeText: props.onChangeText,
+    selectionColor: colors.primary,
 }))`
     margin-left: 8px;
     font-size: 15px;
@@ -43,7 +44,8 @@ export const LoadingContainer = styled.View`
 export const ChatNameInput = styled.TextInput.attrs(props => ({
     placeholder: "Enter a name for your chat ",
     value: props.value,
-    onChangeText: props.onChangeText
+    onChangeText: props.onChangeText,
+    selectionColor: colors.primary,
 }))`
     margin-left: 8px;
     font-size: 15px;

@@ -91,7 +91,7 @@ export const SignInForm = props => {
                 labelColor={formState.inputIsValidColor["email"]}
                 iconPack={MaterialIcons}
                 icon={"email"}
-                iconColor={colors.primary}
+                iconColor={formState.inputIsValidColor["email"]}
                 onInputChanged={onChangedHandler}
                 autoCapitalize='none'
                 autoCorrect={false}
@@ -108,7 +108,7 @@ export const SignInForm = props => {
                     labelColor={formState.inputIsValidColor["password"]}
                     iconPack={Entypo}
                     icon={"lock"}
-                    iconColor={colors.primary}
+                    iconColor={formState.inputIsValidColor["password"]}
                     onInputChanged={onChangedHandler}
                     autoCapitalize='none'
                     autoCorrect={false}

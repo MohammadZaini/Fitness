@@ -28,6 +28,7 @@ export const Input = props => {
                     value={value}
                     style={{ ...{ height: 35, width: 300, letterSpacing: 0.3 }, ...{ ...props.style } }}
                     onChangeText={onChangeText}
+                    selectionColor={colors.primary}
                 />
             </View>
 
