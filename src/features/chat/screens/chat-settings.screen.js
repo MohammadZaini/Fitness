@@ -1,8 +1,6 @@
 import React from "react";
-import { Text } from "react-native";
 import { useSelector } from "react-redux";
 import { PageContainer } from "../../../components/page-container";
-import { ScrollView } from "react-native";
 import { ProfileImage } from "../../../components/profile-image.component";
 import { useCallback } from "react";
 import { InputValidation } from "../../../utils/actions/form-actions";
@@ -15,9 +13,9 @@ import { ActivityIndicator } from "react-native-paper";
 import { colors } from "../../../infratructure/theme/colors";
 import { SubmitButton } from "../../../components/submit-button";
 import { SuccessMessageContainer } from "../../settings/components/settings.styles";
-import { styled } from "styled-components";
 import { DataItem } from "../../../components/data-item.component";
 import { useEffect } from "react";
+import { ParticipantsContainer, ParticipantsHeading, ScrollViewContainer, SuccessMessageText } from "../components/chat-settings.styles";
 
 const ChatSettingsScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
@@ -121,7 +119,7 @@ const ChatSettingsScreen = props => {
 
     return (
         <PageContainer>
-            <ScrollView contentContainerStyle={{ justifyContent: 'center', alignItems: 'center' }} showsVerticalScrollIndicator={false}>
+            <ScrollViewContainer>
                 <ProfileImage
                     size={80}
                     uri={chatData.chatImage}
@@ -134,6 +132,8 @@ const ChatSettingsScreen = props => {
                     id="chatName"
                     label="Chat name"
                     autoCapitalize="none"
+                    color={formState.inputIsValidColor["chatName"]}
+                    autoCorrect={false}
                     initialValue={chatData.chatName}
                     allowEmpty={false}
                     onInputChanged={onChangedHandler}
@@ -144,7 +144,7 @@ const ChatSettingsScreen = props => {
                 {
                     showSuccessMessage &&
                     <SuccessMessageContainer >
-                        <Text>{showSuccessMessage}</Text>
+                        <SuccessMessageText>{showSuccessMessage}</SuccessMessageText>
                     </SuccessMessageContainer >
                 }
 
@@ -212,7 +212,7 @@ const ChatSettingsScreen = props => {
 
                 }
 
-            </ScrollView>
+            </ScrollViewContainer>
 
             {
                 isLoading ?
@@ -229,15 +229,3 @@ const ChatSettingsScreen = props => {
 };
 
 export default ChatSettingsScreen;
-
-const ParticipantsContainer = styled.View`
-    width: 100%;
-    margin-top: 10px;
-    margin-left: 10px
-`;
-
-const ParticipantsHeading = styled.Text`
-    margin-vertical: 8px;
-    font-weight: bold;
-`;
-

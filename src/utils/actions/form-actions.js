@@ -18,9 +18,6 @@ export const InputValidation = (id, value) => {
         case "chatName":
             return validateLength(id, value, 5, 50, false);
 
-        case "newPassword":
-            return validatePassword(id, value);
-
         default:
             break;
     };

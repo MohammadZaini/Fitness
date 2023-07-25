@@ -67,6 +67,9 @@ const ChatScreen = props => {
         if (!chatData) return;
         props.navigation.setOptions({
             headerTitle: chatData.chatName ?? getChatTilteFromName(),
+            headerTitleStyle: {
+                marginLeft: 40,
+            },
             headerRight: () => {
                 return <HeaderButtons HeaderButtonComponent={CustomHeaderButton}>
                     {
@@ -83,7 +86,13 @@ const ChatScreen = props => {
                         />
                     }
                 </HeaderButtons>
-            }
+            },
+            headerBackground: () => (
+                <Image
+                    style={{ height: 40, width: 40, borderRadius: 25, position: 'absolute', top: 45, right: 0, left: 50 }}
+                    source={{ uri: chatData.isGroupChat && chatData.chatImage ? chatData.chatImage : otherUserData && otherUserData.profilePicture }}
+                />
+            ),
         });
         setChatUsers(chatData.users);
     }, [chatUsers]);
