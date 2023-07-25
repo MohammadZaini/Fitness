@@ -30,6 +30,19 @@ const ChatSettingsScreen = props => {
     const storedUsers = useSelector(state => state.users.storedUsers);
     const starredMessages = useSelector(state => state.messages.starredMessages[chatId] ?? {});
 
+    const setLoggedInUserAsFirstItemInArray = array => {
+        let sortedUsers = [];
+        for (let i = 0; i < array.length; i++) {
+            let uid = array[i];
+            sortedUsers.push(uid)
+            if (uid === userData.userId) {
+                sortedUsers.splice(i, 1)
+                sortedUsers.unshift(uid);
+            };
+        };
+        return sortedUsers;
+    };
+
     const initialState = {
         inputValues: { chatName: chatData.chatName },
         inputValidities: { chatName: undefined },
@@ -38,7 +51,6 @@ const ChatSettingsScreen = props => {
     };
 
     const [formState, dispatchFormState] = useReducer(reducer, initialState);
-
 
     useEffect(() => {
         if (!selectedUsers) return;
@@ -146,13 +158,14 @@ const ChatSettingsScreen = props => {
                     />
 
                     {
-                        chatData.users.slice(0, 4).map(uid => {
+                        setLoggedInUserAsFirstItemInArray(chatData.users).slice(0, 4).map(uid => {
                             const currentUser = storedUsers[uid];
+                            const isLoggedInUser = currentUser.userId === userData.userId;
 
                             return <DataItem
                                 key={uid}
                                 uri={currentUser && currentUser.profilePicture}
-                                title={currentUser && `${currentUser.firstName} ${currentUser.lastName}`}
+                                title={currentUser && isLoggedInUser ? "You" : `${currentUser.firstName} ${currentUser.lastName}`}
                                 subTitle={currentUser && currentUser.about}
                                 type={uid !== userData.userId && "link"}
                                 onPress={() => uid !== userData.userId && props.navigation.navigate("Contact", { uid, chatId })}
@@ -168,7 +181,7 @@ const ChatSettingsScreen = props => {
                             hideImage={true}
                             onPress={() => props.navigation.navigate("DataList", {
                                 title: "Participants",
-                                data: chatData.users,
+                                data: setLoggedInUserAsFirstItemInArray(chatData.users),
                                 type: "users",
                                 chatId
                             })}

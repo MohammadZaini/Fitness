@@ -37,8 +37,7 @@ export const DataItem = props => {
 
                     <View style={{ flexDirection: 'row', alignContent: 'center', alignItems: 'center' }} >
                         <Text
-                            style={{ ...styles.title, ...{ color: props.type === "button" ? colors.primary : colors.textColor } }}
-
+                            style={{ ...styles.title, ...{ flex: props.isContactScreen ? 0.5 : 1 }, ...{ color: props.type === "button" ? colors.primary : colors.textColor } }}
                             numberOfLines={1}
                         >{props.title}
                         </Text>

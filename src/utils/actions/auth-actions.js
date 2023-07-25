@@ -1,6 +1,6 @@
 import { isDevice } from "expo-device";
 import * as Notification from "expo-notifications";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, deleteUser } from "firebase/auth";
 import { getFirebaseApp } from "../firebase-helper";
 import { child, get, getDatabase, push, ref, set, update } from "firebase/database"
 import { authenticate, logout } from "../../../store/auth-slice";
@@ -112,8 +112,8 @@ export const userLogout = (userData, userType) => {
             console.log(error);
         };
 
-        AsyncStorage.removeItem("userToken")
-        clearTimeout(timer)
+        AsyncStorage.removeItem("userToken");
+        clearTimeout(timer);
         dispatch(logout());
     };
 };
@@ -304,7 +304,7 @@ const setUserType = async (uid, userType) => {
     };
 };
 
-const getUserType = async (uid) => {
+export const getUserType = async (uid) => {
 
     try {
         const app = getFirebaseApp();
@@ -319,4 +319,29 @@ const getUserType = async (uid) => {
     } catch (error) {
         console.log(error);
     };
+};
+
+export const deleteUserAccount = () => {
+
+    return dispatch => {
+
+        try {
+            const app = getFirebaseApp();
+            const auth = getAuth(app);
+            const user = auth.currentUser;
+
+            deleteUser(user).then(() => {
+                // User deleted.
+                AsyncStorage.removeItem("userToken");
+                clearTimeout(timer);
+                dispatch(logout());
+
+                console.log("deleted!!");
+            }).catch((error) => {
+                console.log(error);
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
 };

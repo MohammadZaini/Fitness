@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { authenticate, setDidTryAutoLogin } from "../../../../store/auth-slice";
 import { getUserData } from "../../../utils/actions/user-actions";
 import { styled } from "styled-components";
+import { getUserType } from "../../../utils/actions/auth-actions";
 
 const StartUpScreen = () => {
     const dispatch = useDispatch();
@@ -24,14 +25,15 @@ const StartUpScreen = () => {
             const { token, userId, expiryDate: expiryDateString } = parsedData;
             const expiryDate = new Date(expiryDateString);
 
-            const userType = await AsyncStorage.getItem(`type-${userId}`);
+            const localUserType = await AsyncStorage.getItem(`type-${userId}`);
+            const userType = await getUserType(userId);
 
             if (expiryDate <= new Date || !token || !userId) {
                 dispatch(setDidTryAutoLogin());
                 return;
             };
 
-            const userData = await getUserData(userId, userType);
+            const userData = await getUserData(userId, userType ?? localUserType);
             dispatch(authenticate({ token, userData }));
         };
         tryAutoLogin();

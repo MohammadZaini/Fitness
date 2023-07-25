@@ -41,7 +41,7 @@ export default function App() {
 
   return (
     <SafeAreaProvider onLayout={onLayout} >
-      <Provider store={store} >
+      <Provider store={store} stabilityCheck="never" >
         <MenuProvider>
 
           <Navigation />

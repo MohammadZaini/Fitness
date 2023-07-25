@@ -33,7 +33,7 @@ const Navigation = () => {
             if (value !== null) {
                 setViewedOnboarding(true);
             } else {
-                console.log(value);
+                // console.log(value);
             }
 
         } catch (error) {

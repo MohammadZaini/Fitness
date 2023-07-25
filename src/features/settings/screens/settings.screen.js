@@ -1,31 +1,19 @@
-import React, { useCallback, useReducer, useState } from "react";
-import { ScrollView, Text } from "react-native";
-import { InputValidation } from "../../../utils/actions/form-actions";
-import { reducer } from "../../../utils/reducers/form-reducer";
-import { Input } from "../../account/components/input.components";
-import { Ionicons } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons';
-import { Entypo } from '@expo/vector-icons';
-import { colors } from "../../../infratructure/theme/colors";
+import React, { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { SubmitButton } from "../../../components/submit-button";
-import { updatedSignedInUserData, userLogout } from "../../../utils/actions/auth-actions";
-import { ActivityIndicator } from "react-native-paper";
-import { updateLoggedInUserData } from "../../../../store/auth-slice";
-import { SuccessMessageContainer } from "../components/settings.styles";
+import { deleteUserAccount, userLogout } from "../../../utils/actions/auth-actions";
 import { ProfileImage } from "../../../components/profile-image.component";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FadeInView } from "../../../components/animations/fade.animation";
-import { ImageBackground } from "react-native";
+import { Alert, ImageBackground } from "react-native";
 import { List } from "react-native-paper";
 import { styled } from "styled-components";
-import { DataItem } from "../../../components/data-item.component";
-import { useMemo } from "react";
 
 const SettingsScreen = props => {
 
     const userData = useSelector(state => state.auth.userData);
     const starredMessages = useSelector(state => state.messages.starredMessages ?? {});
+
+    const dispatch = useDispatch();
 
     const sortedStarredMessages = useMemo(() => {
         let result = [];
@@ -39,6 +27,22 @@ const SettingsScreen = props => {
 
         return result;
     }, [starredMessages]);
+
+    const logout = () => {
+        Alert.alert("Log out",
+            "Are you sure you want to log out?",
+            [{ text: "Yes", onPress: dispatch(userLogout(userData, userData.userType)) },
+            { text: "No", onPress: () => console.log("Don't log out") }]
+        );
+    };
+
+    const deleteUserFromDb = () => {
+        Alert.alert("Delete account",
+            "Are you sure you want to delete your account?",
+            [{ text: "Yes", onPress: () => console.log("Delete") },
+            { text: "No", onPress: () => console.log("Don't Delete") }]
+        );
+    };
 
     return (
         <FadeInView duration={200}>
@@ -67,24 +71,28 @@ const SettingsScreen = props => {
                                 type: "messages",
                             })}
                         />
-                        <SettingsItem
+                        {/* <SettingsItem
                             title="Reset password"
                             left={(props) => <List.Icon {...props} icon="lock-reset" />}
+                            onPress={() => props.navigation.navigate("Profile", { title: "Reset password" })}
                         />
 
                         <SettingsItem
                             title="About"
                             left={(props) => <List.Icon {...props} icon="information-outline" />}
-                        />
+                        /> */}
 
                         <SettingsItem
                             title="Log out"
                             left={(props) => <List.Icon {...props} icon="logout" />}
+                            onPress={logout}
                         />
                         <SettingsItem
                             title="Delete accout"
                             titleStyle={{ color: "red" }}
                             left={(props) => <List.Icon {...props} icon="account-remove" />}
+                            onPress={() => deleteUserFromDb()}
+
                         />
                     </List.Section>
                 </SafeAreaView>

@@ -69,7 +69,7 @@ export const Bubble = props => {
         case "theirMessage":
             bubbleStyle.backgroundColor = colors.lightGrey;
             wrapperStyle.justifyContent = 'flex-start';
-            bubbleStyle.borderBottomLeftRadius = 1;
+            bubbleStyle.borderTopLeftRadius = 1;
             Container = TouchableWithoutFeedback;
             isUserMessage = true;
             break;
@@ -82,6 +82,21 @@ export const Bubble = props => {
             bubbleStyle.justifyContent = 'center';
             bubbleStyle.backgroundColor = colors.lightBlue;
             break;
+
+        case "myStarredMessages":
+            bubbleStyle.backgroundColor = colors.primary;
+            wrapperStyle.justifyContent = 'flex-start';
+            bubbleStyle.borderTopLeftRadius = 1;
+            isUserMessage = true;
+            break;
+
+        case "thierStarredMessages":
+            bubbleStyle.backgroundColor = colors.lightGrey;
+            wrapperStyle.justifyContent = 'flex-start';
+            bubbleStyle.borderTopLeftRadius = 1;
+            isUserMessage = true;
+            break;
+
 
         default:
             break;
@@ -99,11 +114,13 @@ export const Bubble = props => {
     const replyingToUser = replyingTo && storedUsers[replyingTo.sentBy];
     const isOwnReply = replyingToUser && replyingToUser.userId === userData.userId;
 
+    const isStarredMessage = type === "myStarredMessages" || type === "thierStarredMessages";
+
     return (
         <View style={wrapperStyle}  >
             {
-                type === "theirMessage" && isGroupChat &&
-                <ProfileImage uri={uri} size={30} style={{ marginRight: 5 }} />
+                type === "theirMessage" && isGroupChat || isStarredMessage &&
+                <ProfileImage uri={uri} size={isStarredMessage ? 25 : 30} style={{ marginRight: 5 }} />
             }
             <Container onLongPress={() => menuRef.current.props.ctx.menuActions.openMenu(id.current)} >
                 <View style={bubbleStyle} >
@@ -149,19 +166,24 @@ export const Bubble = props => {
                         </View>
                     }
 
-                    <Menu name={id.current} ref={ref => menuRef.current = ref} >
-                        <MenuTrigger />
+                    {
+                        !isStarredMessage &&
+                        (
+                            <Menu name={id.current} ref={ref => menuRef.current = ref} >
+                                <MenuTrigger />
 
-                        <MenuOptions optionsContainerStyle={{ borderRadius: 20, backgroundColor: colors.lightBlue }}>
+                                <MenuOptions optionsContainerStyle={{ borderRadius: 20, backgroundColor: colors.lightBlue }}>
 
-                            <MenuItem text="Copy to clipboard" onSelect={() => copyToClipboard(text)} iconPack={Ionicons} icon="ios-copy-outline" />
-                            <MenuItem text={`${isStarred ? "Unstar" : "Star"} message`} onSelect={() => starMessage(userId, chatId, messageId)} iconPack={Octicons} icon={`${isStarred ? "star-fill" : "star"}`} color={isStarred ? colors.yellow : "black"} />
-                            <MenuItem text="Reply to message" onSelect={setReply} iconPack={MaterialIcons} icon="reply" />
-                            <MenuItem text="Delete message" onSelect={() => deleteMessage(chatId, messageId)} iconPack={MaterialIcons} icon="delete" color={colors.red} />
+                                    <MenuItem text="Copy to clipboard" onSelect={() => copyToClipboard(text)} iconPack={Ionicons} icon="ios-copy-outline" />
+                                    <MenuItem text={`${isStarred ? "Unstar" : "Star"} message`} onSelect={() => starMessage(userId, chatId, messageId)} iconPack={Octicons} icon={`${isStarred ? "star-fill" : "star"}`} color={isStarred ? colors.yellow : "black"} />
+                                    <MenuItem text="Reply to message" onSelect={setReply} iconPack={MaterialIcons} icon="reply" />
+                                    <MenuItem text="Delete message" onSelect={() => deleteMessage(chatId, messageId)} iconPack={MaterialIcons} icon="delete" color={colors.red} />
 
-                        </MenuOptions>
+                                </MenuOptions>
 
-                    </Menu>
+                            </Menu>
+                        )
+                    }
 
                 </View>
             </Container>

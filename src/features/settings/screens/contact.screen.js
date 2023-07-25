@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { Text, View } from 'react-native'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { PageContainer } from '../../../components/page-container';
@@ -26,6 +26,7 @@ const ContactScreen = props => {
 
     const chatId = props.route.params.chatId;
     const chatData = chatId && storedChats[chatId];
+    const starredMessages = useSelector(state => state.messages.starredMessages[chatId] ?? {});
 
     useEffect(() => {
         const getCommonUserChats = async () => {
@@ -55,7 +56,7 @@ const ContactScreen = props => {
             setIsLoading(false);
         }
     }, [props.navigation, isLoading]);
-
+    console.log(starredMessages);
     return (
         <PageContainer>
             <Container>
@@ -68,8 +69,16 @@ const ContactScreen = props => {
                 <CurrentUserName>{currentUser && `${currentUser.firstName} ${currentUser.lastName}`}</CurrentUserName>
                 {
                     currentUser && currentUser.about &&
+
                     <About>{currentUser && currentUser.about}</About>
                 }
+
+                <DataItem
+                    userType={currentUser.userType && currentUser.userType}
+                    gender={currentUser.gender && currentUser.gender}
+                    hideImage={true}
+                    isContactScreen={true}
+                />
 
             </Container>
 
@@ -97,6 +106,21 @@ const ContactScreen = props => {
 
 
                     {
+                        starredMessages &&
+                        <DataItem
+                            title="Starred messages"
+                            type="link"
+                            hideImage={true}
+                            onPress={() => props.navigation.navigate("DataList", {
+                                title: "Starred messages",
+                                data: Object.values(starredMessages),
+                                type: "messages",
+                            })}
+                        />
+                    }
+
+                    {
+
                         chatData && chatData.isGroupChat &&
 
                         (
@@ -110,10 +134,11 @@ const ContactScreen = props => {
                                     onPress={removeFromChat}
                                 />
                         )
-
                     }
                 </>
             }
+
+
         </PageContainer>
     )
 }

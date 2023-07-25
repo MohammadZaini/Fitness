@@ -5,6 +5,7 @@ import { PageContainer } from '../../../components/page-container';
 import { FlatList } from 'react-native';
 import { useSelector } from 'react-redux';
 import { DataItem } from '../../../components/data-item.component';
+import { Bubble } from '../components/bubble';
 
 const DataListScreen = props => {
 
@@ -25,7 +26,7 @@ const DataListScreen = props => {
                 data={data}
                 keyExtractor={item => item.messageId || item}
                 renderItem={itemData => {
-                    let key, onPress, image, title, subTitle, itemType;
+                    let key, onPress, image, title, subTitle, itemType, data, type2;
 
                     if (type === "users") {
                         const uid = itemData.item;
@@ -37,7 +38,7 @@ const DataListScreen = props => {
 
                         key = uid;
                         image = currentUser.profilePicture;
-                        title = `${currentUser.firstName} ${currentUser.lastName}`;
+                        title = isLoggedInUser ? "You" : `${currentUser.firstName} ${currentUser.lastName}`;
                         subTitle = currentUser.about;
                         itemType = isLoggedInUser ? undefined : "link";
                         onPress = isLoggedInUser ? undefined : () => props.navigation.navigate("Contact", { uid, chatId });
@@ -59,21 +60,40 @@ const DataListScreen = props => {
                             name = "You"
                         }
                         key = messageId;
+                        image = sender.profilePicture
                         title = name;
                         subTitle = messageData.text;
+                        data = messageData.sentAt
+                        type2 = sender.userId === userData.userId ? "myStarredMessages" : "thierStarredMessages"
                         itemType = "";
                         onPress = () => { };
                     };
 
-                    return <DataItem
-                        key={key}
-                        onPress={onPress}
-                        uri={image}
-                        title={title}
-                        subTitle={subTitle}
-                        type={itemType}
-                        hideImage={type === "users" ? false : true}
-                    />
+                    if (type === "users") {
+                        return <DataItem
+                            key={key}
+                            onPress={onPress}
+                            uri={image}
+                            title={title}
+                            subTitle={subTitle}
+                            type={itemType}
+                            hideImage={type === "users" ? false : true}
+                        />
+                    } else {
+                        return <Bubble
+                            text={subTitle}
+                            type={type2}
+                            date={data}
+                            name={title}
+                            messageId={key}
+                            // setReply={() => setReplyingTo(message)}
+                            // replyingTo={message.replyTo && chatMessages.find(i => i.key === message.replyTo)}
+                            uri={image}
+                        // isGroupChat={chatData.isGroupChat}
+                        />
+                    }
+
+
                 }}
             />
         </PageContainer>

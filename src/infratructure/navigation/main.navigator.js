@@ -41,7 +41,7 @@ const StackNavigator = () => {
 
     useEffect(() => {
         registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-        console.log(expoPushToken);
+        // console.log(expoPushToken);
         notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
             // setNotification(notification);
         });
@@ -58,8 +58,8 @@ const StackNavigator = () => {
                 console.log("No chat id sent with notification");
             }
 
-            console.log("Notification tapped:");
-            console.log(JSON.stringify(response, 0, 2));
+            // console.log("Notification tapped:");
+            // console.log(JSON.stringify(response, 0, 2));
         });
 
         return () => {
@@ -89,7 +89,7 @@ const StackNavigator = () => {
             let chatsFoundCount = 0;
 
             for (let i = 0; i < chatIds.length; i++) {
-                console.log(i);
+
                 const chatId = chatIds[i];
                 const chatRef = child(dbRef, `chats/${chatId}`);
                 refs.push(chatRef)
