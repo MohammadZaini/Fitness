@@ -24,6 +24,7 @@ const DataListScreen = props => {
         <PageContainer>
             <FlatList
                 data={data}
+                showsVerticalScrollIndicator={false}
                 keyExtractor={item => item.messageId || item}
                 renderItem={itemData => {
                     let key, onPress, image, title, subTitle, itemType, data, type2;

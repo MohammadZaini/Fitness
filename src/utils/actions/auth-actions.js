@@ -92,11 +92,15 @@ export const SignIn = (email, password) => {
 
                 let message = "Something went wrong";
 
-                if (errorCode === "auth/user-not-found") {
+                if (errorCode === "auth/user-not-found" || errorCode === "auth/invalid-email") {
                     message = "Invalid email";
                 } else if (errorCode === "auth/wrong-password") {
                     message = "Invalid password";
-                };
+                } else if (errorCode === "auth/missing-email") {
+                    message = "Please enter your email";
+                } else if (errorCode === "auth/missing-password") {
+                    message = "Please enter your password";
+                }
                 console.log(errorCode);
                 throw new Error(message);
             });

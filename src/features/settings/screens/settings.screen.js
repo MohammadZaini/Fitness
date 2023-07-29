@@ -31,7 +31,7 @@ const SettingsScreen = props => {
     const logout = () => {
         Alert.alert("Log out",
             "Are you sure you want to log out?",
-            [{ text: "Yes", onPress: dispatch(userLogout(userData, userData.userType)) },
+            [{ text: "Yes", onPress: () => dispatch(userLogout(userData, userData.userType)) },
             { text: "No", onPress: () => console.log("Don't log out") }]
         );
     };

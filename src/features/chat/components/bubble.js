@@ -16,7 +16,8 @@ import { deleteMessage, starMessage } from "../../../utils/actions/chat-actions"
 import { useSelector } from "react-redux";
 import { Image } from "react-native";
 import { ProfileImage } from "../../../components/profile-image.component";
-
+import { styled } from "styled-components";
+import { FontAwesome5 } from '@expo/vector-icons';
 export const Bubble = props => {
     const { text, type, date, userId, chatId, messageId, setReply, replyingTo, name, imageUrl, uri, isGroupChat } = props;
 
@@ -119,15 +120,15 @@ export const Bubble = props => {
     return (
         <View style={wrapperStyle}  >
             {
-                type === "theirMessage" && isGroupChat || isStarredMessage &&
-                <ProfileImage uri={uri} size={isStarredMessage ? 25 : 30} style={{ marginRight: 5 }} />
+                type === "theirMessage" && isGroupChat || isStarredMessage ?
+                    <ProfileImage uri={uri} size={isStarredMessage ? 25 : 30} style={{ marginRight: 5 }} /> : ""
             }
             <Container onLongPress={() => menuRef.current.props.ctx.menuActions.openMenu(id.current)} >
                 <View style={bubbleStyle} >
 
                     {
                         name && type !== "info" &&
-                        <Text style={{ fontWeight: 'bold' }} >{name}</Text>
+                        <ChatterName >{name}</ChatterName>
                     }
 
                     {
@@ -145,25 +146,28 @@ export const Bubble = props => {
                     }
                     {
                         !imageUrl &&
+                        // Text message
                         <Text style={textStyle}>
                             {text}
                         </Text>
                     }
-                    {/* <FontAwesome5 name="check-double" size={10} color={colors.primary} /> */}
 
                     {
                         imageUrl &&
-                        <Image source={{ uri: imageUrl }} style={{ height: 300, width: 300 }} />
+                        <ChatImage source={{ uri: imageUrl }} />
                     }
+
                     {
                         date && type !== "info" &&
-                        <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+                        <StarredIconContainer>
+                            {/* <FontAwesome5 name="check-double" size={10} color={colors.primary} style={{ alignSelf: 'center', flex: 1 }} /> */}
+
                             {
                                 isStarred &&
-                                <Octicons name="star-fill" size={14} color={colors.yellow} style={{ marginRight: 10, }} />
+                                <StarredIcon />
                             }
                             <Text style={styles.time}>{dateString}</Text>
-                        </View>
+                        </StarredIconContainer>
                     }
 
                     {
@@ -184,7 +188,6 @@ export const Bubble = props => {
                             </Menu>
                         )
                     }
-
                 </View>
             </Container>
         </View >
@@ -205,11 +208,33 @@ const styles = StyleSheet.create({
     },
     text: {
         letterSpacing: 0.3,
-        fontFamily: fonts.body
+        fontFamily: fonts.body,
     },
     time: {
         fontSize: 12,
         color: "white"
     }
-})
+});
+
+const ChatImage = styled(Image)`
+    height: 300px;
+    width: 300px; 
+`;
+const StarredIconContainer = styled.View`
+    flex-direction: row;
+    justify-content: flex-end;
+`;
+
+const StarredIcon = styled(Octicons).attrs({
+    name: "star-fill",
+    size: 14,
+    color: colors.yellow
+})`
+    margin-right: 10px;
+`;
+
+const ChatterName = styled.Text`
+    font-weight: bold;
+`;
+
 

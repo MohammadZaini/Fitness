@@ -130,7 +130,7 @@ const ProfileScreen = props => {
                                 labelColor={formState.inputIsValidColor["firstName"]}
                                 iconPack={Ionicons}
                                 icon={"ios-person"}
-                                iconColor={colors.primary}
+                                iconColor={formState.inputIsValidColor["firstName"]}
                                 onInputChanged={onChangedHandler}
                                 autoCapitalize='none'
                                 autoCorrect={false}
@@ -145,7 +145,7 @@ const ProfileScreen = props => {
                                 labelColor={formState.inputIsValidColor["lastName"]}
                                 iconPack={Ionicons}
                                 icon={"ios-person"}
-                                iconColor={colors.primary}
+                                iconColor={formState.inputIsValidColor["lastName"]}
                                 onInputChanged={onChangedHandler}
                                 autoCapitalize='none'
                                 autoCorrect={false}
@@ -160,7 +160,7 @@ const ProfileScreen = props => {
                                 labelColor={formState.inputIsValidColor["email"]}
                                 iconPack={MaterialIcons}
                                 icon={"email"}
-                                iconColor={colors.primary}
+                                iconColor={formState.inputIsValidColor["email"]}
                                 onInputChanged={onChangedHandler}
                                 autoCapitalize='none'
                                 autoCorrect={false}
@@ -177,7 +177,7 @@ const ProfileScreen = props => {
                                 labelColor={formState.inputIsValidColor["about"]}
                                 iconPack={Feather}
                                 icon={"info"}
-                                iconColor={colors.primary}
+                                iconColor={formState.inputIsValidColor["about"]}
                                 onInputChanged={onChangedHandler}
                                 autoCapitalize='none'
                                 autoCorrect={false}

@@ -133,6 +133,7 @@ const ChatSettingsScreen = props => {
                     label="Chat name"
                     autoCapitalize="none"
                     color={formState.inputIsValidColor["chatName"]}
+                    labelColor={formState.inputIsValidColor["chatName"]}
                     autoCorrect={false}
                     initialValue={chatData.chatName}
                     allowEmpty={false}

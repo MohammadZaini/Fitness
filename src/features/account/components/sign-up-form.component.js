@@ -171,7 +171,6 @@ export const SignUpForm = props => {
                 color={formState.inputIsValidColor["password"]}
             />
 
-
             <View style={{ flexDirection: 'row' }}>
                 <SwitchSelector
                     options={userTypeOptions}
