@@ -39,7 +39,7 @@ const SettingsScreen = props => {
     const deleteUserFromDb = () => {
         Alert.alert("Delete account",
             "Are you sure you want to delete your account?",
-            [{ text: "Yes", onPress: () => console.log("Delete") },
+            [{ text: "Yes", onPress: () => dispatch(deleteUserAccount(userData.userId, userData.userType)) },
             { text: "No", onPress: () => console.log("Don't Delete") }]
         );
     };
@@ -88,10 +88,10 @@ const SettingsScreen = props => {
                             onPress={logout}
                         />
                         <SettingsItem
-                            title="Delete accout"
+                            title="Delete account"
                             titleStyle={{ color: "red" }}
                             left={(props) => <List.Icon {...props} icon="account-remove" />}
-                            onPress={() => deleteUserFromDb()}
+                            onPress={deleteUserFromDb}
 
                         />
                     </List.Section>

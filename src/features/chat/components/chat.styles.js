@@ -59,15 +59,34 @@ export const TakePictureIcon = styled(Feather).attrs({
     align-items: center;
 `;
 
+// export const HeaderImage = styled(Image).attrs(props => ({
+//     source: props.source
+// }))`
+//     height: 40px;
+//     width: 40px;
+//     border-radius: 25px;
+//     position: absolute;
+//     top: 45px;
+//     right: 0px;
+//     left: 50px;
+// `;
+
+export const HeaderTitle = styled.Text`
+    font-weight: bold;
+    font-size: 18px;
+`;
+
 export const HeaderImage = styled(Image).attrs(props => ({
     source: props.source
 }))`
     height: 40px;
     width: 40px;
     border-radius: 25px;
-    position: absolute;
-    top: 45px;
-    right: 0px;
-    left: 50px;
+    margin-right: 10px;
+`;
+
+export const HeaderContainer = styled.View`
+    flex-direction: row;
+    align-items: center;
 `;
 

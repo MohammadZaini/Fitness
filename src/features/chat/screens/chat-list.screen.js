@@ -46,11 +46,11 @@ const ChatListScreen = props => {
         let naviagtionProps;
 
         if (selectedUser) {
-            chatData = sortedUserChat().find(cd => cd.users.includes(selectedUser))
+            chatData = sortedUserChat().find(cd => !cd.isGroupChat && cd.users.includes(selectedUser))
         };
 
         if (chatData) {
-            naviagtionProps = { chatId: chatData.key }
+            naviagtionProps = { chatId: chatData.key };
         } else {
             const chatUsers = selectedUserList || [selectedUser];
 
@@ -111,8 +111,8 @@ const ChatListScreen = props => {
 
                         title = otherUser && `${otherUser.firstName} ${otherUser.lastName}`;
                         image = otherUser && otherUser.profilePicture;
-                        userType = otherUser.userType;
-                        gender = otherUser.gender;
+                        userType = otherUser && otherUser.userType;
+                        gender = otherUser && otherUser.gender;
                     }
 
                     return <DataItem

@@ -10,7 +10,7 @@ import { ActivityIndicator } from "react-native-paper";
 import { colors } from "../../../infratructure/theme/colors";
 import { MaterialIcons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons'
-import { Alert } from "react-native";
+import { Alert, View } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { styled } from "styled-components";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -122,7 +122,7 @@ export const SignInForm = props => {
     };
 
     return (
-        <>
+        <View style={{ alignItems: 'center' }}>
             {
                 <Input
                     id="email"
@@ -178,13 +178,13 @@ export const SignInForm = props => {
 
             {
                 rememberMe ?
-                    <TouchableOpacity onPress={() => setRememberMe(prev => !prev)} style={{ alignSelf: "flex-start", marginLeft: 35, marginTop: 10 }}  >
+                    <RememberMeContainer onPress={() => setRememberMe(prev => !prev)} >
                         <MaterialIcons name="check-box" size={24} color={colors.primary} />
-                    </TouchableOpacity>
+                    </RememberMeContainer>
                     :
-                    <TouchableOpacity onPress={() => setRememberMe(prev => !prev)} style={{ alignSelf: "flex-start", marginLeft: 35, marginTop: 10 }}  >
+                    <RememberMeContainer onPress={() => setRememberMe(prev => !prev)} >
                         <MaterialIcons name="check-box-outline-blank" size={24} color="grey" />
-                    </TouchableOpacity>
+                    </RememberMeContainer>
             }
 
             {
@@ -197,7 +197,7 @@ export const SignInForm = props => {
                         style={{ marginTop: 10 }}
                     />
             }
-        </>
+        </View>
     )
 };
 
@@ -224,4 +224,9 @@ const PasswordInputContainer = styled.View`
     flex-direction: row;
     justify-content: center;
     align-items: center;
+`;
+
+const RememberMeContainer = styled(TouchableOpacity)`
+    align-self: flex-start;
+    margin-top: 10px;
 `;

@@ -10,6 +10,7 @@ import { navigationRef } from "../../../navigation-ref";
 import { View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import { colors } from "../theme/colors";
+import { refreshJwtToken } from "../../utils/actions/auth-actions";
 
 const Navigation = () => {
     const isAuth = useSelector(state => state.auth.token !== null && state.auth.token !== "");
@@ -39,13 +40,18 @@ const Navigation = () => {
         } catch (error) {
             console.log(error);
         } finally {
-            setIsLoading(false)
+            setIsLoading(false);
         }
     }, [viewedOnboarding]);
 
+
     useEffect(() => {
         checkOnboarding();
-    }, []);
+
+        if (isAuth) {
+            refreshJwtToken();
+        }
+    }, [isAuth]);
 
     const switchValue = (value = false) => {
         setViewedOnboarding(value)
@@ -63,7 +69,7 @@ const Navigation = () => {
             {!isAuth && !didTryAutoLogin && viewedOnboarding && <StartUpScreen />}
 
         </NavigationContainer>
-    )
+    );
 };
 
 export default Navigation;

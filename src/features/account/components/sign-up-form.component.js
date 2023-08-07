@@ -176,7 +176,7 @@ export const SignUpForm = props => {
                     options={userTypeOptions}
                     initial={1}
                     onPress={(value) => setuserType(value)}
-                    style={{ marginTop: 10, width: "40%", marginRight: 10 }}
+                    style={{ marginTop: 10, width: 150, marginRight: 10 }}
                     buttonColor={colors.primary}
                     textStyle={{ fontFamily: fonts.body, flex: 1 }}
                     selectedTextStyle={{ fontFamily: fonts.body }}
@@ -187,7 +187,7 @@ export const SignUpForm = props => {
                     options={genderOptions}
                     initial={0}
                     onPress={(value) => setGender(value)}
-                    style={{ marginTop: 10, width: "40%" }}
+                    style={{ marginTop: 10, width: 150 }}
                     buttonColor={gender === "male" ? colors.primary : colors.female}
                     textStyle={{ fontFamily: fonts.body, flex: 1 }}
                     selectedTextStyle={{ fontFamily: fonts.body }}

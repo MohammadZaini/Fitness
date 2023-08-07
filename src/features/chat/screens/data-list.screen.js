@@ -54,18 +54,18 @@ const DataListScreen = props => {
 
                         const messageData = messagesForChat[messageId];
 
-                        const sender = messageData.sentBy && storedUsers[messageData.sentBy];
+                        const sender = messageData && storedUsers[messageData.sentBy];
                         let name = sender && `${sender.firstName} ${sender.lastName}`;
 
                         if (name === `${userData.firstName} ${userData.lastName}`) {
                             name = "You"
                         }
                         key = messageId;
-                        image = sender.profilePicture
+                        image = sender && sender.profilePicture
                         title = name;
-                        subTitle = messageData.text;
-                        data = messageData.sentAt
-                        type2 = sender.userId === userData.userId ? "myStarredMessages" : "thierStarredMessages"
+                        subTitle = messageData && messageData.text;
+                        data = messageData && messageData.sentAt
+                        type2 = sender && sender.userId === userData.userId ? "myStarredMessages" : "thierStarredMessages"
                         itemType = "";
                         onPress = () => { };
                     };

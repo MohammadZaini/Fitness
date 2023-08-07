@@ -24,7 +24,8 @@ export const SubmitButton = props => {
 const styles = StyleSheet.create({
     button: {
         backgroundColor: "green",
-        height: 40, width: "80%",
+        height: 40,
+        width: 300,
         borderRadius: 40,
         marginVertical: 20,
         alignContent: 'center',

@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Image, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { BottomView, ChatInput, ChatsBackground, HeaderImage, SendImageIcon, SendMessageIcon, TakePictureIcon } from "../components/chat.styles";
-import { useSelector } from "react-redux";
+import { BottomView, ChatInput, ChatsBackground, HeaderContainer, HeaderImage, HeaderTitle, SendImageIcon, SendMessageIcon, TakePictureIcon } from "../components/chat.styles";
+import { useSelector, shallowEqual } from "react-redux";
 import { PageContainer } from "../../../components/page-container";
 import { Bubble } from "../components/bubble";
 import { createChat, sendPhoto, sendTextMessage } from "../../../utils/actions/chat-actions";
@@ -17,6 +17,8 @@ import { fonts } from "../../../infratructure/theme/fonts";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { CustomHeaderButton } from "../components/custom-header-button.component";
 import { Ionicons } from '@expo/vector-icons';
+import { useMemo } from "react";
+import { Text } from "react-native";
 
 const ChatScreen = props => {
     const [chatUsers, setChatUsers] = useState([]);
@@ -33,9 +35,11 @@ const ChatScreen = props => {
     const storedUsers = useSelector(state => state.users.storedUsers);
     const storedChats = useSelector(state => state.chats.chatsData);
 
-    const chatMessages = useSelector(state => {
+    const chatMessages = useSelector(state => state.messages.messagesData, shallowEqual);
+
+    const getCurrentChatMessages = (data) => {
         if (!chatId) return [];
-        const chatMessagesData = state.messages.messagesData[chatId];
+        const chatMessagesData = data[chatId];
 
         if (!chatMessagesData) return [];
 
@@ -51,7 +55,11 @@ const ChatScreen = props => {
         };
 
         return messageList;
-    });
+    }
+
+    const memoizedChatMessages = useMemo(() => {
+        return getCurrentChatMessages(chatMessages);
+    }, [chatMessages])
 
     const chatData = (chatId && storedChats[chatId]) || props.route?.params?.newChatData || {};
 
@@ -66,7 +74,24 @@ const ChatScreen = props => {
     useEffect(() => {
         if (!chatData) return;
         props.navigation.setOptions({
-            headerTitle: chatData.chatName ?? getChatTilteFromName(),
+            headerTitle: () => (
+                <HeaderContainer>
+                    <HeaderImage
+                        source={
+                            chatData.chatImage || otherUserData && otherUserData.profilePicture ?
+                                {
+                                    uri: chatData.isGroupChat && chatData.chatImage ?
+                                        chatData.chatImage :
+                                        chatData.isGroupChat && !chatData.chatImage ?
+                                            "https://i.ibb.co/HCqxzqY/user-Image.jpg" :
+                                            otherUserData && otherUserData.profilePicture
+                                }
+                                : require("../../../../assets/images/userImage.jpeg")
+                        }
+                    />
+                    <HeaderTitle>{chatData.chatName ?? getChatTilteFromName() ?? ""}</HeaderTitle>
+                </HeaderContainer>
+            ),
             headerTitleStyle: {
                 marginLeft: 40,
             },
@@ -87,15 +112,21 @@ const ChatScreen = props => {
                     }
                 </HeaderButtons>
             },
-            headerBackground: () => (
-                <HeaderImage
-                    source={{
-                        uri: chatData.isGroupChat && chatData.chatImage ?
-                            chatData.chatImage :
-                            otherUserData && otherUserData.profilePicture
-                    }}
-                />
-            ),
+            // headerBackground: () => (
+            //     <HeaderImage
+            //         source={
+            //             chatData.chatImage || otherUserData && otherUserData.profilePicture ?
+            //                 {
+            //                     uri: chatData.isGroupChat && chatData.chatImage ?
+            //                         chatData.chatImage :
+            //                         chatData.isGroupChat && !chatData.chatImage ?
+            //                             "https://i.ibb.co/HCqxzqY/user-Image.jpg" :
+            //                             otherUserData && otherUserData.profilePicture
+            //                 }
+            //                 : require("../../../../assets/images/userImage.jpeg")
+            //         }
+            //     />
+            // ),
         });
         setChatUsers(chatData.users);
     }, [chatUsers]);
@@ -195,10 +226,10 @@ const ChatScreen = props => {
                         chatId &&
                         <FlatList
                             ref={ref => flatlistRef.current = ref}
-                            onContentSizeChange={() => chatMessages.length > 0 && flatlistRef.current.scrollToEnd({ animated: true })}
-                            onLayout={() => chatMessages.length > 0 && flatlistRef.current.scrollToEnd({ animated: false })}
+                            onContentSizeChange={() => memoizedChatMessages.length > 0 && flatlistRef.current.scrollToEnd({ animated: true })}
+                            onLayout={() => memoizedChatMessages.length > 0 && flatlistRef.current.scrollToEnd({ animated: false })}
                             showsVerticalScrollIndicator={false}
-                            data={chatMessages}
+                            data={memoizedChatMessages}
                             renderItem={(itemData) => {
                                 const message = itemData.item;
                                 const isOwnMessage = message.sentBy === userData.userId;
@@ -226,7 +257,7 @@ const ChatScreen = props => {
                                     uri={profilePicture}
                                     messageId={message.key}
                                     setReply={() => setReplyingTo(message)}
-                                    replyingTo={message.replyTo && chatMessages.find(i => i.key === message.replyTo)}
+                                    replyingTo={message.replyTo && memoizedChatMessages.find(i => i.key === message.replyTo)}
                                     imageUrl={message.imageUrl}
                                     isGroupChat={chatData.isGroupChat}
                                 />
@@ -314,4 +345,3 @@ const styles = StyleSheet.create({
 });
 
 export default ChatScreen;
-

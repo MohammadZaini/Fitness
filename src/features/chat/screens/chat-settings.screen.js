@@ -33,7 +33,7 @@ const ChatSettingsScreen = props => {
         for (let i = 0; i < array.length; i++) {
             let uid = array[i];
             sortedUsers.push(uid)
-            if (uid === userData.userId) {
+            if (uid === userData && userData.userId) {
                 sortedUsers.splice(i, 1)
                 sortedUsers.unshift(uid);
             };
@@ -56,7 +56,7 @@ const ChatSettingsScreen = props => {
         const selectedUsersData = [];
 
         selectedUsers.forEach(uid => {
-            if (uid === userData.userId) return;
+            if (uid === userData && userData.userId) return;
 
             if (!storedUsers[uid]) {
                 console.log("No user data found in the data store");
@@ -79,7 +79,7 @@ const ChatSettingsScreen = props => {
 
         try {
             setIsLoading(true)
-            await updateChatData(chatId, userData.userId, updatedValues)
+            await updateChatData(chatId, userData && userData.userId, updatedValues)
 
 
             setShowSuccessMessage("Saved!");
@@ -125,7 +125,7 @@ const ChatSettingsScreen = props => {
                     uri={chatData.chatImage}
                     showEditButton={true}
                     chatId={chatId}
-                    userId={userData.userId}
+                    userId={userData && userData.userId}
                 />
 
                 <Input
@@ -161,15 +161,15 @@ const ChatSettingsScreen = props => {
                     {
                         setLoggedInUserAsFirstItemInArray(chatData.users).slice(0, 4).map(uid => {
                             const currentUser = storedUsers[uid];
-                            const isLoggedInUser = currentUser.userId === userData.userId;
+                            const isLoggedInUser = currentUser && currentUser.userId === userData.userId;
 
                             return <DataItem
                                 key={uid}
                                 uri={currentUser && currentUser.profilePicture}
-                                title={currentUser && isLoggedInUser ? "You" : `${currentUser.firstName} ${currentUser.lastName}`}
+                                title={currentUser && (isLoggedInUser ? "You" : `${currentUser.firstName} ${currentUser.lastName}`)}
                                 subTitle={currentUser && currentUser.about}
-                                type={uid !== userData.userId && "link"}
-                                onPress={() => uid !== userData.userId && props.navigation.navigate("Contact", { uid, chatId })}
+                                type={uid !== userData && userData.userId && "link"}
+                                onPress={() => uid !== userData && userData.userId && props.navigation.navigate("Contact", { uid, chatId })}
                             />
                         })
                     }

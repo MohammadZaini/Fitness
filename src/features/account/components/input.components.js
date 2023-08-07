@@ -12,16 +12,12 @@ export const Input = props => {
         props.onInputChanged(props.id, text);
     };
 
-
     useEffect(() => {
         if (props.initialValue) {
             setValue(props.initialValue)
         }
     }, [props.initialValue]);
 
-    const test = value ? "There is a value" : "There is no value";
-    console.log("Initial Value is: " + props.initialValue);
-    console.log("Input Component, the value is ===> " + test + " " + value);
     const labelTextColor = props.labelColor === "grey" && "black" || props.labelColor;
 
     return (

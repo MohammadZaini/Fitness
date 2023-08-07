@@ -2,10 +2,11 @@ import { isDevice } from "expo-device";
 import * as Notification from "expo-notifications";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, deleteUser } from "firebase/auth";
 import { getFirebaseApp } from "../firebase-helper";
-import { child, get, getDatabase, push, ref, set, update } from "firebase/database"
+import { child, get, getDatabase, push, ref, remove, set, update } from "firebase/database"
 import { authenticate, logout } from "../../../store/auth-slice";
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { getUserData } from "./user-actions";
+import { updateChatData } from "./chat-actions";
 
 let timer;
 
@@ -101,6 +102,18 @@ export const SignIn = (email, password) => {
                 } else if (errorCode === "auth/missing-password") {
                     message = "Please enter your password";
                 }
+
+                // switch (errorCode) {
+                //     case "auth/user-not-found":
+                //     case "auth/invalid-email":
+                //         return message = "Invalid email";
+                //     case "auth/wrong-password":
+                //         return message = "Invalid password";
+                //     case "auth/missing-email":
+                //         return message = "Please enter your email";
+                //     case "auth/missing-password":
+                //         return message = "Please enter your password";
+                // }
                 console.log(errorCode);
                 throw new Error(message);
             });
@@ -325,15 +338,70 @@ export const getUserType = async (uid) => {
     };
 };
 
-export const deleteUserAccount = () => {
+export const deleteUserAccount = (userId, userType) => {
 
-    return dispatch => {
+    return async dispatch => {
 
         try {
             const app = getFirebaseApp();
             const auth = getAuth(app);
             const user = auth.currentUser;
+            const dbRef = ref(getDatabase(app));
 
+            // delete the user chats.
+
+            const userChatsArray = [];
+            const userChatsRef = child(dbRef, `userChats/${userId}`);
+
+            const userChatsData = await get(userChatsRef);
+            const snapshot = userChatsData.val();
+
+            console.log("THE SNAPSHOT IS: ", snapshot);
+
+            for (const key in snapshot) {
+                const chatId = snapshot[key];
+                userChatsArray.push(chatId);
+            };
+
+            console.log(userChatsArray);
+
+            await remove(userChatsRef);
+
+            // delete the chat it self unless it was a group chat.
+
+            userChatsArray.forEach(async chatId => {
+                const userToRemoveId = userId;
+
+                const chatsRef = child(dbRef, `chats/${chatId}`);
+                const snapshot = await get(chatsRef);
+                const chatData = snapshot.val();
+
+                const newUsers = chatData.users.filter(uid => uid !== userToRemoveId);
+                await updateChatData(chatData.key, userId, { users: newUsers });
+            })
+
+            // delete the user data.
+            let path;
+
+            if (userType === "coach") {
+                path = "coaches"
+            } else if (userType === "trainee") {
+                path = "trainees";
+            };
+
+            console.log("The path is: " + path);
+            const userDataRef = child(dbRef, `${path}/${userId}`);
+            await remove(userDataRef);
+
+            // delete the starred messages.
+            const starredMessagesRef = child(dbRef, `starredMessages/${userId}`);
+            await remove(starredMessagesRef);
+
+            // delete the user type.
+            const userTypeRef = child(dbRef, `userType/${userId}`);
+            await remove(userTypeRef);
+
+            // delete user from authentication.
             deleteUser(user).then(() => {
                 // User deleted.
                 AsyncStorage.removeItem("userToken");
@@ -344,8 +412,9 @@ export const deleteUserAccount = () => {
             }).catch((error) => {
                 console.log(error);
             });
+
         } catch (error) {
             console.log(error);
-        }
-    }
+        };
+    };
 };

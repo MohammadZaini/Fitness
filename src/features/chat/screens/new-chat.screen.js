@@ -83,7 +83,6 @@ const NewChatScreen = props => {
                 setNoResultsFound(false);
                 return;
             };
-
             setIsloading(true);
 
             const usersResult = await searchUsers(searchTerm);
@@ -243,5 +242,3 @@ const styles = StyleSheet.create({
 })
 
 export default NewChatScreen;
-
-
