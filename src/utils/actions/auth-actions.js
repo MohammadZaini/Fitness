@@ -6,7 +6,7 @@ import { child, get, getDatabase, push, ref, remove, set, update } from "firebas
 import { authenticate, logout } from "../../../store/auth-slice";
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import { getUserData } from "./user-actions";
-import { updateChatData } from "./chat-actions";
+import { getUserPushTokens, updateChatData } from "./chat-actions";
 
 let timer;
 
@@ -269,30 +269,30 @@ const removePushTokens = async (userData, userType) => {
     await set(userRef, tokenData);
 };
 
-export const getUserPushTokens = async (userId, userType) => {
-    try {
-        let path;
-        if (userType === "coach") {
-            path = "coaches";
-        } else if (userType === "trainee") {
-            path = "trainees";
-        };
+// export const getUserPushTokens = async (userId, userType) => {
+//     try {
+//         let path;
+//         if (userType === "coach") {
+//             path = "coaches";
+//         } else if (userType === "trainee") {
+//             path = "trainees";
+//         };
 
-        const app = getFirebaseApp();
-        const dbRef = ref(getDatabase(app));
-        const userRef = child(dbRef, `${path}/${userId}/pushTokens`);
-        console.log(path);
-        const snapshot = await get(userRef);
-        if (!snapshot || !snapshot.exists()) {
-            return {};
-        };
+//         const app = getFirebaseApp();
+//         const dbRef = ref(getDatabase(app));
+//         const userRef = child(dbRef, `${path}/${userId}/pushTokens`);
+//         console.log(path);
+//         const snapshot = await get(userRef);
+//         if (!snapshot || !snapshot.exists()) {
+//             return {};
+//         };
 
-        return snapshot.val() || {};
+//         return snapshot.val() || {};
 
-    } catch (error) {
-        console.log(error);
-    };
-};
+//     } catch (error) {
+//         console.log(error);
+//     };
+// };
 
 export const refreshJwtToken = async () => {
     try {
@@ -377,7 +377,7 @@ export const deleteUserAccount = (userId, userType) => {
                 const chatData = snapshot.val();
 
                 const newUsers = chatData.users.filter(uid => uid !== userToRemoveId);
-                await updateChatData(chatData.key, userId, { users: newUsers });
+                await updateChatData(chatId, userId, { users: newUsers });
             })
 
             // delete the user data.
@@ -405,6 +405,7 @@ export const deleteUserAccount = (userId, userType) => {
             deleteUser(user).then(() => {
                 // User deleted.
                 AsyncStorage.removeItem("userToken");
+                AsyncStorage.removeItem("rememberMe");
                 clearTimeout(timer);
                 dispatch(logout());
 

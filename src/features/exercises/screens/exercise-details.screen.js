@@ -112,7 +112,7 @@ const ExersiceDetails = props => {
 const styles = StyleSheet.create({
     video: {
         height: 210,
-        width: "90%",
+        width: 350,
         marginLeft: 10,
         borderRadius: 25
     },

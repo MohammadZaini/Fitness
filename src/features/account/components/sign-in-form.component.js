@@ -58,6 +58,7 @@ export const SignInForm = props => {
         const getRemeberedUserCredentials = async () => {
             try {
                 const userCredentials = await getUserCredentials();
+                // rememberMe === false && AsyncStorage.removeItem("rememberMe");
 
                 if (!userCredentials) return;
 
@@ -66,13 +67,24 @@ export const SignInForm = props => {
 
             } catch (error) {
                 console.log(error);
+
             };
         };
 
         getRemeberedUserCredentials();
-    }, [error]);
+
+        const delayInitialValues = setTimeout(() => {
+            if (rememberMeData[0] && rememberMeData[1]) {
+                onChangedHandler("email", rememberMeData[0]);
+                onChangedHandler("password", rememberMeData[1]);
+            };
+        }, 100);
+
+        return () => clearTimeout(delayInitialValues);
+    }, [error, rememberMeData[0]]);
 
     const onChangedHandler = useCallback((inputId, inputValue) => {
+        console.log("working..");
         const result = InputValidation(inputId, inputValue);
         dispatchFormState({ inputId, validationResult: result, inputValue })
     }, [dispatchFormState]);
@@ -89,15 +101,16 @@ export const SignInForm = props => {
             await dispatch(action);
             rememberUserCredentials(formState.inputValues.email, formState.inputValues.password);
             setIsloading(false);
+
         } catch (error) {
-            setError(error.message)
+            setError(error.message);
             console.log(error.message);
-            setIsloading(false)
+            setIsloading(false);
         }
 
-    }, [dispatch, formState]);
+    }, [dispatch, formState, rememberMe]);
 
-    const rememberUserCredentials = async (emailValue, passwordValue) => {
+    const rememberUserCredentials = (emailValue, passwordValue) => {
 
         rememberMe === true ?
             AsyncStorage.setItem("rememberMe", JSON.stringify({
@@ -183,7 +196,7 @@ export const SignInForm = props => {
                     </RememberMeContainer>
                     :
                     <RememberMeContainer onPress={() => setRememberMe(prev => !prev)} >
-                        <MaterialIcons name="check-box-outline-blank" size={24} color="grey" />
+                        <MaterialIcons name="check-box-outline-blank" size={24} color={colors.lightGrey} />
                     </RememberMeContainer>
             }
 
@@ -212,7 +225,7 @@ const LoadingIndicator = styled(ActivityIndicator).attrs({
 export const HideShowPasswordIcon = styled(Ionicons).attrs(props => ({
     name: props.name,
     size: 20,
-    color: colors.lightGrey,
+    color: colors.primary,
     onPress: props.onPress
 }))`
     position: absolute;

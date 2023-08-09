@@ -75,12 +75,13 @@ const SettingsScreen = props => {
                             title="Reset password"
                             left={(props) => <List.Icon {...props} icon="lock-reset" />}
                             onPress={() => props.navigation.navigate("Profile", { title: "Reset password" })}
-                        />
+                        /> */}
 
                         <SettingsItem
                             title="About"
                             left={(props) => <List.Icon {...props} icon="information-outline" />}
-                        /> */}
+                            description="This product uses the MuscleWiki API but is not endorsed or certified by MuscleWiki."
+                        />
 
                         <SettingsItem
                             title="Log out"

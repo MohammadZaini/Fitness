@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native'
+import { Text } from 'react-native'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { PageContainer } from '../../../components/page-container';
@@ -13,6 +13,7 @@ import { SubmitButton } from '../../../components/submit-button';
 import { ActivityIndicator } from 'react-native-paper';
 import { removeUserFromChat } from '../../../utils/actions/chat-actions';
 import { useCallback } from 'react';
+import { About, Container, CurrentUserName } from '../components/contact.styles';
 
 const ContactScreen = props => {
     const [isLoading, setIsLoading] = useState(false);
@@ -74,8 +75,8 @@ const ContactScreen = props => {
                 }
 
                 <DataItem
-                    userType={currentUser.userType && currentUser.userType}
-                    gender={currentUser.gender && currentUser.gender}
+                    userType={currentUser && currentUser.userType}
+                    gender={currentUser && currentUser.gender}
                     hideImage={true}
                     isContactScreen={true}
                 />
@@ -104,7 +105,6 @@ const ContactScreen = props => {
                         })
                     }
 
-
                     {
                         starredMessages &&
                         <DataItem
@@ -127,6 +127,7 @@ const ContactScreen = props => {
                             isLoading ?
                                 <ActivityIndicator size="small" color={colors.red} />
                                 :
+                                userData.userType === "coach" &&
                                 <SubmitButton
                                     title="Remove from chat"
                                     color={colors.red}
@@ -138,27 +139,10 @@ const ContactScreen = props => {
                 </>
             }
 
-
         </PageContainer>
     )
-}
+};
 
 export default ContactScreen;
 
-const Container = styled.View`
-    justify-content: center;
-    align-items: center;
-`;
 
-const CurrentUserName = styled.Text`
-    font-size: 22px;
-    font-weight: bold;
-    margin-bottom: 10px;
-`;
-
-const About = styled.Text.attrs(() => {
-    numberOfLines = 2;
-})`
-    font-size: 15px;
-    color: ${colors.lightGrey}
-`;

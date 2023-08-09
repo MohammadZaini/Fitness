@@ -1,6 +1,6 @@
 import { child, get, getDatabase, push, ref, remove, set, update } from "firebase/database";
 import { getFirebaseApp } from "../firebase-helper";
-import { getUserPushTokens } from "./auth-actions";
+// import { getUserPushTokens } from "./auth-actions";
 import { addUserChat, deleteUserChat, getUserChats } from "./user-actions";
 
 export const createChat = async (loggedInUserId, chatData) => {
@@ -206,4 +206,29 @@ export const addUsersToChat = async (userLoggedInData, usersToAddData, chatData)
     const moreUsersAddedMessage = newUsers.length > 1 ? `and ${newUsers.length - 1} others` : '';
     const messageText = `${userLoggedInData.firstName} ${userLoggedInData.lastName} added ${userAddedName} ${moreUsersAddedMessage}`;
     await sendInfoMessage(chatData.key, userLoggedInData.userId, messageText);
+};
+
+export const getUserPushTokens = async (userId, userType) => {
+    try {
+        let path;
+        if (userType === "coach") {
+            path = "coaches";
+        } else if (userType === "trainee") {
+            path = "trainees";
+        };
+
+        const app = getFirebaseApp();
+        const dbRef = ref(getDatabase(app));
+        const userRef = child(dbRef, `${path}/${userId}/pushTokens`);
+        console.log(path);
+        const snapshot = await get(userRef);
+        if (!snapshot || !snapshot.exists()) {
+            return {};
+        };
+
+        return snapshot.val() || {};
+
+    } catch (error) {
+        console.log(error);
+    };
 };
